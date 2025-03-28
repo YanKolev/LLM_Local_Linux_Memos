@@ -196,3 +196,59 @@ Checkboxes:
 ### Linux Basics And System Startup
 
 #### Boot Process
+
+- Linux boot process is the procedute of initializing the system. It consists of everything that happens from the switching ON of the power to fully operational user interface.
+
+**List of processes of the boot process**:
+
+![](https://d36ai2hkxl16us.cloudfront.net/thoughtindustries/image/upload/a_exif,c_fill,w_400/v1/course-uploads/e0df7fbf-a057-42af-8a1f-590912be5460/9ar15losorzh-TheBootProcess.png)
+
+---
+
+**BIOS**: (focusing mainly on x86 family). When the PC is powered on, the Basic Input/Output System (BIOS) utilizes the hardware and tests the main memory. The process is called _POST_ (Power On Selt Test). The Bios software is stored on a read-only memory(ROM) chip on the motherboard. After this the remainder of the boot process is controlled by the OS.
+
+**BIOS PROCESS DIAGRAM**
+
+![](https://d36ai2hkxl16us.cloudfront.net/thoughtindustries/image/upload/a_exif,c_fill,w_400/v1/course-uploads/e0df7fbf-a057-42af-8a1f-590912be5460/orte9udfxh4n-asset-v1_LinuxFoundationXLFS101x1T2023typeassetblockLFS101x_2023_CourseImages_1-5_Image_9.png)
+
+---
+
+**MASTER BOOT RECORD (MBR), EFI Partition, and Boot Loader**
+
+- Upon complition of POST, system control passes from BIOS -> **boot loader**. The boot loader is sually stored on of the system's storage devices (HDD, SSD) in ehter the boot sector or the EFI partition (Extensible Firmware Interface). Up to this stage the machine does not access any mass storage media. Information is loaded from **CMOS** values.
+
+- Most common boot loaders are GRUB( Grand Unified Boot loader), ISOLINUX (removable media), and DAS U-boot(for booting on embeded devices/appliances). When booting the boot loader is responsible for loading the kernel image and the initial RAM dis or filesystem into memory.
+
+- Systems using the BIOS/MBR method, the boot loader resides at the first sector of the HDD, also known as the Master Boot Record. Size of 512 bytes, starting the boot loader examines the partititon table and finds bootable partition. After its found searches for secont stage boot loader (GRUB) and loads into RAM.
+
+- Systems using EFI/UEFI, UEFI reads Boot Manager data to determine which UEFI application is to be launched and from where. Firmware launches UEFI application, for example GRUB, as defined in the boot entry in the firmware's boot manager. Second stage boot loader resited under **/boot**. Splash screen is displayed with option for a choice between OS / and/or kernel to boot. After selection, boot loader loads the kerned of the OS into RAM and passes control over it. Kernels are always compressed so the first order of operations is to uncompress themselves. After this will check and analyze any hardware device built into kernel.
+
+---
+
+**KERNEL**
+
+- The boot loader loads both the _kernel_ and an initial RAM-based file system (_initramfs_) into memory, so it can be used directly by the kernel.
+
+- Upon loading in RAM, the kerner immediately unitializes and confugures the computer's memory and all the hardware attached to the system. All processors, I/O subsystems, storage decives and necessary user space appliactions.
+
+![](https://d36ai2hkxl16us.cloudfront.net/thoughtindustries/image/upload/a_exif,c_fill,w_400/v1/course-uploads/e0df7fbf-a057-42af-8a1f-590912be5460/uhozrmi9v8vc-l.kernel.png)
+
+---
+
+**THE INITIAL RAM DISK (initramfs)**
+
+- The _initramfs_ filesystem image contains programs and binary files that perform all actions needed to mountthe proper root filesystem, including providing the kernel functionality required for the specific filesystem that will be used. Also loading the device drivers and mass storage controllers, by taking advantage of the **udev** system (user device), which is reponsible for figuring out which devices are present, locating device drivers and loading them. After root filesystem is found, its checked for errors and mounted.
+
+- The _mount_ program instructs the operating system that a filesystem is ready for use and associates it with a particular point in the overall hierarchy of the filesystem (_mount point_). If its successful the initramfs is cleared from RAM and the _init_ program is on the root filesystem (**/sbin/init**) is executed. init handles the mounding and pivoting over the final real root filesystem. If special hardware drivers are needed before the mass storage can be accessed, they must be in the initramfs image.
+
+---
+
+**TEXT-MODE LOGIN**
+
+- At the end of the boot process, _init_ starts a number of text-mode prompts. They enable usage of username and password and later command shell access.
+
+![](https://d36ai2hkxl16us.cloudfront.net/thoughtindustries/image/upload/a_exif,c_fill,w_400/v1/course-uploads/e0df7fbf-a057-42af-8a1f-590912be5460/t4bzq5q8a3at-tml.png)
+
+---
+
+**sbin/init and Services**
