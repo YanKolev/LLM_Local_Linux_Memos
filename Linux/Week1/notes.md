@@ -299,3 +299,131 @@ Checkboxes:
 - Linux uses the ‘/’ character to separate paths (as sis UNIX unlike Windows, which uses ‘\’) and does not have drive letters. Multiple drives and/or partitions are mounted as directories in the single filesystem. Removable media such as USB drives and CDs, and DVDs will show up as mounted at /run/media/yourusername/disklabel for recent Linux systems or under /media for older distributions. For example, if your username is student, a USB pen drive labeled FEDORA might end up being found at /run/media/student/FEDORA, and a file README.txt on that disc would be at /run/media/student/FEDORA/README.txt.
 
   ![Dir Tree](images/ka4r6lsv3ht9-dirtree.jpg)
+
+---
+
+- All Linux filesystem names are case-sensitive so /boot, /Boot and /BOOT represent three different directories.
+
+---
+
+### Choosing Linux Distribution
+
+- Determening which Linux distribution(distro) to deploy required thoughtful planning. Figure below shows couple of the choices available(but not all).
+
+![Distro Choice ](images/62d86ppi6q65-choose.distros.png)
+
+- Sample questions for decision help:
+
+1. What is the main function of the system (server or desktop)?
+2. What types of packages are important to the organization? For example, web server, word processing, etc.
+3. How much storage space is required, and how much is available? For example, when installing Linux on an embedded device, space is usually constrained.
+4. How often are packages updated?
+5. How long is the support cycle for each release? For example, LTS releases have long-term support.
+6. Do you need kernel customization from the vendor or a third party?
+7. What hardware are you running on? For example, it might be X86, RISC-V, ARM, PPC, etc.
+8. Do you need long-term stability? Or can you accept (or need) a more volatile cutting-edge system running the latest software versions?
+
+---
+
+### Chapter 5
+
+---
+
+### Graphical Interface
+
+- When using a Linux system you can use either a CLI- command line inetrface or a GUI- graphical User interface. The GUI allows you to interact with all the system easier in case you do not remember all the details.
+
+#### X Window System
+
+- Loading the graphical dekstop is one of the final stepsin the Linux boot process. A service called **Display Manager** keeps track of the displays being provided and loads the X server(named X because it provides graphical services to applications). These days X is old software, its being replaced by a newer system **Wayland** for the most part is identical, but the architecture behind is quite different.
+
+![](images/up44d1c9y0vr-x.window.png)
+
+---
+
+**DESKTOP**
+
+- A desktop environment consists of a **session manager**(which starts and maintains the componenets of the graphical session), **window manager** (which controls the placement) and movement of windows and set of **utilities**.
+
+- If the display manager is not started by default in the default runlevel, you can start the graphical desktop different way, after logging on to a text-mode console, by running **startx** from the command line. Or, you can start the display manager (gdm, kdm, xdm, etc.) manually from the command line. This differs from running startx as the display managers will project a sign in screen.
+
+- The default display manager for GNOME is called gdm. Another popular display manager is kdm, associated with KDE.
+
+---
+
+### Chapter 6
+
+---
+
+#### SYSTEM CONFIGURATION FROM THE GUI
+
+- You can use the system to get familiar with the GUI and take a closer look at System, Display, Date and Time Settings.
+
+#### NETWORK CONFIGURATION
+
+- All Linux distributions have network configuration files, but file formats and locations can differ from one distribution to another.
+
+![](images/fxs5eqvqwj5x-net.config.png)
+
+##### NETWORK MANAGER
+
+- Network Manager was developed to make things easier and more uniform across distributions. It can list all available networks (both wired and wireless), allow the choice of a wired, wireless, or mobile broadband network, handle passwords, and set up Virtual Private Networks (VPNs).
+
+#### Wired and Wireless Connections
+
+- Wired connections usually do not require complicated or manual configuration. The hardware interface and signal presence are automatically detected, and then Network Manager sets the actual network settings via Dynamic Host Configuration Protocol (DHCP).
+
+- For static configurations that do not use DHCP, manual setup can also be done easily through Network Manager. You can also change the Ethernet Media Access Control (MAC) address if your hardware supports it. The MAC address is a unique hexadecimal number of your network card.
+
+![](images/r7d4ol5vynsf-wiredwireless.png)
+
+- Wireless networks are usually not connected by default. You can view the list of available wireless networks and see which one (if any) you are currently connected to by using Network Manager. You can then add, edit, or remove known wireless networks, and also specify which ones you want connected by default when present
+
+- Network Manager can also manage your VPN connections.It supports many VPN technologies, such as native IPSec, Cisco OpenConnect (via either the Cisco client or a native open source client), Microsoft PPTP, and OpenVPN.
+
+---
+
+#### INSTALLING AND UPDATING SOFTWARE
+
+- Each package in a Linux distribution provides one piece of the system, such as the Linux kernel, the C compiler, utilities for manipulating text or configuring the network, or for your favorite web browsers and email clients.
+
+- Packages often depend on each other. For example, because your email client can communicate using SSL/TLS, it will depend on a package that provides the ability to encrypt and decrypt SSL and TLS communication and will not install unless that package is also installed at the same time.
+
+- All systems have a lower-level utility that handles the details of unpacking a package and putting the pieces in the right places.
+
+---
+
+##### DEBIAN PACKAGING
+
+- Debian-based systems, the higher-level package management system is the Advanced Package Tool (APT) system of utilities.
+
+- **dpkg** is the underlying package manager for these systems. It can install, remove, and build packages. Unlike higher-level package management systems, it does not automatically download and install packages and satisfy their dependencies.
+
+**package management debian family**
+
+![](images/eyba0c4binmr-LFS101x_2023_CourseImages_1-5_Image_20.png)
+
+---
+
+##### RED HAT PACKAGE MANAGER(RPM)
+
+- Red Hat Package Manager (RPM) is the package management system popular on Linux distributions. Red Hat family distributions historically use RHEL/CentOS, and Fedora uses dnf, while SUSE family distributions such as openSUSE also use RPM but use the zypper interface.
+
+**package management red hat family**
+![](images/c05krp2hhsde-asset-v1_LinuxFoundationXLFS101x1T2023typeassetblockLFS101x_2023_CourseImages_1-5_Image_21.png)
+
+---
+
+##### openSUSE YaST Software Management
+
+- Yet another Setup Tool (**YaST**) software manager is similar to other graphical package managers. It is an RPM-based application. You can add, remove, or update packages using this application very easily.
+
+![](images/gkf8nlmom68z-asset-v1_LinuxFoundationXLFS101x1T2023typeassetblockLFS101x_2023_CourseImages_1-5_Image_22.png)
+
+---
+
+### Chapter 7
+
+---
+
+#### COMMON APPLICATIONS
