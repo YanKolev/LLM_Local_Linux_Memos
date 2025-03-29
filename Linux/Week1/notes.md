@@ -213,7 +213,7 @@ Checkboxes:
 
 ---
 
-**MASTER BOOT RECORD (MBR), EFI Partition, and Boot Loader**
+### **MASTER BOOT RECORD (MBR), EFI Partition, and Boot Loader**
 
 - Upon complition of POST, system control passes from BIOS -> **boot loader**. The boot loader is sually stored on of the system's storage devices (HDD, SSD) in ehter the boot sector or the EFI partition (Extensible Firmware Interface). Up to this stage the machine does not access any mass storage media. Information is loaded from **CMOS** values.
 
@@ -225,7 +225,7 @@ Checkboxes:
 
 ---
 
-**KERNEL**
+### **KERNEL**
 
 - The boot loader loads both the _kernel_ and an initial RAM-based file system (_initramfs_) into memory, so it can be used directly by the kernel.
 
@@ -235,7 +235,7 @@ Checkboxes:
 
 ---
 
-**THE INITIAL RAM DISK (initramfs)**
+### **THE INITIAL RAM DISK (initramfs)**
 
 - The _initramfs_ filesystem image contains programs and binary files that perform all actions needed to mountthe proper root filesystem, including providing the kernel functionality required for the specific filesystem that will be used. Also loading the device drivers and mass storage controllers, by taking advantage of the **udev** system (user device), which is reponsible for figuring out which devices are present, locating device drivers and loading them. After root filesystem is found, its checked for errors and mounted.
 
@@ -243,7 +243,7 @@ Checkboxes:
 
 ---
 
-**TEXT-MODE LOGIN**
+### **TEXT-MODE LOGIN**
 
 - At the end of the boot process, _init_ starts a number of text-mode prompts. They enable usage of username and password and later command shell access.
 
@@ -251,4 +251,49 @@ Checkboxes:
 
 ---
 
-**sbin/init and Services**
+### **sbin/init and Services**
+
+- After the set up is completed the kernel runs **sbin/init** this becomes the initial process and gets the system running. All processes can be traced back to **init** , exceptions are the **kernel processes** (started directly by the kernel and their job is to manage the internal operating system details.)
+
+-Besides the startup, _init_ is responsible for shutting down the system cleanly. It also acts as a manager for all non-kernel processes, cleans after their completions and restarts user login services as needed.
+
+-Traditionally the process of startup was done by Unix's System V (**SysVinit**), as the system had to pass a sequence of _runlevels_ containing collections of scripts with start and stop services.
+
+- **SysVinit** viewed this as serial process divided into a series of sequential stages. Each stage to be completed before the next. Due to this start up did not easily take advantage of the **parallel processing** that could be done with newer gen systems. Due to this two main alternatives were developed:
+
+1.  **Upstart** - Developed by Ubuntu and launched in 2006, Adopted in Fedora 9 and RHEL 6 and their clones.
+2.  **systemd** - Adopted by Fedora in 2011, RHEL 7 and SUSE, Replaced Upstart in Ubuntu 16.04
+
+### **systemd Features**
+
+- Compared to the method **init** systems which start with **systemd** start significantly faster due to agressive parallelization techniques.
+
+- Instead of complicaetd shel scripts _ /sbin/init _ now points to _ /lib/systemd/systemd _.
+
+### Linux Filesystems
+
+- Divided mainly into the following cathegories:
+
+1. Conventional disk filesystems: ext3, ext4, XFS, Btrfs, JFS, NTFS, vfat, exfat, etc.
+2. Flash storage filesystems: ubifs, jffs2, yaffs, etc.
+3. Database filesystems
+4. Special purpose filesystems: procfs, sysfs, tmpfs, squashfs, debugfs, fuse, etc.
+
+### Partitions and Filesystems
+
+- Definition: partition is dedicated subsection of physical storage media.
+
+**A comparison between filesystems in Windows and Linux**
+
+|                     | Windows     | Linux               |
+| ------------------- | ----------- | ------------------- |
+| Filesystem type     | NTFS/VFAT   | EXT3/EXT4/XFS/BTRFS |
+| Partition           | Disk1       | /dev/sda1           |
+| Mounting parameters | DriveLetter | MountPoint          |
+| Base Folder         | C:\         | /                   |
+
+### Filesystem Hierarchy Standard
+
+- Linux stores files with a standard layout called FHS(Filesystem Hierarchy Standard), maintained by the Linux Foundation.
+
+- Linux uses the ‘/’ character to separate paths (as sis UNIX unlike Windows, which uses ‘\’) and does not have drive letters. Multiple drives and/or partitions are mounted as directories in the single filesystem. Removable media such as USB drives and CDs, and DVDs will show up as mounted at /run/media/yourusername/disklabel for recent Linux systems or under /media for older distributions. For example, if your username is student, a USB pen drive labeled FEDORA might end up being found at /run/media/student/FEDORA, and a file README.txt on that disc would be at /run/media/student/FEDORA/README.txt.
