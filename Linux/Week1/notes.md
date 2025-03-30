@@ -427,3 +427,49 @@ Checkboxes:
 ---
 
 #### COMMON APPLICATIONS
+
+###### Internet Applications
+
+- In order to take full advantage of the internet we will need applications to take advantage of the web.
+  Those applications fall into: Web browsers, Email Clients, Streaming media applications, Internet Relay Chats and Conferencing software to name few.
+
+**Web Browsers**
+
+- Most used:
+  Firefox,
+  Google Chrome,
+  Chromium
+
+**Email Applications**
+
+- Most email clients use the Internet Message Access Protocol (IMAP) or the older Post Office Protocol (POP) to access emails stored on a remote mail server. Most email applications also display HTML (HyperText Markup Language) formatted emails that display objects, such as pictures and hyperlinks.
+
+Linux supports the following types of email applications:
+
+1. Graphical email clients, such as Thunderbird, Evolution, and Claws Mail.
+2. Text mode email clients, such as Mutt and mail.
+3. All web browser-based clients, such as Gmail, Yahoo Mail, and Office 365.
+
+**Office Applications**
+
+- Mainly use of LibreOffice, open source office suite that started in 2010 and has evolved from OpenOffice.
+
+- Libre Office Components:
+
+1. Writer: Word Processing
+2. Calc: Spreadsheets
+3. Impress: Presentations
+4. Draw: Create and edit graphics and diagrams
+
+**Development Applications**
+
+- List of intergrated tools:
+
+1. Advanced editors customized for programmers' needs, such as vi and emacs.
+2. Compilers (such as gcc and clang for programs in C and C++) for every computer language that has ever existed, including very popular new ones such as Golang and Rust.
+3. Debuggers such as gdb and various graphical front ends to it and many other debugging tools (such as Valgrind).
+4. Performance measuring and monitoring programs, some with easy to use graphical interfaces, others more arcane and meant to be used only by serious experienced development engineers.
+5. Source and Revision control systems, such as git (and associated interfaces to it, including GitHub and GitLab) and older systems, such as Apache Subversion.
+6. Complete Integrated Development Environments (IDE's) such as Eclipse and Visual Studio Code that put all these tools together.
+
+**As well as Multimedia applications, Graphic Editors and Utilities.**
