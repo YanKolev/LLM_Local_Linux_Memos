@@ -309,3 +309,266 @@ $ cd ../../usr/bin
 **Example of path hierarchy**
 
 ![](images/t4oojwkxnuix-LFS101x_2023_CourseImages-05.png)
+
+---
+
+**Exploring the Filesystem**
+
+- Using the tree command is a good way to get a higher view of the filesystem. You can use **tree -d** to view just the directories and to suppress listing file names.
+
+**Hard Links**
+
+- The **ln** utility is used to create hard links and with the -s option, soft links. also known as symbolic links or symlinks.
+
+```
+$ ln file1 file2
+
+$ ls -li file1 file2
+```
+
+- Hard links are very useful and they save space, but you have to be careful with their use, sometimes in subtle ways. For one thing, if you remove either file1 or file2 in the example, the inode object (and the remaining file name) will remain, which might be undesirable, as it may lead to subtle errors later if you recreate a file of that name.
+
+**Soft (Symbolic) Links**
+
+- They are created with the -s option:
+
+```
+$ ln -s file1 file3
+
+$ ls -li file1 file3
+```
+
+- Symbolic links take no extra space on the filesystem (unless their names are very long). They are extremely convenient, as they can easily be modified to point to different places. An easy way to create a shortcut from your home directory to long pathnames is to create a symbolic link.
+
+- Unlike hard links, soft links can point to objects even on different filesystems, partitions, and/or disks and other media, which may or may not be currently available or even exist. In the case where the link does not point to a currently available or existing object, you obtain a dangling link.
+
+---
+
+**Directory History Navigation**
+
+- **cd** command remembers where you were last, and lets you get back there with cd -.
+- **pushd** - can be used to change directory as well but remembers more than the last visited directory. It pushes your starting directory onto a list.
+- **popd** - will send you back to those directories **IN REVERSE ORDER** Most recent directory will be the first one retrieved with popd.
+- **dirs** - displays the list of directories.
+
+---
+
+**Working with files**
+
+| **Command** | **USAGE**                                                                                                                                                                                                                                                                                        |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **cat**     | Used for viewing files that are not very long; it does not provide any scroll-back                                                                                                                                                                                                               |
+| **tac**     | Used to look at the file backwards,starting with the last line.                                                                                                                                                                                                                                  |
+| **less**    | Used to view larger files because it is a paging progam. It pauses at each screen full of text, provides scroll-back capabilities and lets you search and nagigate within the file **!NB** Use / to search for a pattern in the forward direction and ? for a pattern in the backward direction. |
+| **tail**    | Used to print the last 10 lines of a file by defailt. You can change the number of lines by doing -n 15 or just -15 if you wanted to look at the last 15 lines instead of the default.                                                                                                           |
+| **head**    | The opposite of tail, by default, it prints the first 10 lines of a file.                                                                                                                                                                                                                        |
+
+---
+
+**touch** - is often used to set or update the access, change and modify times of files. It resets file's timestamp to match the current time.
+
+- You can also create an empty file using **touch**
+
+```
+$ touch <filename>
+```
+
+It creates empty file as a placeholder for a later purpose.
+
+- touch also provides several useful options **-t** option allows you to set the date and timestamp of the file to a specific value.
+
+```
+$ touch -t 12091600 myfile
+```
+
+This sets the **myfile**'s timestamp to 4 p.m. Dec 9th (12 09 1600)
+
+---
+
+**mkdir and rmdir**
+
+- mkdir is used to create a directory:
+
+```
+mkdir sampdir
+```
+
+It creates a sample directory named sampdir under the current directory
+
+```
+mkdir /usr/sampdir
+```
+
+It creates a sample directory called sampdir under /usr
+
+**rmdir** - used to remove a directory. The directory must be empty or the command will fail. To remove a directory and all of its contents you have to do **rm -rf**.
+
+**Moving, Renaming or Removing a file**
+
+- **mv** does two things: rename a file, move file to another location while possibly changing its name at the same time.
+
+- when removing a file its a good practice to run it with interactive prompt ( **rm -i**)
+
+| **Command** | **Usage**                   |
+| ----------- | --------------------------- |
+| **mv**      | Rename a file               |
+| **rm**      | Remove a file               |
+| **rm -f**   | Forcefully remove a file    |
+| **rm -i**   | Interactively remove a file |
+
+---
+
+**Renaming or Removing a Directory**
+
+**rmdir** works only empty directories, otherwise there will be an error
+
+**rm -rf** its an easy way to remove a whole filesystem tree recursively. TO BE USED WITH CAUTION!
+
+| **Command** | **Usage**                                 |
+| ----------- | ----------------------------------------- |
+| **mv**      | Rename a directory                        |
+| **rmdir**   | Remove an empty directory                 |
+| **rm -f**   | Forcefully remove a directory recursively |
+
+---
+
+**Modifying the Command Line Prompt**
+
+- The PS1 variable is the character string that is displayed as the prompt on the command line. Most distributions set PS1 to a known default value, which is suitable in most cases. However, users may want custom information to show on the command line. For example, some system administrators require the user and the host system name to show up on the command line as in:
+
+```
+student@r9 $
+```
+
+The prompt above could be implemented by setting the PS1 variable to: **\u@\h \$**.
+
+For example:
+
+```
+$ echo $PS1
+\$
+$ PS1="\u@\h \$ "
+student@r9 $ echo $PS1
+\u@\h \$
+student@r9 $
+```
+
+- By convention, most systems are set up so that the root user has a pound sign (**#**) as their prompt.
+
+---
+
+### File Search
+
+---
+
+#### Standard File Streams
+
+- When commands are executed, by default there are three standard file streams (or descriptors) always open for use: standard input (standard in or **stdin**), standard output (standard out or **stdout**) and standard error (or **stderr**).
+
+- Usually, stdin is your keyboard, and stdout and stderr are printed on your terminal. stderr is often redirected to an error logging file, while stdin is supplied by directing input to come from a file or from the output of a previous command through a pipe. stdout is also often redirected into a file. Since stderr is where error messages (and warning) are written, usually nothing will go there.
+
+- In Linux, all open files are represented internally by what are called file descriptors. Simply put, these are represented by numbers starting at zero. stdin is file descriptor 0, stdout is file descriptor 1, and stderr is file descriptor 2. Typically, if other files are opened in addition to these three, which are opened by default, they will start at file descriptor 3 and increase from there.
+
+---
+
+**I/O Redirection**
+
+- Through the command shell, we can redirect the three standard file streams so that we can get input from either a file or another command, instead of from our keyboard, and we can write output and errors to files or use them to provide input for subsequent commands.
+
+- For example, if we have a program called do_something that reads from stdin and writes to stdout and stderr, we can change its input source by using the less-than sign (<) followed by the name of the file to be consumed for input data:
+
+```
+$ do_something < input-file
+```
+
+If you want to send the output to a file, use the greater-than sign (>) as in:
+
+```
+$ do_something > output-file
+
+```
+
+you can do both at the same time as in:
+
+```
+$ do_something < input-file > output-file
+```
+
+Because stderr is not the same as stdout, error messages will still be seen on the terminal windows in the above example.
+
+If you want to redirect stderr to a separate file, you use stderr’s file descriptor number (2), the greater-than sign (>), followed by the name of the file you want to receive everything the running command writes to stderr:
+
+```
+$ do_something 2> error-file
+```
+
+NOTE: By the same logic, do_something 1> output-file is the same as do_something > output-file.
+
+A special shorthand notation can send anything written to file descriptor 2 (stderr) to the same place as file descriptor 1 (stdout): 2>&1.
+
+```
+$ do_something > all-output-file 2>&1
+```
+
+bash permits an easier syntax for the above:
+
+```
+$ do_something >& all-output-file
+```
+
+---
+
+**PIPES**
+
+- The UNIX/Linux philosophy is to have many simple and short programs (or commands) cooperate together to produce quite complex results, rather than have one complex program with many possible options and modes of operation. In order to accomplish this, extensive use of pipes is made. You can pipe the output of one command or program into another as its input.
+
+In order to do this, we use the vertical-bar, pipe symbol (|), between commands as in:
+
+```
+$ command1 | command2 | command3
+```
+
+- This is extraordinarily efficient because **command2** and **command3** do not have to wait for the previous pipeline commands to complete before they can begin processing at the data in their input streams; on multiple CPU or core systems, the available computing power is much better utilized and things get done quicker.
+
+- Furthermore, there is no need to save output in (temporary) files between the stages in the pipeline, which saves disk space and reduces reading and writing from disk.
+
+---
+
+**File Search**
+
+- **Main Commands:**
+
+  1.**locate**
+
+  2.**find**
+
+**locate**
+
+- **locate** utility program performs a search while taking advantage of a previously constructed database of files and directories on your system, matching all entries that contain a specified character string.
+
+- To avoid long lists, we can use **grep** as a filter. **grep** will print only the lines that contain one or more specified strings.
+
+```
+$ locate zip | grep bin
+```
+
+- This will list all the files and directories with both zip and bin in their name.
+
+- **locate** utilizes a database created by a related utility, **updatedb**. Most Linux systems run this automatically once a day. However, you can update it at any time by just running **updatedb** from the command line as the root user.
+
+---
+
+**Wildcards and Matching Filenames**
+
+- Wildcard can allow you to search for specific characters.
+
+| **Wildcard** | **Matches**                                                                                             |
+| ------------ | ------------------------------------------------------------------------------------------------------- |
+| **?**        | Matches any single character                                                                            |
+| \*           | Matches any string of characters                                                                        |
+| **[set]**    | Matches any character in the set of characters, for ex **[adf]** will match any occurrence of a,d, or f |
+| **[!set]**   | Matches any character not in the set of characters                                                      |
+
+- To search for files using the ? wildcard, replace each unknown character with ?. For example, if you know only the first two letters are 'ba' of a three-letter filename with an extension of .out, type ls ba?.out.
+
+- To search for files using the _ wildcard, replace the unknown string with _. For example, if you remember only that the extension was .out, type ls \*.out.
