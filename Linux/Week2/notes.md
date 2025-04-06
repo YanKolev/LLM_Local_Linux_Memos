@@ -699,3 +699,45 @@ $ find / -size +10M -exec command {}';'
 ---
 
 #### Chapter 9: Finding Linux Documentation
+
+**Linux Documentation Sources**
+
+- **The man pages**
+- **GNU info**
+- **command help**
+- **Other documentation sources**
+
+**man**
+
+- The man program searches, formats, and displays the information contained in the man page system. Because many topics have copious amounts of relevant information, output is piped through a pager program (such as less) to be viewed one page at a time. At the same time, the information is formatted for a good visual display.
+
+- To list all pages on the topic, use the -f option. To list all pages that discuss a specific topic (even if the specified subject is not present in the name), use the –k option.
+
+**GNU info system**
+
+- This is the GNU project's standard documentation format, which it prefers as an alternative to man. The Info System is basically free-form, and supports linked subsections.
+
+- Functionally, info resembles man in many ways. However, topics are connected using links
+
+**--help Option**
+
+- Another important source of Linux documentation is use of the --help option.
+
+- Most commands have an available short description which can be viewed using the --help or the -h option along with the command or application.
+
+**Other Documentation Sources**
+
+- Desktop help system
+- Package documentation
+- Online resources
+
+* GNOME: gnome-help or yelp
+* KDE: khelpcenter
+
+---
+
+#### Chapter 10: Linux Processes
+
+**Porcess and Process Attributes**
+
+- What is a process?
