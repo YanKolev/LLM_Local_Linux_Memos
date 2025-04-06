@@ -572,3 +572,130 @@ $ locate zip | grep bin
 - To search for files using the ? wildcard, replace each unknown character with ?. For example, if you know only the first two letters are 'ba' of a three-letter filename with an extension of .out, type ls ba?.out.
 
 - To search for files using the _ wildcard, replace the unknown string with _. For example, if you remember only that the extension was .out, type ls \*.out.
+
+---
+
+**The find Program**
+
+- Extremely useful utility program. It recurses down the filesystem tree from any particular directory and locates files that match specified conditions.
+
+- When no arguments are given, **find** lists all files in the current directory and all of its subdirectories.
+
+- **Commonly used options**:
+
+  - **-name** : only list files with a certain pattern in their name
+  - **-iname**: also ignore the case of file names
+  - **-type**: restrict the results to files of a certain specified type, such as **d** for directory, **l** for symbolic link, or **f** for a regular file.
+
+  **Examples**:
+
+Searching for files and directories named **gcc**:
+
+```
+$ find /usr -name gcc
+```
+
+Searching only for directories named **gcc**:
+
+```
+$ find /usr -type d -name gcc
+```
+
+Searching only for regular files named **gcc**:
+
+```
+$ find /usr -type f -name gcc
+```
+
+- Another use of **find** is being able to run commands on files that match your search criteria. The ** -exec** option is used for this purpose.
+
+  - To find and remove all files that end with **.swp**:
+
+  ```
+  $ find -name "*.swp" -exec rm {} ';'
+  ```
+
+  - **{}** is a placeholder that will be filled with all the file names that result from the find expression, and the preceding command will be run on each one individually.
+  - NB! you have to end the command with ';' (including sing-quotes) or \; Both forms are allowed.
+
+  * One can also use the **-ok** option, which behaves the same as **-exec**, except that **find** will prompt you for permission before executing the command. This makes it a good way to test your results before blindly executing any potentially dangerous commands.
+
+**Finding files based on Time and Size**
+
+- To findfiles based on time
+
+  ```
+  $ find / -ctime 3
+  ```
+
+  - **-ctime** is when the inode metadata(file ownershi/permission) last changed (it is often but not necessarily- when the file was first created.)
+
+  - **-atime** is search for accessed/last read
+
+  - **-mtime** is search for modified/last written.
+
+  - You can also add a number- meaning the number of days, it can be expressed as either a number **(n)**- exact value | **+n**- means grear than that number | **-n**- which means less than that number.
+
+- To find based on sizes
+
+```
+$ find / -size 0
+```
+
+- Note that size here is in 512-byte blocks, by default.You can specify bytes **(c)**, kilobytes **(k)**, megabytes **(M)**, gigabytes **(G)**.
+
+- Example: To find files greater than 10MB in size and running a command on those files:
+
+```
+$ find / -size +10M -exec command {}';'
+```
+
+---
+
+### Installing Software
+
+---
+
+**Low Level Package Managers**
+
+- Core parts of a Linux distribution and most of its add-on software are installed via the Package Management System. Each package contains the files and other instructions needed to make one software component work well and cooperate with the other components that comprise the entire system. Packages can depend on each other. For example, a package for a web-based application written in Python will require the appropriate Python packages to be installed first.
+
+- There are two families of package managers(low-level):
+
+  - Debian based family(**dpkg**)
+  - RPM based family(**rpm**)
+
+- **High-level tools** include: apt, dnf or zypper. Dependency resolution is a particularly important feature of the high-level tool, as it handles the details of finding and installing each dependency for you. Be careful, however, as installing a single package could result in many dozens or even hundreds of dependent packages being installed.
+
+![](images/packetmanagers.png)
+
+---
+
+**Differences between Package Management Systems**
+
+- The Advanced Packaging Tool (**apt**) is the underlying package management system that manages software on Debian-based systems. While it forms the backend for graphical package managers, such as the Ubuntu Software Center and synaptic, its native user interface is at the command line, with programs that include **apt** (or **apt-get**) and **apt-cache**.
+
+- **dnf** is the open source command-line package-management utility for the RPM-compatible Linux systems that belong to the Red Hat family.
+
+![](images/packetmanagers2.png)
+
+**Basic Packaging Commands**
+
+| **Operation**                     | **RPM**                           | **DEB**                     |
+| --------------------------------- | --------------------------------- | --------------------------- |
+| **Install package**               | **rpm -i foo.rpm**                | **dpkg --install foo.deb**  |
+| **Install package, dependencies** | **dnf install foo**               | **apt install foo**         |
+| **Remove package**                | **rpm -e foo.rpm**                | **dpkg --remove foo.deb**   |
+| **Remove package, dependencies**  | **dnf remove foo**                | **apt autoremove foo**      |
+| **Update package**                | **rpm -U foo.rpm**                | **dpkg --install foo.deb**  |
+| **Update package, dependencies**  | **dnf update foo**                | **apt install foo**         |
+| **Update entire system**          | **dnf update**                    | **apt dist-upgrade**        |
+| **Show all installed packages**   | **rpm -qa or dnf list installed** | **dpkg --list**             |
+| **Get information on package**    | **rpm -qil foo**                  | **dpkg --listfiles foo**    |
+| **Show packages named foo**       | **dnf list "foo"**                | **apt-cache search foo**    |
+| **Show all available packages**   | **dnf list**                      | **apt-cache dumpavail foo** |
+| **What package is file part of?** | **rpm -qf file**                  | **dpkg --search file**      |
+
+---
+
+#### Chapter 9: Finding Linux Documentation
