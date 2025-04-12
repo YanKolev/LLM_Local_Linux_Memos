@@ -740,4 +740,134 @@ $ find / -size +10M -exec command {}';'
 
 **Porcess and Process Attributes**
 
-- What is a process?
+- What is a process? Process is an istance of one or more related tasks(threads) executing on your computer. Its not the same as program or a command.
+
+- Processes use many ssystem resources, such as memory, CPU cycles and peripheral devices.
+
+- Process Types: A terminal window is a process that runs as long as needed. You can alsorun programs in the background, which means they become detached from the shell.
+
+| Process Type          | Description                                                                                                                                                                                                                                                                                                                                                  | Examples                               |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------- |
+| Interactive Processes | Need to be started by a user, either at a command line or through a graphical interface such as an icon or a menu selection.                                                                                                                                                                                                                                 | bash, firefox, top, Slack, Libreoffice |
+| Batch Processes       | Automatic processes which are scheduled from and then disconnected from the terminal. These tasks are queued and work on a FIFO (First-In, First-Out) basis.                                                                                                                                                                                                 | updatedb, ldconfig                     |
+| Daemons               | Server processes that run continuously. Many are launched during system startup and then wait for a user or system request indicating that their service is required.                                                                                                                                                                                        | httpd, sshd, libvirtd, cupsd           |
+| Threads               | Lightweight processes. These are tasks that run under the umbrella of a main process, sharing memory and other resources, but are scheduled and run by the system on an individual basis. An individual thread can end without terminating the whole process and a process can create new threads at any time. Many non-trivial programs are multi-threaded. | dconf-service, gnome-terminal-server   |
+| Kernel Threads        | Kernel tasks that users neither start nor terminate and have little control over. These may perform actions like moving a thread from one CPU to another, or making sure input/output operations to disk are completed.                                                                                                                                      | kthreadd, migration, ksoftirqd         |
+
+---
+
+### Pocess Scheduling and States
+
+- **scheduler** is a critical kernel function that constantly shift process on and off the CPU, sharing time according to relative priority, how much time is needed and how much has already been granted to a task.
+
+**STATES**
+
+1. **Running state** - a state where a process is currently executing instructions on a CPU or its awaiting time to be granted so it can execute. All processes that are in **running state** reside in a **run queue**. If a computer has multiple cores there is a run queue for each.
+
+![](images/processes.png)
+
+2. **Sleep State** - state where processes are waiting for something to happen before they can resume, perhaps for the user to type something. In this condition, a process is said to be sitting in a wait queue.
+
+3. **Less frequent states** - terminating, Child process (when child process completes but its parent process has not asked about its state also called **zombie state**- its not really alive but it shows up in the system's list of processes.)
+
+---
+
+### Process and Thread IDs
+
+- There are always multiple processes being executed. To keep track the system assigns them a unique process ID **PID** number. The **PID** number is used to track process state, CPU usage, memory use, etc.
+
+- New **PIDs** are usually assigned in ascending order as processes are born. Hence PID 1 denotes the **init** process(system unitialization process) and succeeding processes are gradually assigned higher numbers.
+
+![](images/PIDtypes.png)
+
+---
+
+### Terminating a Process
+
+- used when one of your application may stop working properly. To Terminate a process:
+
+  **kill** -SIGKILL <**pid**> / kill -9 <**pid**>
+
+**NB!** You can only kill your own processes, those who belong to another user are off-limits unless you are **root**
+
+---
+
+### User and Group IDS
+
+- Linux allows users to access a system simultaneously and each user can run multiple processes. It identifies the user whol starts the process by the **REAL USER ID (RUID)**.
+
+- The user who determines the access rights for the users is indentified by the **Effective UID**. The EUID may or may not be the same as the RUID.
+
+- Users can be organized into enumerated groups, each group indentified by the **REAL GROUP ID (RGID)**. The access rights of the group are determined by the **Effective Group ID (EGID)**. Each user can be a mmember of one or more groups.
+
+![](images/userid.png)
+
+---
+
+### Additional Priorities
+
+At any given time, many processes are running on the system, however a CPU can actually accommodate only one task at a time, some processes are more important than others, so Linux allows you to set and manipulate proecss priority. Higher priority processes get prefential access to the CPU.
+
+**NICE VALUE** / **NICENESS** - priority of a process can be set by specifiying it. **The lower the nice value, the higher priority**. Low values are assigned to processes that can wait longer. A process with a night nice value simply allows other processes to be executed first. In Linux a nice value of **-20** represents the **highest** priority and **+19** represents the **lowest**.
+
+You can also assign a so-called **real-time priority** to time-sensitive tasks, such as controlling machines through a computer or collecting incoming data. This is just a very high priority and is not to be confused with what is called hard real-time, which is conceptually different and has more to do with making sure a job gets completed within a very well-defined time window.
+
+**You can use renice command to set priorities**
+
+---
+
+### Load Averages
+
+- The **load average** is the average of the load numbr for a given period of time. It takes into account processes that are:
+
+  - Actively running on a CPU.
+  - Considered runnable, but waiting on the run queue for a CPU to become available.
+  - Sleeping: i.e. waiting for some kind of resource (typically, I/O) to become available.
+
+**NB!** Linux differs from other UNIX-like operating systems in that it includes the sleeping processes. Furthermore, it only includes so-called **uninterruptible** sleepers, those which cannot be awakened easily.
+
+**Interpreting Load Averages**
+
+**Interpretation of numbers goes as: Average(first) > Last 5min (second) > Last 15min (third)**
+
+---
+
+![](images/loadaverages.png)
+
+Interpreting Load Averages
+The load average is displayed using three numbers (0.45, 0.17, and 0.12) in the below screenshot. Assuming our system is a single-CPU system, the three load average numbers are interpreted as follows:
+
+- 0.45: For the last minute the system has been 45% utilized on average.
+- 0.17: For the last 5 minutes utilization has been 17%.
+- 0.12: For the last 15 minutes utilization has been 12%.
+
+##
+
+- If we saw a value of 1.00 in the second position, that would imply that the single-CPU system was 100% utilized, on average, over the past 5 minutes; this is good if we want to fully use a system. A value over 1.00 for a single-CPU system implies that the system was over-utilized: there were more processes needing CPU than CPU was available.
+
+- If we had more than one CPU, say a quad-CPU system, we would divide the load average numbers by the number of CPUs. In this case, for example, seeing a 1 minute load average of 4.00 implies that the system as a whole was 100% (4.00/4) utilized during the last minute.
+
+---
+
+**Background and Foreground Processes**
+
+- Linux supports bakground and foreground job processing.
+  A job in this context means **command launched from a terminal window**. Foreground jobs run directly from the shell, when one is running other jobsneed to wait for schell access until completed. **Good for quick 'jobs', adverse effect for long 'jobs'**.
+
+- If a job takes too long, you can run in it be background and free the shell for other tasks. Background jobs will be executed at a lower priority >> smooth execution of interactive tasks.
+
+- All jobs are **executed in the foreground**, you can put a job in the background by **suffixing & to the command** example : **updatedb &**
+
+- **CTRL -Z** is used to suspend a foreground job.
+- **CTRL -C** is used to terminate it.
+- **bg** is used to run a suspended process in the background.
+- **fg** is used to run a background command in the foreground.
+
+---
+
+**Managing Jobs**
+
+- The **jobs** utility displays all jobs running in the background.
+- **jobs -l** provides PIDs of the background jobs.
+
+---
