@@ -989,3 +989,11 @@ The entry **30 08 10 06 \* /home/sysadmin/full-backup** will schedule a full-bac
 **sleep vs at**
 
 - sleep and at are quite different; sleep delays execution for a specific period, while at starts execution at a specific designated later time.
+
+---
+
+## Chapter 11: File Operations
+
+**Introduction to Filesystems**
+
+- "Everyting is a file"
