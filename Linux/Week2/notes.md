@@ -871,3 +871,121 @@ The load average is displayed using three numbers (0.45, 0.17, and 0.12) in the 
 - **jobs -l** provides PIDs of the background jobs.
 
 ---
+
+### Listing Processes: ps and top
+
+- **ps** (process status) provides information about currently running processes keyed by PID. To have periodic update on this status you can uses **top**.
+
+- **ps** has many options for specifying exactly which tasks to examine, what information to display abou them and precisely what output format should be used.
+
+- **ps Options:**
+
+  - **-u** option to display infromation of processes for a specified username
+  - **-ef** option to display all the processes in the system in full detail.
+  - **-eLf** option displays one line of information for every thread.(a process can contain multiple threads).
+
+- **BSD Style ps**: options are specified without preceding dashes. (**ps aux**: displays all processes of all users.)
+  (**ps axo**: allows to specify which attributes you want to view)
+
+- **The Process Tree**
+
+- pstree displays the processes running on the system in the form of a tree diagram showing the relationship between a process and its parent processes and any other processes that it created.
+
+- **top**- for monitoring system performance live over time. (**top** is better way to run **ps** over regular intervals- every few seconds)
+
+- to exit **top** : **q.top**
+
+- First line of **top**: quick summary of what is happening in the system:
+
+  1. how long the system has been up
+  2. how many users are logged on
+  3. what is the load average
+
+- The load average determines how busy the system is. A load average of **1.00** per CPU indicated a fully subscribed , but not overloaded system. If it goes over this average > processes are competing for CPU time. If load average is very high > indicates issues such as a runaway process(process in non-responding state).
+
+- Second line of the **top**: displays total number of processes, number of running, sleeping, stopped and zombie processes. Comparing the number of running process with the load average **helps determening if the system has reached capacity or particular user is running too many processes.**
+
+- Thirdline of the **top**: displays how CPU time is being divided between users **us** and the kernel **sy** by displaying the percentage of CPU time used for each.
+
+  - Additional stats:
+
+    1. **niceness - ni**- percentage of user jobs running at a lower priority.
+
+    2. **id** - idle mode- should be low if the load average is high and vice versa.
+
+    3. **wa** - percentage of jobs waiting if I/O is listed.
+
+    4. **hi** - percentage of interrupts of hardware
+
+    5. **si** - percentage of interrupts of software
+
+       6.**st** - steal time- used with virtual machines, idle CPU time is taken for other users.
+
+- Fourth and Fifht lines of **top**:
+
+  - Fourth line- Physical memory _RAM_
+  - Fifth line- Swap space
+
+- Once the physical memory is exhausted, the system starts using swap space (temporary storage space on the hard drive) as an extended memory pool, and since accessing disk is much slower than accessing memory, this will negatively affect system performance.
+
+- If the system starts using swap often, you can add more swap space. However, adding more physical memory should also be considered.
+
+- Process list of **top**:
+
+![](images/toplist.png)
+
+---
+
+- **Interactive keys with top**
+
+![](images/topcommands.png)
+
+---
+
+**Scheduling Future Processes Using _at_**
+
+- **at** utility can be used to execute any non-interactive command at a specified time.
+
+- Example:
+  ![](images/atcommand.png)
+
+---
+
+**Command: cron**
+
+- **cron** is a time-based scheduling utility program. it can launch routine background jobs at specifici times or days. **cron** is driven by configuration file called /etc/crontab- contains various shell commands that need to be run at the properly scheduled times. They are both **system-wide crontab** files and **individual**. Each **crontab** = job, its composed of **CRON Expression** and a shell command to execute.
+
+- **cronttab -e** will open crontab editor to edit existing jobs or to create new jobs. Each line of the crontab file will contain 6 fields:
+
+![](images/crontable.png)
+
+- examples:
+
+The entry \* \* \* \* \* **/usr/local/bin/execute/this/script.sh** will schedule a job to execute script.sh every minute of every hour of every day of the month, and every month and every day in the week.
+
+The entry **30 08 10 06 \* /home/sysadmin/full-backup** will schedule a full-backup at 8.30 a.m., 10-June, irrespective of the day of the week.
+
+**Command: anacron**
+
+- While cron is used on UNIX-like OPs, Linux moved to a newer one: **anacron**.
+
+- **cron**- expects the machine to run always, if the machine is powered off, scheduled jobs will **NOT RUN**
+- **anacron**- will run necessary jobs in a controlled and staggered manner when the system is up and running.
+
+**NB!** **anacron** still makes use of the cron infrastructure for submitting jobs on a daily, weekly, and monthly basis, but it defers running them until opportune times when the system is actually alive
+
+**Command: sleep**
+
+- Sometimes, a command or job must be delayed or suspended. Suppose, for example, an application has read and processed the contents of a data file and then needs to save a report on a backup system. If the backup system is currently busy or not available, the application can be made to sleep (wait) until it can complete its work. Such a delay might be to mount the backup device and prepare it for writing. An even simpler and frequent case is one where a system process needs to run periodically to take care of any work that has been queued up for it to deal with and then has to lurk in the background until it is needed again.
+
+- **sleep** suspends execution for at least the specified period of time, which can be given as the number of seconds (the default), minutes, hours, or days. After that time has passed (or an interrupting signal has been received), execution will resume.
+
+- Suffixes for **sleep**
+  - s for seconds (the default)
+  - m for minutes
+  - h for hours
+  - d for days.
+
+**sleep vs at**
+
+- sleep and at are quite different; sleep delays execution for a specific period, while at starts execution at a specific designated later time.
