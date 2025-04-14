@@ -996,4 +996,195 @@ The entry **30 08 10 06 \* /home/sysadmin/full-backup** will schedule a full-bac
 
 **Introduction to Filesystems**
 
-- "Everyting is a file"
+- "Everyting is a file"- quote often repeadeted by users of Linux and all Unix-like operating systems.
+
+- On Linux the filesystem is structured like a tree. The tree is portrayed as inverted and starts at what is most often called **root directory** aka the beginning/ or trunk. It is denoted by **/**. The root directory is not the same as the root user.
+
+- Linux supports a number of native filesystems types expressly created by Linux developers: **ext3**, **ext4**, **squashfs**, **btrs**.
+
+- It also offers implementations of filesystems used on other alien operating systems, such as those from:
+
+  - Windows (ntfs, vfat, exfat)
+  - SGI (xfs)
+  - IBM (jfs)
+  - MacOS (hfs, hfs+)
+
+- The most advanced filesystem types in common use are the journaling varieties: ext4, xfs, btrfs, and jfs.
+
+- Linux also makes use of network (or distributed) filesystems, where all or part of the filesystem is on external machines. Besides NFS (Network File System) whose usage we will discuss, this includes Ceph, Lustre, and OpenAFS.
+
+---
+
+**Linux Partitions**
+
+- Each filesystem on a Linux system occupies a disk partition. Partitions help organize the contents of disks according to the kind of use the cata contained. (important programs required to run the systems are often kept on a seprate partition knows as the root or / and the files for regular users that system holds can be found at /home).
+
+- Advantages of this isolation by type is when all available space on a particular partition is exaused the system may still perate normally. Plus its easier to confine if data is corrupted. Common uses is **Gparted** Utility.
+
+---
+
+**Mount Points**
+
+- Before you can start using the filesystem, you need to mount it on the filesystem tree at a mount point. This is simply a directory(which may or not be empty) where the filesystem is to be grafter on. You might need to create the directory if it does not already exist.
+
+![](images/mountpoint.png)
+
+---
+
+**Mounting and Unmounting**
+
+- Command **mount** is used to attach a filesystem somewhere within the filesystem tree. The basic arguments are the device node and mount poin.
+
+```
+$ sudo mount /dev/sda5 /home
+```
+
+- This will attach the filesystem containd in the disk partition associated with the /dev/sda5 device node into the filesystem tree at the /home mount point.
+
+- To unmount the partition, the commandis
+
+```
+$ sudo umount /home
+```
+
+- **NB!** The command is **umount** NOT UNMOUNT.
+
+- Executing mount without any arguments will show all presently mounted filesystems.
+
+- Command **df -Th** (disk free) will display information about mounted filesystems, including the filesystem type, usage statistics and available space.
+
+---
+
+**NFS AND NETWORK FILESYSTEMS**
+
+- In order to share data across physical systems is required network. A network filesystem may have all its data on one machine or have it spread out on more than one network **node**. Such network filesystem can be described as a grouping of lower-level filesystems of varying types.
+
+![](images/networkfilesys.png)
+
+- Many system administrators mount remote users' home directories on a server in order to give them access to the same files and configuration files across multiple client systems. This allows the users to log in to different computers, yet still have access to the same files and resources.
+
+- The most common such filesystem is named simply NFS (the Network Filesystem).
+
+---
+
+**NFS ON THE SERVER**
+
+- On the server machine, NFS uses daemons (built-in networking and service processes in Linux) and other system servers are started at the command line by typing:
+
+```
+$ sudo systemctl start nfs
+```
+
+- - On some systems, such as RHEL/CentOS, and Fedora, the service is now called nfs-server, not nfs.
+
+---
+
+- The text file /etc/exports contains the directories and permissions that a host is willing to share with other systems over NFS. A very simple entry in this file may look like the following:
+
+```
+/projects *.example.com(rw)
+
+```
+
+- This entry allows the directory /projects to be mounted using NFS with read and write (rw) permissions and shared with other hosts in the example.com domain.
+
+- After modifying the /etc/exports file, you can type exportfs -av to notify Linux about the directories you are allowing to be remotely mounted using NFS. You can also restart NFS with sudo systemctl restart nfs, but this is heavier, as it halts NFS for a short while before starting it up again. To make sure the NFS service starts whenever the system is booted, issue sudo systemctl enable nfs.
+
+---
+
+**NFS ON THE CLIENT**
+
+- If its desired to have the remote filesystem mounted automaticall upon system boot, **/etc/fstab** is modified to accomplish this. Entry in the client's **/etc/fstab** might look like:
+
+```
+servername:/projects /mnt/nfs/projects nfs defaults 0 0
+```
+
+- You can also mount the remote filesystem without a reboot or as one-time moun b directly using the **mount** command.
+
+```
+$ sudo mount servername:/projects /mnt/nfs/projects
+```
+
+- if /etc/fstab is not modified, this remote mount will not be present the next time the system is restarted. Furthermore, you may want to use the nofail option in fstab in case the NFS server is not live at boot.
+
+---
+
+**FILESYSTEM LAYOUT**
+
+- Overview: Each user has a home directory, usually placed under /home. The /root ("slash-root") directory on modern Linux systems is no more than the home directory of the root user (or superuser or system administrator account).
+
+- On multi-user systems, the /home directory infrastructure may be mounted as a separate filesystem on its own partition or even exported (shared) remotely on a network through NFS.
+
+---
+
+**Directory: /bin and sbin/**
+
+- /bin directory contains executable binaries, essential commands used to boot the system or in single-user mode, and essential commands required by all system users, such as cat, cp, ls, mv, ps, and rm.
+
+- /sbin directory is intended for essential binaries related to system administration, such as fsck and ip.
+
+- Commands that are not essential (theoretically) for the system to boot or operate in single-user mode are placed in the /usr/bin and /usr/sbin directories.
+
+- On most Linux distributions today, /usr/bin and /bin are actually just symbolically linked together.
+
+---
+
+**/proc Filesystem**
+
+- Certain filesystems, like the one mounted at /proc, are called pseudo-filesystems because they have no actual permanent presence anywhere on the disk.
+
+- The /proc filesystem contains virtual files (files that exist only in memory) that permit viewing constantly changing kernel data. /proc contains files and directories that mimic kernel structures and configuration information. It does not contain real files, but runtime system information, e.g. system memory, devices mounted, hardware configuration, etc.
+
+```
+/proc/cpuinfo
+/proc/interrupts
+/proc/meminfo
+/proc/mounts
+/proc/partitions
+/proc/version
+
+/proc has subdirectories as well, including:
+
+/proc/<Process-ID-#>
+/proc/sys
+```
+
+---
+
+**Directory: /dev**
+
+- contains device nodes, a type of pseudo-file used by most hardware and software devices, except for network devices.
+
+- Empty on the disk partition when it is not mounted
+
+- Contains entries which are created by the udev system, which creates and manages device nodes on Linux, creating them dynamically when devices are found.
+
+The /dev directory contains items such as:
+
+1. /dev/sda1 (first partition on the first hard disk)
+2. /dev/lp1 (second printer)
+3. /dev/random (a source of random numbers).
+
+---
+
+**Directory: /var**
+
+- Contains files that are expected to change in size and content as the system is running
+
+- Contents fall into:
+
+  - System log files: /var/log
+  - Packages and database files: /var/lib
+  - Print queues: /var/spool
+  - Temporary files: /var/tmp.
+
+- The /var directory may be put on its own filesystem so that growth of the files can be accommodated and any exploding file sizes do not fatally affect the system. Network services directories such as /var/ftp (the FTP service) and /var/www (the HTTP web service) are also found under /var.
+
+![](images/directoryvar.png)
+
+---
+
+**Directory: /etc**
+
+- /etc directory is the home for system configuration files. It contains no binary programs, although there are some executable scripts.
