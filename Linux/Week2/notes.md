@@ -1188,3 +1188,172 @@ The /dev directory contains items such as:
 **Directory: /etc**
 
 - /etc directory is the home for system configuration files. It contains no binary programs, although there are some executable scripts.
+
+---
+
+**Directory: /boot**
+
+- The directory contains few essential files that are needed to boot the system.
+
+  - **vmlinuz** - The compressed Linux kernel, required for booting.
+  - **initramfs**- The initial ram filesystem, required for booting, sometimes called initrd.
+  - **config** The kernel configuration file, only used for debugging and bookkeeping.
+  - **system.map** - kernel symbol table, only used for debugging.
+
+- The Grand Unified Bootloader (GRUB) files such as /boot/grub/grub.conf or /boot/grub2/grub2.cfg are also found under the /boot directory.
+
+**Directory: /lib and /lib64**
+
+- **/lib** contains librarires for essential programs in /bin and /sbin. These library filenames either start with **ld** or **lib**
+
+- Most of these are what is known as dynamically loaded libraries (Shared libraries/Shared Objects). On some linux distributions there exists /lid64 directory containing 64bit librarires, while /lib contains 32-bit.
+
+- just like for /bin and /sbin, the directories just point to those under /usr.
+
+---
+
+**Directory: /media ,/run, and /mnt**
+
+- Used for removable media. Most Linux systems are configured so any removable media are automatically mounted when the system notices something has been plugged in.
+
+- Modern distros place these mount points under /run directory.
+
+  -Since the early days of Unix the /mnt directory has been used for temporary mounting filesystems.
+
+**Additional Directories under /**
+
+![](images/additional%20dirs.png)
+
+---
+
+**Directory: /usr**
+
+![](images/usrdirectory.png)
+
+---
+
+#### Comparing Files with diff
+
+- diff is used to compare files and directories.
+
+![](images/diffoptions.png)
+
+- To compare files: **diff** [options] <filename1*> <filename2*>
+
+- You can compare up to 3 files with **diff3** > diff3 file1 file2 file3
+
+- Using **patch** : many modifications to source code are distributed by patches, mainly for updates.
+
+Usage of **patch**
+
+```
+$ patch -p1 < patchfile
+$ patch originalfile patchfile
+
+```
+
+---
+
+**File Utility**
+
+- In Linux file's extensions does not categorize its nature as other OS. (If there is a file.txt One can not assume its a text file and not an executable program.)
+
+- In Linux, a filename is generally more meaningful to the user of the system than the system itself. In fact, most applications directly examine a file's contents to see what kind of object it is rather than relying on an extension.
+
+- The real nature of a **file** can be ascertained by using the file utility. For the file names given as arguments, it examines the contents and certain characteristics to determine whether the files are plain text, shared libraries, executable programs, scripts, or something else.
+
+---
+
+#### Backing Up and Compressing Data
+
+**Backing up data**
+
+- Basic ways include:
+- simple copying with **cp** (can only copy files to and from destinations on the local machine/unless copy to from a filesystem mounted NFS)
+
+- robust and efficient **rsync** (checks inf the file copied already exists, if exists and there is no change in size or modification time, **rsync** will avoid unnecessary copy and save time.it copies only the parts of files that have actually changed). **rsync** can be used to copy files from one machine to another. Locations are designated in the target:path form, where target can be in the form of someone@host. The someone@ part is optional and used if the remote user is different from the local user.
+
+- rsync is very efficient when recursively copying one directory tree to another, because only the differences are transmitted over the network. One often synchronizes the destination directory tree with the origin, using the -r option to recursively walk down the directory tree copying all files and directories below the one listed as the source.
+
+- For example, a very useful way to back up a project directory might be to use the following command:
+
+```
+$ rsync -r project-X archive-machine:archives/project-X
+```
+
+- **Dangers of rsync**- rsync can be very destructive! Accidental misuse can do a lot of harm to data and programs, by inadvertently copying changes to where they are not wanted. Take care to specify the correct options and paths. It is highly recommended that you first test your rsync command using the -dry-run option to ensure that it provides the results that you want.
+
+- To use **rsync** at the command prompt, type rsync sourcefile destinationfile, where either file can be on the local machine or on a networked machine; The contents of sourcefile will be copied to destinationfile.
+
+```
+  $ rsync --progress -avrxH  --delete sourcedir destdir
+
+```
+
+---
+
+**Compressing Data**
+
+- Different methods to perform Compression for Linux:
+
+![](images/compression.png)
+
+- the **tar** utility is often used to group files in an archive and then compress the whole archive at once.
+
+---
+
+**Compression tools**
+
+- Using **gzip**
+
+![](images/gzip.png)
+
+- Using **bzip2** - has a syntax that is similar to gzip but it uses a different compression algorithm and produces significantly smaller files, at the price of taking a longer time to do its work. Thus, it is more likely to be used to compress larger files.
+
+- **May become deprecated**
+
+![](images/bzip.png)
+
+- Using **xz**- most space-efficient compression utility frequently used in Linux and is the choice for distributing and storing archives of the Linux kernel.
+
+![](images/xzzip.png)
+
+- Using **zip** - zip program is rarely used to compress files in Linux, it may be needed to examine and decompress archives from other operating systems. It is only used in Linux when you get a zipped file from a Windows user or environment or from Internet downloads. It is a legacy program. It is neither fast nor efficient.
+
+![](images/zip.png)
+
+---
+
+**Archiving and Compressing Data Using tar**
+
+- tar OR "tape archive" and is used to archive files to a magnetic tape. It allows you to create or extract files from an archive file, often called a tarball.
+
+![](images/tar.png)
+
+**Relative Compression Times and Sizes**
+
+- To demonstrate the relative efficiency of gzip, bzip2, and xz-the include directory from the kernel source can be added to show how much time the achives take to execute.
+
+---
+
+**Disk-to-Disk Copying (dd)**
+
+- The dd program is very useful for making copies of raw disk space. For example, to back up your Master Boot Record (MBR) (the first 512-byte sector on the disk that contains a table describing the partitions on that disk), you might type:
+
+```
+dd if=/dev/sda of=sda.mbr bs=512 count=1
+```
+
+<mark>**WARNING**<mark>
+
+- If command:
+
+```
+dd if=/dev/sda of=/dev/sdb
+```
+
+- to make a copy of one disk onto another, will delete everything that previously existed on the second disk.
+
+- An exact copy of the first disk device is created on the second disk device.
+
+<mark>**DO NOT EXPERIMENT**<mark>
