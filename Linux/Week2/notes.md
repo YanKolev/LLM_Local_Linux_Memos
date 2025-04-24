@@ -1357,3 +1357,13 @@ dd if=/dev/sda of=/dev/sdb
 - An exact copy of the first disk device is created on the second disk device.
 
 <mark>**DO NOT EXPERIMENT**<mark>
+
+## Chapter 12: Text Editors
+
+**Basic Editors: nano and gedit**
+
+- Overview:At some point, you will need to manually edit text files. You might be composing an email offline, writing a script to be used for bash or other command interpreters, altering a system or application configuration file, or developing source code for a programming language such as C, Python or Java.
+
+- Linux users and administrators may sidestep using a text editor, instead employing graphical utilities for creating and modifying system configuration files. However, this can be both more laborious than directly using a text editor and more limited in capability. In fact, word processing applications (including those that are part of common office application suites) are not really basic text editors; they add a lot of extra (usually invisible) formatting information that will probably render system administration configuration files unusable for their intended purpose. Thus, knowing how to confidently use one or more text editors is really an essential skill to have for Linux.
+
+![](images/editors.png)
