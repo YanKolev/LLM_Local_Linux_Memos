@@ -1367,3 +1367,78 @@ dd if=/dev/sda of=/dev/sdb
 - Linux users and administrators may sidestep using a text editor, instead employing graphical utilities for creating and modifying system configuration files. However, this can be both more laborious than directly using a text editor and more limited in capability. In fact, word processing applications (including those that are part of common office application suites) are not really basic text editors; they add a lot of extra (usually invisible) formatting information that will probably render system administration configuration files unusable for their intended purpose. Thus, knowing how to confidently use one or more text editors is really an essential skill to have for Linux.
 
 ![](images/editors.png)
+
+- If you want to create a file without using an editor, there are two standard ways to create one from the command line and fill it with content.
+
+- The first is to use **echo** repeatedly:
+
+```
+$ echo line one > myfile
+$ echo line two >> myfile
+$ echo line three >> myfile
+```
+
+- Note that while a single greater-than sign (>) will send the output of a command to a file (and obliterate any already existing version of that file!), two of them (>>) will append the new output to an existing file.
+
+- The second way is to use cat combined with redirection:
+
+```
+$ cat << EOF > myfile
+> line one
+> line two
+> line three
+> EOF
+```
+
+- In this example, the string used to show the beginning and end of the process need not be EOF; it could be STOP or any other string not used in the content itself. Both techniques produce a file with the following lines in it:
+
+```
+line one
+line two
+line three
+```
+
+---
+
+**nano**
+
+- To open a file, you need to type **nano** <**filename**> If the file does not exist, itwill be created.
+
+- there is a two line shortcut bar at the bottom of the screen that lists available commands.
+
+![](images/nanoview.png)
+
+---
+
+**gedit**
+
+- Widely used on linux distros, information will be added for respect of the source material. Due to current distro, more practice will be with **mousepad**.
+
+- same type of opening: **gedit** <**filename**>.
+
+---
+
+**vi and emacs**
+
+- Both vi and emacs have a basic, purely text-based form that can run in a non-graphical environment. They also have one or more graphical interface forms with extended capabilities; these may be friendlier for a less experienced user. While vi and emacs can have significantly steep learning curves for new users, they are extremely efficient when one has learned how to use them.
+
+---
+
+**Intro to vi**
+
+- Usually, the actual program installed on your system is vim, which stands for Vi IMproved and is aliased to the name vi. The name is pronounced as “vee-eye”.
+
+- Even if you do not want to use vi, it is good to gain some familiarity with it: it is a standard tool installed on virtually all Linux distributions. Indeed, there may be times when there is no other editor available on the system.
+
+**vimtutor**
+
+- typing **vimtutor** unches a short but very comprehensive tutorial for those who want to learn their first vi commands. Even though it provides only an introduction and just seven lessons, it has enough material to make you a very proficient vi user, because it covers a large number of commands. After learning these basic ones, you can look up new tricks to incorporate into your list of vi commands because there are always more optimal ways to do things in vi with less typing.
+
+![](images/vimtutor.png)
+
+---
+
+**Modes in vi**
+-3 default modes:
+
+![](images/vimodes.png)
