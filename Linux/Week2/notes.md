@@ -1442,3 +1442,29 @@ line three
 -3 default modes:
 
 ![](images/vimodes.png)
+
+---
+
+**Working with files in vi**
+
+![](images/vicommand.png)
+
+---
+
+**Changing Cursors Positions in vi**
+
+- Line mode commands (those following colon : ) require the ENTER key to be pressed after the command is typed.
+
+![](images/vicommand2.png)
+
+---
+
+**Searching for text in vi**
+
+![](images/textvi.png)
+
+---
+
+**Working with Text in vi**
+
+![](images/textworkvi.png)
