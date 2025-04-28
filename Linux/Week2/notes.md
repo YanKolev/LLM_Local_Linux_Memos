@@ -1468,3 +1468,88 @@ line three
 **Working with Text in vi**
 
 ![](images/textworkvi.png)
+
+---
+
+**Using External Commands in vi**
+
+- Typing **sh** command opens an external command shell. When you exit the shell, you will resume your editing session.
+- Typing **!** executes a command from within vi. The technique is best suited for non-interactive commandssuch as : ! wc %. Typing this will run the WC(word count) command on the file, the character % represents the file currently being edited.
+
+---
+
+#### EMACS
+
+- Popular competitor for vi. Does not work with modes. Highly customizable and includes large number of features.
+
+- Table of key combinations that are often used.
+
+![](images/emacs.png)
+
+- The emacs tutorial is a good place to start learning basic commands. It is available any time when in emacs by simply typing CTRL-h (for help) and then the letter t for tutorial.
+
+---
+
+**Cursor Position Change**
+
+![](images/emacscursor.png)
+
+---
+
+**Text Search**
+
+![](images/emacssearch.png)
+
+---
+
+**Text Work**
+
+![](images/emacstext.png)
+
+---
+
+## Chapter 13: User Environment
+
+**Accounts, Users and Groups**
+
+**Identifying the Current User**
+
+```
+whoami - to identify the current user
+who - to list currently logged-on users
+who -a gives more detailed information
+```
+
+---
+
+**User Startup Files**
+
+- In Linux, command shell uses one or more start up files to configure the user environment. Files in the **/etc** directory define global setting for all users, while the initialization files in the user's home directory can include and/or override the global settings.
+
+- You can still use it for the following:
+  - Customizing the prompt
+  - Defining command line shortcuts and aliases
+  - Setting the default text editor
+  - Setting the path for where to find executable programs
+
+---
+
+**Order of Startup Files**
+
+- When you first login to Linux, **/etc/profile** is read and evaluated, the following files are searched in listed order:
+
+1. ~/.bash_profile
+2. ~/.bash_login
+3. ~/.profile
+
+- where ~/ denotes the user's home directory. The Linux login shell evaluates whatever startup file that it comes across first and ignores the rest. This means that if it finds ~/.bash_profile, it ignores ~/.bash_login and ~/.profile. Different distributions may use different startup files.
+
+- However, every time you create a new shell, or terminal window, etc., you do not perform a full system login; only a file named ~/.bashrc file is read and evaluated. Although this file is not read and evaluated along with the login shell, most distributions and/or users include the ~/.bashrc file from within one of the three user-owned startup files.
+
+- Most commonly, users only fiddle with ~/.bashrc, as it is invoked every time a new command line shell initiates, or another program is launched from a terminal window, while the other files are read and executed only when the user first logs onto the system.
+
+- Recent distributions sometimes do not even have .bash_profile and/or .bash_login, and some just do little more than include .bashrc.
+
+![](images/bashstartup.png)
+
+---
