@@ -1553,3 +1553,65 @@ who -a gives more detailed information
 ![](images/bashstartup.png)
 
 ---
+
+**Creating Aliases**
+
+- Lin linux you can create customized commands or modify the behaviour of already existing ones by creating **aliases**. They are stored in your ~/.bashrc file, so they are available to any command shell created.
+
+- **unalias** removes an alias.
+
+- typing **alias** with no arguments will list currently defined aliases.
+
+---
+
+**Basics of Users and groups**
+
+- All Linux users are assigned an unique used IR (**uid**) (which is an integer, normal starts from 1000 and go up)
+
+- Linux uses groups for organizing users. They are collections of accounts with shared permissions. Used to establish a set of users, which ahave common interests for the purposes of access rights, privileges and security considerations. Rights are granted on basis of the user and the group they belong to.
+
+- To control the group membership you have to use **/etc/group** file. It shows list of groups and their members.
+- By default every user belongs to a default group. All members enjoy the same level of privilege.
+
+- Users can have one or more group IDs(**gid**) including the default on, that is the same as the user ID. These numbers are assosicated with names through the files **/etc/passwd** and **/etc/group**.
+
+---
+
+**Adding and Removing Users**
+
+- **Adding new user** - with the command **useradd**
+
+- **Removing user** - with the command **userdel**
+
+- In the simplest form, an account for the new user bjmoose would be done with:
+
+```
+$ sudo useradd bjmoose
+```
+
+which, by default, sets the home directory to **/home/bjmoose**, populates it with some basic files (copied from **/etc/skel**) and adds a line to **/etc/passwd** such as:
+
+```
+bjmoose:x:1002:1002::/home/bjmoose:/bin/bash
+
+```
+
+- sets the default shell to /bin/bash. Removing a user account is as easy as typing userdel bjmoose. However, this will leave the /home/bjmoose directory intact. This might be useful if it is a temporary inactivation. To remove the home directory while removing the account one needs to use the -r option to userdel.
+
+- Typing **id** with no argument gives information about the current user, as in:
+
+```
+$ id
+```
+
+it will give something like:
+
+```
+uid=1002(bjmoose) gid=1002(bjmoose) groups=106(fuse),1002(bjmoose)
+```
+
+- If given the name of another user as an argument, id will report information about that other user.
+
+---
+
+**Adding and Removing Groups**
