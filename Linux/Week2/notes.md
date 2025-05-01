@@ -1615,3 +1615,62 @@ uid=1002(bjmoose) gid=1002(bjmoose) groups=106(fuse),1002(bjmoose)
 ---
 
 **Adding and Removing Groups**
+
+- To add new group is with **groupadd**.
+
+```
+$ sudo /usr/sbin/groupadd anewgroup
+
+```
+
+- To remove the group we can use **groupdel**.
+
+```
+$ sudo /usr/sbin/groupdel anewgroup
+```
+
+- Adding a user to an already existing group is done with **usermod**.
+
+- If you would look at what groups the user already belongs to:
+
+```
+$ groups rjsquirrel
+```
+
+- And then add the new group:
+
+```
+$ sudo /usr/sbin/usermod -a -G anewgroup rjsquirrel
+
+$ groups rjsquirrel
+```
+
+- These utilities update /etc/group as necessary. Make sure to use the -a option, for append, so as to avoid removing already existing groups. groupmod can be used to change group properties, such as the Group ID (gid) with the -g option or its name with then -n option.
+
+- Removing a user from the group is somewhat trickier. The -G option to usermod must give a complete list of groups. Thus, if you do:
+
+```
+$ sudo /usr/sbin/usermod -G rjsquirrel rjsquirrel
+
+$ groups rjsquirrel
+```
+
+---
+
+**su and sudo**
+
+- When assigning elevated privileges, you can use the command su (switch or substitute user) to launch a new shell running as another user (you must type the password of the user you are becoming). Most often, this other user is root, and the new shell allows the use of elevated privileges until it is exited. It is almost always a bad (dangerous for both security and stability) practice to use su to become root. Resulting errors can include deletion of vital files from the system and security breaches.
+
+- Granting privileges using sudo is less dangerous and is preferred. By default, sudo must be enabled on a per-user basis. However, some distributions (such as Ubuntu) enable it by default for at least one main user, or give this as an installation option.
+
+---
+
+**Elevating to root account**
+
+- To temporarily become the superuser for a series of commands, you can type **su** and then be prompted for the root password.
+
+To execute just one command with root privilege type **sudo** <**command**>. When the command is complete, you will return to being a normal unprivileged user.
+
+**sudo** configuration files are stored in the **/etc/sudoers** file and in the **/etc/sudoers.d/** directory. By default, the **sudoers.d** directory is empty.
+
+---
