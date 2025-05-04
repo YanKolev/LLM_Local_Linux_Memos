@@ -1674,3 +1674,218 @@ To execute just one command with root privilege type **sudo** <**command**>. Whe
 **sudo** configuration files are stored in the **/etc/sudoers** file and in the **/etc/sudoers.d/** directory. By default, the **sudoers.d** directory is empty.
 
 ---
+
+**Environment Variables**
+
+- Are quantities that have specific values which may be utilized by the command shell, such as bash or other utilities and applications.
+
+- Environment variable is actually just a character string that contains information used by one or more applications. There are a number of ways to view the values of currently set environment variables; one can type set, env, or export. Depending on the state of your system, set may print out many more lines than the other two methods.
+
+---
+
+**Setting Environment Variables**
+
+- By default, variables created within a script are only available to the current shell; child processes(sub-shells) will not have access to values that have been set or modified. Allowing child process to see the value required use of the export command.
+
+![](images/environment%20variables.png)
+
+- One line command will be:
+
+```
+$ SDIRS="s_0*" KROOT=/lib/modules/$(uname -r)/build make modules_install
+```
+
+- It feeds the values of the SDIRS and KROOT environment variables to the command make modules_install.
+
+---
+
+**HOME variable**
+
+- IT represents the home (or login) directory of the user. **cd** without arguments will change the current working dir to the value of HOME.
+
+- (~) is used as abreviation of **$HOME** -> cd $HOME === cd ~
+
+![](images/homevar.png)
+
+---
+
+**PATH Variable**
+
+- Path is an ordered list of directories(the path) which is scanned when a command is given to find the appropriate program or script to run. Each directory in the path is separated by colons (:). Empty directory or ./ indicates the current directory at any given time.
+
+```
+:path1:path2
+path1::path2
+```
+
+- example 1, there is a null directory before the first colon
+- example 2, there is a null directory between path1 and path2
+
+---
+
+**SHELL variable**
+
+- points to the user's default command shell
+
+---
+
+**PS1 Variable and CLI prompt**
+
+- **PS** prompt statement is used to customize your prompt string in your terminal windows to display the information you want.
+
+- **PS1** is ht primary prompt variable which controls what your command line prompt looks like. There are couple of characters that are allowed to be included:
+
+```
+\u -User name
+\h -Host name
+\w -Current working directory
+\! -History number of this command
+\d -Date
+```
+
+- They must be surroundded in single quotes when they are used, example:
+
+```
+$ echo $PS1
+$ export PS1='\u@\h:\wS '
+```
+
+---
+
+**Recalling Previous Commands**
+
+- bash keeps track of previously entered commands and statements in a history buffer. You can change that with using the up and down cursor keys. To view it **history** in the CLI.
+
+```
+history | tail -20
+```
+
+---
+
+**History Environment Variables**
+
+- There are several environment variabvles that can get information about the history file:
+
+```
+HISTFILE
+The location of the history file.
+HISTFILESIZE
+The maximum number of lines in the history file (default 500).
+HISTSIZE
+The maximum number of commands in the history file.
+HISTCONTROL
+How commands are stored.
+HISTIGNORE
+Which command lines can be unsaved.
+```
+
+**Always remember to check man pages > man bash**
+
+---
+
+**Finding and Using Previous Commands**
+
+![](images/previous%20commands.png)
+
+**Executing Previous Commands**
+
+![](images/previouscmd.png)
+
+Examples:
+
+```
+$ history
+
+echo $SHELL
+echo $HOME
+echo $PS1
+ls -a
+ls -l /etc/ passwd
+sleep 1000
+history
+```
+
+```
+$ !1   (Execute command #1 above)
+
+$ !sl  (Execute the command beginning with "sl")
+```
+
+**Keyboard Shortcuts**
+
+![](images/keyboardshortcuts.png)
+
+---
+
+**FIle Ownership**
+
+- In Linux and Unix based OS, every file is associated with a user who is the owner, also associated with a group which has an interest in the file and certain rights or permissions- read, write, execute.
+
+![](images/fileownership.png)
+
+---
+
+**File Permission Modes and chmod**
+
+- Files have three kinds of permissions: read(r), write(w), execute(x).
+
+- These permissions affect three groups of owners:
+  user/owner (u), group (g), and others (o).
+
+In the end you have three groups of three permissions:
+
+```
+rwx: rwx: rwx
+ u:   g:   o
+
+```
+
+- There are also different ways to use **chmod** . For example to give the owner and other execute permission and remove the group write permission.
+
+```
+$ ls -l somefile
+
+$ chmod uo+x, g-w somefile
+
+$ ls -l somefile
+```
+
+- where u stands for user (owner), o stands for other (world), and g stands for group.
+
+Shorthand with digit, Single digit suffices to specify all three permission bits for each entiti, The Digit is the sum of:
+
+```
+4 if read permission is desired
+2 if write permission is desired
+1 if execute permission is desired
+```
+
+so the result will be :
+
+```
+7- read/write/execute,
+6- read/write
+5- read/execute
+
+```
+
+- when you use chmod you have to give three digits for each degree of freem:
+
+```
+$ chmod 755 somefime
+```
+
+---
+
+**chown**
+
+- changing file using **chown**
+
+---
+
+**chgrp**
+
+---
+
+## Chapter 14: Text manipulation
+
