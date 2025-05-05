@@ -1889,3 +1889,44 @@ $ chmod 755 somefime
 
 ## Chapter 14: Text manipulation
 
+**Command Line Tools for Manipulating Text Files**
+
+**cat**
+
+- short for concatenate. most oftenly used. Used to read and print files, as well as for simply viewing file contents.
+
+```
+$ cat <filename>
+```
+
+- main purpose of **cat** is to combine multiple files together.
+
+**tac** (**cat** spalled backwards) prints the line of a file in reverse order. Each line remains the same, but the order of lines in inverted. Syntax of **tac** is exact same as **cat**
+
+```
+$ tac file
+```
+
+![](images/catcommands.png)
+
+- **cat** can be used to read from standard input if no files are specified. You can use > operator to create and add lines into a new file, and the >> operator to append lines(or files) to an existing file. (creating files without an editor)
+
+- to create a new file, use the following command:
+
+```
+cat > <filename>
+```
+
+- this command creates a new file and waits for the user to edit/enter the text. After the typing is finished you can press **CTRL -D** at the start of new line to save and exit the edition.
+
+- Another way to crea a file at the terminal is:
+
+```
+cat > <filename > <<EOF
+```
+
+- A new file is created and you can type the required input. To exit, enter the EOF at the start of the line.
+
+- EOF is case sensitive.
+
+![](images/catinteractive.png)
