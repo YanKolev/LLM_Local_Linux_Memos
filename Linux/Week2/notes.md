@@ -1930,3 +1930,68 @@ cat > <filename > <<EOF
 - EOF is case sensitive.
 
 ![](images/catinteractive.png)
+
+---
+
+**echo**
+
+- echo simply displays (echoes) text. It is used simply:
+
+```
+$ echo string
+```
+
+- echo can be used to display a sting on standart outpu. or to place in a new file (using > operator) or append to an already existing file (using >> operator).
+
+- **-e** option is used to enable special character sequences:
+
+```
+\n represents newline
+\t represents horizontal tab
+```
+
+- **echo** is particularly useful for viewing the values of environment variables.
+
+![](images/echocommand.png)
+
+---
+
+**Working with large Files: less, head, tail**
+
+- When working with large files, its a good practice to use it with **less** to view the contents. **less** makes viewing the file without the system having to place the entire file in memory before starting.
+
+```
+$ less somefile
+$ cat somefile | less
+```
+
+- **man** pages are sent through the **less** command, there is also the old utility **more** - but it offers less capabilities. > **less** is **more**!
+
+---
+
+**head**
+
+- reads the first few lines of each named file (10 by default) and displays on standart output. You can give a different number of lines in an option.
+
+- to printthe first 5 lines:
+
+```
+$ head -n 5 /etc/default/grub
+
+head 05 /etc/default/grub
+```
+
+---
+
+**tail**
+
+- **tail** prints the last few lines of named file(displays last 10 lines). Especially, useful when you are troubleshooting any issue log files.
+
+```
+$ tain -n 15 somefile.log
+
+tail -15 somefile.log
+
+$ tail -f somefile.log
+
+```
