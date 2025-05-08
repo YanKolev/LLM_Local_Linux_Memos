@@ -1995,3 +1995,99 @@ tail -15 somefile.log
 $ tail -f somefile.log
 
 ```
+
+---
+
+**Viewing compressed Files**
+
+- When a file is compressed, standard commands cannot be used. For many text-manipulation programs there is a version of the commands which start with 'z'.
+- Versions such as **zcat**, **zless**, **zdiff** and **zgrep**.
+
+![](images/compressfiles.png)
+
+---
+
+**sed**
+
+- text processing tool, one of the oldest Unix utilities, used to modify the contents of a file or input stream, placing the contents into a new file or output stream. SED is an abreviation for stream editor.
+
+- **sed** can filter text, as well as perform subtitutions in data streams. Data from input source/file is taken and moved to aworking space. Entire list of operations/modification is applied over the data in the working space and the final contents are moved to the standart output.
+
+![](images/sedutility.png)
+
+- Usage od **sed** includes:
+
+![](images/sedcommands.png)
+
+- Basic operations with **sed**. (ex- pattern is the current string and replace_strin is the new string)
+
+![](images/sedcommands2.png)
+
+- NB! You must use the -i option with care, because the action is not reversible. It is always safer to use sed without the –i option and then replace the file yourself.
+
+---
+
+**awk**
+
+- **awk** is used to extract and then print specific contents of a file. Often used to contruct reports. Powerful utility and interpreted programming language. Used to manipulate data files, and retrieving and processing text. it works with fields and recors.
+
+- **awk** commands can be specified directly in the command line, but a more complext script can be saved in a file that you can specify with the -f option.
+
+![](images/awk.png)
+
+- **awk** Basic Operations: For example if we have a input file, it is read one line at a time and for each line awk matches the given pattern in the given order and performs the requested actiom. -F options allows you to specify0 the 'field separator'.
+
+- Example of awk: **/etc/passwd** file uses : to separate the fields, so the -F: option is used with it.
+
+- Commands/action in **awk** need to be surrounded with apostrophes or single quotes.
+
+![](images/awktwo.png)
+
+- How to seach all instances of the user command interpreter (shell) equal to /sbin/nologin in /etc/passwd and replace them with /bin/bash (do not overwrite /etc/passwd).
+
+```
+option 1:
+student:/tmp> sed s:'/sbin/nologin':'/bin/bash':g /etc/passwd
+
+option 2:
+student:/tmp> sed s:/sbin/nologin:/bin/bash:g /etc/passwd
+```
+
+---
+
+**FIle Manipulation Utilities**
+
+- There are different file manipulation programs: sort, uniq, paste, join, split.
+
+**sort**
+
+- used to rearrange the lines of a text file, in either ascending or descending order according to sort key. You can apply the key t to sort according to a particular field(colum) in a file. Default sort key is the order of the ASCII characters.
+
+![](images/sort.png)
+
+- When used with the -u option, sort checks for unique values after sorting the records (lines).
+
+---
+
+**uniq**
+
+- removes duplicate consecutive lines in a text file and is useful for simplifying a text display.
+
+- uniq requires that the duplicate entries must be consecutive, one often runs sort first and then pipes the output into uniq; if sort is used with the -u option, it can do all this in one step.
+
+- Different command variantions with sort and uniq:
+
+```
+sort file1 file2 | uniq > file3
+
+or
+
+sort -u file1 file2 > file3
+
+To count the number of duplicate entries, use the following command:
+
+uniq -c filename
+
+```
+
+---
