@@ -2091,3 +2091,41 @@ uniq -c filename
 ```
 
 ---
+
+**paste**
+
+- If you have 1 file that contains for example: full name of employees and another with employee ID and phone numbers you can combine them both into one with **paste**.
+
+- Creates a single file containing all three columns, the different columns are identified based on **delimeters** (spacing used to separate two fields). For example delimiters can be a blank space, a tab or **Enter**. In the image below, a single space is used as the delimiter in all files.
+
+- **paste** accepts:
+  - **-d**, delimiters, which specify a list of delimiters to be used instead of tabs for separating consecutive values on a single line. Each delimiter is used in turn, when the list has been exhaused, paste begins again at the first delimiter.
+  - **-s**, which causes paste to append the data in series rather than parallel, that is in a horizontal rather than vvertical fashion.
+
+![](images/pasteexample.png)
+
+---
+
+**Usage paste**
+
+- paste can be used to combine fields(such as name or phone number) from different files, as well as combine lines from multiple files.
+
+- For example, line one from file1 can be combined with line one of file2, line two from file1 can be combined with line two of file2, and so on.
+
+```
+$ paste file1 file2
+```
+
+- The syntax to use a different delimiter is a follows:
+
+```
+$ paste -d, file1 file2
+```
+
+- Common delimiters are 'space', 'tab', '|', 'comma'
+
+![](images/pasteone.png)
+
+---
+
+**join**
