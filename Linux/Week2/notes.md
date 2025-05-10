@@ -2129,3 +2129,74 @@ $ paste -d, file1 file2
 ---
 
 **join**
+
+- If you have two files with some similar columns. You have employee's phone numbers in two files. one with their first name and the other with their last name. If you want to combine the files without repeating the data of common columns.
+
+- **join** can be used for the task as its a enhanced version of paste.
+
+![](images/joinbasics.png)
+
+---
+
+**usage of join**
+
+- To combine two files use the following command:
+
+```
+join file1 file2
+```
+
+---
+
+**split**
+
+- **split** is used to break up or split a file into equeal sized segments for easier viewing and manipulation. Used generally on large files.
+
+- **split** breaks up a file into 1000-line segments. The original file remains unchanged and a set of new files with the same name plus added prefix is created. By design x is the preffered prefix. To split a file into segments use the following command:
+
+```
+split infile
+```
+
+- to split into segments using different prefix, use the command:
+
+```
+split infile <Prefix>
+
+```
+
+![](images/split.png)
+
+---
+
+**Using split**
+
+- E.x. we can split into a dictionary file of almost 500,000 lines.
+
+```
+$ wc -l linux.words
+```
+
+- (wc, word count, soon to be discussed to report on the number of lines in file)
+
+```
+$ split linux.words lwords
+```
+
+---
+
+**Regular Expressions and Search patterns**
+
+- Regular experssions-text string used for matching specific pattern, or to search for a specific location, such as a start or end of line or a word.
+
+- Regular expressions can contain both normal character or so-called meta-characters, such as \* and $.
+
+- These regular expressions are different from the wildcards (or meta-characters) used in filename matching in command shells such as bash.
+
+![](images/regex.png)
+
+- Patterns for Regular Expressions nad search patterns
+
+![](images/regexsearch.png)
+
+---
