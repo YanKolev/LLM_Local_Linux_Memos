@@ -2200,3 +2200,75 @@ $ split linux.words lwords
 ![](images/regexsearch.png)
 
 ---
+
+**grep**
+
+- grep is extrensively used as primary text searching tool. It scans files for specified patterns and can be used with regular expressions, as well as simple strings.
+
+![](images/grep.png)
+
+---
+
+**strings**
+
+- **strings** is used to extract all pritable character strings found in the file or files given as arguments. It is useful in locating human-readable content embedded in binary files; for text files one can just use **grep**.
+
+- Ex, how to search for the string **my_string** in a spreadsheet:
+
+```
+$ strings book1.xls | grep my_string
+```
+
+- Screenshot shows a search of a number of programs to see which one have GPL licenses of various versions.
+
+![](images/strings.png)
+
+---
+
+**tr**
+
+- **tr** is a utility used to translate specified characters into other characters or to delete them. example of syntax:
+
+```
+$ tr [options] set1 [set2]
+```
+
+- The items in the square brackets are optional. **tr** requires at least one argument and accepts of a maximum of two.
+
+- The first, designated set1 in the example, lists the characters in the text to be replaced or removed. The second, set2, lists the characters that are to be substituted for the characters listed in the first argument. Sometimes these sets need to be surrounded by apostrophes (or single-quotes (')) in order to have the shell ignore that they mean something special to the shell. It is usually safe (and may be required) to use the single-quotes around each of the sets.
+
+- E.x. suppose you have a file named city containing several lines of text in mixed case. To translate all lower case characters to upper case, at the command prompt type cat city | tr a-z A-Z and press the Enter.
+
+![](images/tr.png)
+
+---
+
+**tee**
+
+- **tee** command takes the output from any comand and while sending it to standard output it also saves it to a file. Basically **tees** the output stream from the command. One stream is saved to a file and other stream is displayed on the standard output.
+
+- For example, to list the contents of a directory on the screen and save the output to a file, at the command prompt type ls -l | tee newfile and press the Enter key.
+
+- Typing cat newfile will then display the output of ls –l.
+
+---
+
+**wc**
+
+- **wc**- (word count) counts the number of lines, words and characters in a file or list of files.
+
+- options below:
+
+![](images/wc.png)
+
+---
+
+**cut**
+
+- **cut** is used for manipulating column-based files and is designed to extract specific columns. Default separator is TAB characted.
+
+- Ex: to display the third column delimited by blank space will look like this:
+
+```
+ls -l | cut -d " " -f3
+```
