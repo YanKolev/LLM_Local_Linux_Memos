@@ -323,3 +323,120 @@ $ traceroute <address>
 ![](images/networktools.png)
 
 ---
+
+**Graphical and Non-Graphical Browsers**
+
+- Browsers are used to retrieve, transmit and explore informational resources over the internet. There are two types: graphical and non-graphical
+
+- Types for graphical- Firefox, chrome, chromium, konqueror, opera.
+
+- Types for non-graphical browsers- lynx, elixns, w3m.
+
+---
+
+**wget**
+
+- used when you need to download multiple files/or directories. **wget** is a utility that can capably handle diferent downloads: large files, recursive downloads(where a webpage refers to other web pages and all are downloaded at once), password-required downloads, multiple file downloads.
+
+- to download a web page, you can simple used the command below, and then you can read the downloaded page as a logical file using a graphical or non-graphical browser.
+
+```
+wget <url>
+```
+
+---
+
+**curl**
+
+- is a utility used to obrain infromation regarding the source code of a URL. it allows you to save the contents of a page to a file, just as wget, however DOESNOT support recursive download.
+
+| Feature                    | `wget`                             | `curl`                                  |
+| -------------------------- | ---------------------------------- | --------------------------------------- |
+| **Primary Purpose**        | File downloads (recursive, robust) | Data transfer (flexible, scripting)     |
+| **Protocol Support**       | HTTP, HTTPS, FTP                   | Many: HTTP, HTTPS, FTP, SCP, SFTP, etc. |
+| **Recursive Download**     | ✅ Yes                             | ❌ No                                   |
+| **Resume Download**        | ✅ Yes (`-c`)                      | ✅ Yes (`-C -`)                         |
+| **Upload Support**         | ❌ No                              | ✅ Yes (`-T` or `-d`)                   |
+| **Scripting & APIs**       | ❌ Limited                         | ✅ Powerful (form data, headers, JSON)  |
+| **Output**                 | Saves to file by default           | Prints to stdout by default             |
+| **Dependencies**           | Standalone                         | Can be a dependency in scripts/tools    |
+| **Built-in Progress Bar**  | ✅ Yes                             | ✅ Yes (`--progress-bar`)               |
+| **Cookie/Session Support** | ✅ Yes                             | ✅ Yes (more advanced control)          |
+
+```
+curl <URL>
+```
+
+---
+
+##### Transfering Files
+
+---
+
+**FTP**
+
+- Protocol used to transfer files between machines connected via a network. Build on client-server model. FTP can be used within a browser or stand-alone client programs. Downsides: insecure.
+
+![](images/ftp.png)
+
+---
+
+**FTP Clients**
+
+- They enable transfer files with remote computers using the FTP protocol. Can be GUI or CLI based. All web browsers support ftp.
+
+- Some of the CLI FTP clients are: ftp, sftp, ncftp, yafc(yet another ftp client). FTP is insecure and the transmissions are without encryption. sftp is the secure mode of connection between users, that uses Secure Shell(ssh), however it does not work with anonymous ftp.
+
+![](images/ftpclients.png)
+
+---
+
+**SSH- Secure Shell**
+
+- is a cryptographic network protocol used for secure data communication. its used for remote services and other secure services between devices on a network, very useful for administering systems, which you do not have in-person access but you can access remotely.
+
+![](images/ssh.png)
+
+- To login, type sh some_system, after that you will be prompted for remote password.
+
+- if you need to run as another user, you can do either:
+
+```
+ssh -l someone some_system
+```
+
+OR
+
+```
+ssh someone@some_system
+```
+
+- to run a command via SSH is like:
+
+```
+ssh some_system my_command
+```
+
+---
+
+**scp-secure copy**
+
+- secure copy is used to move files securely between two networked hosts. scp uses ssh protocol for ransfering data.
+
+- to copy a file to a remote system is like:
+
+```
+scp <localfile> <user@remotesystem>:/home/user
+```
+
+- after that a prompt for the password is opened. There is option to configue scp so it does not prompt password.
+
+![](images/scp.png)
+
+---
+
+#### Chapter 16: Bash Shell and Shell Scripting
+
+---
+
+##### Shell features and capabilities
