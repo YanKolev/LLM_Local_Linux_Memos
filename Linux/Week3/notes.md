@@ -440,3 +440,7 @@ scp <localfile> <user@remotesystem>:/home/user
 ---
 
 ##### Shell features and capabilities
+
+- Shell scripting allows to automate sets of commands, most commonly in Linux the scripts are developed to be run under the **bash** command shell interpreter. Below is explanation of the benefits of deploying shell scripts.
+
+![](images/shell.png)
