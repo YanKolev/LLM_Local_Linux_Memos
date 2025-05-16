@@ -444,3 +444,122 @@ scp <localfile> <user@remotesystem>:/home/user
 - Shell scripting allows to automate sets of commands, most commonly in Linux the scripts are developed to be run under the **bash** command shell interpreter. Below is explanation of the benefits of deploying shell scripts.
 
 ![](images/shell.png)
+
+- Command shell choices: Commonly used interpreters include: /usr/bin/perl, /bin/bash, /bin/csh, /usr/bin/python and /bin/sh.
+
+- Linux provides a wide choice of shells; exactly what is available on the system is listed in /etc/shells. Typical choices are:
+
+```
+/bin/sh
+/bin/bash
+/bin/tcsh
+/bin/csh
+/bin/ksh
+/bin/zsh
+```
+
+![](images/shelltwo.png)
+
+---
+
+###### Shell Scripts
+
+- A shell is simply a command line interpreter which provides the user interface for terminal windows. A command shell can also be used to run scripts, even in non-interactive sessions without a terminal window, as if the commands were being directly typed in.
+
+- The first line of the script, which starts with #!, contains the full path of the command interpreter (in this case /bin/bash) that is to be used on the file.
+
+- The special two-character sequence, #!, is often called a shebang, and avoids the usual rule that the pound sign, #, delineates the following text as a comment.
+
+- Simple bash script can be like that
+
+```
+#!/bin/bash
+echo "Hello Linux Foundation"
+```
+
+- After that the file needs to be saved, made available for execution with "chmod +x" for all users and then it can be executed.
+
+---
+
+**Interactivity**
+
+- The user need to be prompted to enter a value, which is displayed on the screen. The value is stored in a temorary variable "name". In order to reference he value of the shell variable we can use $ in front of the variable name, such as **$name**.
+
+**Return Values**
+
+- All shell scripts generate a return value upon finishing execution, which can be explicitly set with the **exit** statement.
+
+- Return values permit a process to monitor the exit state of another process, often in a parent-child relationship.
+
+![](images/returnvalues.png)
+
+- How to view return values: As script executes, one can check for a specific value or condition and return success or failure as the result. Success is returned as **0** zero, and failure is returned as any non-zero value.
+
+- Easy way to check is the execute **ls**on a file that exists as well as one does not. The return value is stored in the environment variable presented by **$?**.
+
+```
+$ ls /etc/logrotate.conf
+/etc/logrotate.conf
+
+$ echo $?
+0
+```
+
+- In this example, the system is able to locate the file /etc/logrotate.conf and ls returns a value of 0 to indicate success. When run on a non-existing file, it returns 2.
+
+---
+
+**Basic Syntax and Special Characters**
+
+![](images/scriptsyntax.png)
+
+- There are other special characters and character combinations and constructs that scripts understand, such as (..), {..}, [..], &&, ||, ', ", $((...))
+
+---
+
+**Scripting Long Commands over multiple lines**
+
+- The concatenation operator **( \ )**, the backslash character, is used to continue long commands over several lines.
+
+Here is an example of a command installing a long list of packages on a system using Debian package management:
+
+```
+$~/> cd $HOME
+$~/> sudo apt install autoconf automake bison build-essential \
+    chrpath curl diffstat emacs flex gcc-multilib g++-multilib \
+    libsdl1.2-dev libtool lzop make mc patch \
+    screen socat sudo tar texinfo tofrodos u-boot-tools unzip \
+    vim wget xterm zip
+```
+
+---
+
+**Putting multiple commands on a single line**
+
+- Users sometimes need to combine several commands and statements and even conditionally execute them based on the behavior of operators used in between them. This method is called chaining of commands.
+
+- There are several different ways to do this, depending on what you want to do. The ; (semicolon) character is used to separate these commands and execute them sequentially, as if they had been typed on separate lines. Each ensuing command is executed whether or not the preceding one succeeded.
+
+- Thus, the three commands in the following example will all execute, even if the ones preceding them fail:
+
+```
+$ make ; make install ; make clean
+```
+
+- However, you may want to abort subsequent commands when an earlier one fails. You can do this using the && (and) operator as in:
+
+```
+$ make && make install && make clean
+```
+
+- If the first command fails, the second one will never be executed. A final refinement is to use the || (or) operator, as in:
+
+```
+$ cat file1 || cat file2 || cat file3
+```
+
+- In this case, you proceed until something succeeds and then you stop executing any further steps.
+
+- Chaining commands is not the same as piping them; in the later case succeeding commands begin operating on data streams produced by earlier ones before they complete, while in chaining each step exits before the next one starts.
+
+---
