@@ -563,3 +563,18 @@ $ cat file1 || cat file2 || cat file3
 - Chaining commands is not the same as piping them; in the later case succeeding commands begin operating on data streams produced by earlier ones before they complete, while in chaining each step exits before the next one starts.
 
 ---
+
+**Output Redirection**
+
+- In most OS input is accepted from the keyboard and displayed as output on the terminal. Shell commands and scripts can send the output to a file. The process is called output redirection.
+
+- **>** character is used to write output to a file. Ex: command below sends the output of \*\*free to /tmp/free.out
+
+```
+$ free > /tmp/free.out
+```
+
+- to check the output you can used the **cat** command.
+- Two >(>>) will append output to a file if exists and act just like > if file does not already exist.
+
+---
