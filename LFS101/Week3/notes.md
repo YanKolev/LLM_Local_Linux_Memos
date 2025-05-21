@@ -578,3 +578,20 @@ $ free > /tmp/free.out
 - Two >(>>) will append output to a file if exists and act just like > if file does not already exist.
 
 ---
+
+**Input Redirection**
+
+- The process of reading input from a a file is called input redirection and uses **<** character.
+
+- the following commands(use wc to count the number of lines, words and characterist in a file) are equivalent.
+
+```
+$ wc < /etc/passwd
+49  105 2678 /etc/passwd
+
+$ wc /etc/passwd
+49  105 2678 /etcpasswd
+
+$ cat /etc/passwd | wc
+49  105 2678
+```
