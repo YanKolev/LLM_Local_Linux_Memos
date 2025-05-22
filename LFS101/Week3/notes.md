@@ -595,3 +595,134 @@ $ wc /etc/passwd
 $ cat /etc/passwd | wc
 49  105 2678
 ```
+
+---
+
+**Built-In Shell Commands**
+
+- Shell scripts execute sequences of commands and other types of statements. They are complied applications, built-in commands. Shell scripts from other interpreted lanagues like perl and python.
+
+- Compiled application are binary executable files residing on the filesystem such as **/usr/bin**. Shell scripts always have access to application in the defuault path- **rm,ls, df,vi,gzip**- which are compiled from **C**.
+
+- many built-in comands can only be used to display output within terminal shell or a shell script. They are **cd,pwd, echo,read,logout,printf,let,time and ulimit**- sometimes those names are the same as the executable programs on the system, which need to be threaded carefully. Ex: command **echo** can have slightly different command than **/bin/echo**.
+
+- Use the man bash **man page** for more info.
+
+```
+$ help
+```
+
+![](images/bashcommands.png)
+
+---
+
+**Script parameters**
+
+- Often when writing script we need to pass parameter values- filename,date, etc. Scripts will take different path or arrive at different results according to the parameters that are passed to them. The values can be text or numbers.
+
+```
+$ ./script.sh/tmp
+$ ./script.sh 100 200
+```
+
+- The parameter or an argument is represented with a **$** and a number or special character.
+
+![](images/scriptparameters.png)
+
+```
+$0 prints the script name: param.sh
+
+$1 prints the first parameter: one
+
+$2 prints the second parameter: two
+
+$3 prints the third parameter: three
+
+$* prints all parameters: one two three four five
+
+The final statement becomes: All done with param.sh
+```
+
+---
+
+**Command Subtitution**
+
+- Substitution can be done in two ways:
+
+```
+enclosing the inner command in $( )
+
+```
+
+- the specified command will be executed in a newly lanched shell environment, standard output of the shell will be inserted where the command substitution is done.
+
+- $( ) method allows command nesting
+
+---
+
+**Environment Variables**
+
+- variables can be used anywhere in the script, they can be user or system-defined.
+
+- standard enviroment variables are **HOME, PATH, HOST**. When referenced, environment variables must be prefixed with the **$** as in **$HOME**. You can view and set the value of environment variables.
+
+- display of the value stored in the **PATH** variable:
+
+```
+$ echo $PATH
+```
+
+- to modify the variable value, you do not need to put a prefix:
+
+```
+$ MYCOLOR=blue
+```
+
+- you can list of enviroment variables with **env,set or printenv**.
+
+---
+
+**Exporting Variables**
+
+- by default variables created within a script are available only to the subsequent steps of that script. Any child processes(sub-shells) do not have automatic access to the values of these variables.
+
+- to make them available to child processes, they must be promoted to environment variables using the export statement. Examples:
+
+```
+export VAR=value
+or
+VAR=value ; export VAR
+```
+
+- child processes are allowed to modify the value of exported variable, the parent will not see any changes, exported variables are not shared, they are only copied and inherited. Typing export with no arguments will give a list of all currently exported environment variables.
+
+---
+
+**Functions**
+
+- function is a code of block that implements a set of operations.Functions are useful for executing procedures multiple times, perhaps with varying input variables. They are also called subroutines.
+
+- using functions in scripts requires two steps: 1- declaring a function and 2- calling a function.
+
+- the function declaration requires a name which is used to invoke it.
+
+```
+function_name (){
+  command...
+}
+```
+
+- for exampe function named display will be like:
+
+```
+display(){
+  echo "This is a sample functions that displays a string"
+}
+
+```
+
+- function can be as log as desired or have many statements. Once defined, can be called later as many times as necessary.
+
+---
+
+**Constructs**
