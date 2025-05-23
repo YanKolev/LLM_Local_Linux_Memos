@@ -726,3 +726,190 @@ display(){
 ---
 
 **Constructs**
+
+---
+
+**if statement**
+
+- used for conditional decision maiking. when **if** statement is used, the ensuingactions depend on the evaluation of specified conditions, such as:
+  - numerical or string comparisons
+  - return value of a command (0 for success)
+  - file existence or permissions
+
+```
+if TEST-COMMANDS; then CONSEQUENT-COMMANDS; fi
+```
+
+- example:
+
+```
+if condition
+then
+  statements
+else
+  statements
+fi
+```
+
+![](images/ifstatement.png)
+
+- example of statement
+
+```
+if [-f "$1"]
+then
+  echo file "$1" exists
+else
+  echo file "$1" does not exist
+fi
+```
+
+- it check firs that there is an argument passed to the script $1 and abort if not.
+
+- [] square brackets are used to deliniate the test condition. In most scripts they are doubled: **[[-f /etc/passwd]]**
+
+---
+
+**elif statement**
+
+- elif statement to perform more complicatedtests.
+
+```
+if [sometest]; then
+  echo Passed test1
+elif [somethertest] ; then
+  echo Passed test2
+fi
+```
+
+- if statement can be used with file conditionals:
+  - file or directory existence
+  - read or write permission
+  - executable permission
+
+```
+if [ -x /etc/passwd]; then
+  ACTION
+fi
+```
+
+- if statement checks if the file /etc/passwd is executable, which is not.
+- common practice is putting ; then on the same line as the iff statement.
+
+![](images/statements.png)
+
+---
+
+**Boolean Expressions**
+
+- they evaluate with **TRUE** or **FALSE**.
+
+![](images/boolean.png)
+
+- if you have multiple conditions strung together with the && operator, processing stops as soon as a condition evaluates to false.
+
+- use of && operator
+
+```
+if you have A && B && C
+A is true
+B is false
+C will never be executed
+```
+
+- use of || operator, processing stops as soon as anything is true.
+
+```
+A || B || C
+A is false
+B is true
+C will never execute
+```
+
+- Boolean expressions are used when working with multiple data types, strings numbers as well as file.
+
+- if we need to check for a file we can use the following condtional statement:
+
+```
+[-e <filename>]
+```
+
+-to check if the value of number1 is creater than the value of number2:
+
+```
+[ $number1 -gt $number2]
+-gt returns TRUE if number1> number2
+```
+
+---
+
+**Testing Strings**
+
+- if statement to compare strings usin the operator ==
+
+```
+if [string1 == string2] ; then
+  ACTION
+fi
+```
+
+- NB we can use = but its deprecated.
+- if statement is used to compare the input provided by the user and accordingly display the result.
+
+---
+
+**Numberical Tests**
+
+- we can use defined operators with the if statement to compare numbers.
+
+![](images/numerical.png)
+
+```
+AGE=$1
+if [[$AGE -ge 20]] && [[$AGE -lt 30]] ; then
+  echo "You are in your 20s"
+elif [[$AGE -ge 30]] && [[$AGE -lt 40]] ; then
+  echo "You are in your 30s"
+elif [[$age -ge 40]] && [[$AGE -lt 50]] ;then
+  echo "You are in your 40s"
+else
+  echo at AGE = $AGE, you are not in the proper range of 21-50
+fi
+```
+
+---
+
+**Arithmetic Expressions**
+
+- spaces are important when using arithmetic expressions
+
+- using **expr** utility.**expr** is a standard but somewheat deprecated program, syntax is as follows:
+
+```
+expr 8+8
+echo $(expr 8+8)
+```
+
+- using **$(())** syntax, built-in shell format.
+
+```
+echo $((x+1))
+```
+
+- using shell command let
+
+```
+let x=( 1 + 2 ); echo $x
+```
+
+-**expr** is replaced with **var=$(())**
+
+---
+
+#### Chapter 17 More Shell Scripting
+
+---
+
+##### Shell Scripting features
+
+**String Manipulation**
