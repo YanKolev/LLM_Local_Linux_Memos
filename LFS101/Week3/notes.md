@@ -913,3 +913,150 @@ let x=( 1 + 2 ); echo $x
 ##### Shell Scripting features
 
 **String Manipulation**
+
+- string manipulation include comparison, sorting, andfind length.
+
+![](images/stringmanipulation.png)
+
+- String parts: sometimes we need parts of a string instead of full string. To extract **n** characters of a string we can specify as following:
+
+```
+${string:0:n}
+```
+
+- 0 is the offset in the string (which character to begin from) where the extraction needs to start, and n is the number of characters to be extracted.
+
+```
+${string#*.}
+```
+
+- is used to extract all characters in a string after a dot(.).
+
+---
+
+**case statement**
+
+- used where the actual value of a variable can lead to different execution paths. case statements are often used to handle command-line options.
+
+- advantages of using a case statement:
+  - easier to read and write, good alternative to nested multi-level if-then-else-fi code blocks.
+  - enables user to compare a variable agains several values at once.
+  - reduces complexity of a program.
+
+![](images/case.png)
+
+**structure of case statement**
+
+```
+case expression in
+   pattern1) execute commands;;
+   pattern2) execute commands;;
+   pattern3) execute commands;;
+   pattern4) execute commands;;
+   * )       execute some default commands or nothing ;;
+esac
+```
+
+- as soon as the expression matches a pattern successfully the execution path exist, meaning the further tests are neither executed nor evaluated. if none of the tests return success, the final choice will execute which can be made to do nothing.
+
+![](images/caselogic.png)
+
+- you can write the case statement in such a way that multiple possibilities for each value take the same action.
+
+---
+
+**Looping Constructs**
+
+- by using loops you can execute one or more lines of code repetitively, usually on a selection of valuables of data such as individual files.
+
+- frequenly used types of loops: for, while until.
+
+---
+
+**for loop**
+
+- operates on each element of a list of items.
+
+```
+for a variable-name in list
+do
+execute one iteration for each item in the list until the list is finished
+done
+```
+
+- the loop should be enclosed by do and done.
+
+```
+sum=0
+
+for j in 1 2 3 4 5 6 7 8 9 19
+do
+  sum=$(($sum +$j))
+done
+echo The sum is $sum
+echo The sum of numbers from 1 to n is :'n*(n+1)/2'
+exit 0
+```
+
+---
+
+**while loop**
+
+- while loop repeats a set of statements as log as control command returns true.
+
+```
+while condition is true
+do
+  commands for execution
+  ---
+done
+```
+
+- set of commands that need to eb repeated should be enclosed between do and done. any command or operator can be used as the condition(often enclosed with []).
+
+---
+
+**until loop**
+
+- until loop repeats a set of statements as long as the control command is false.
+
+```
+until condition is false
+do
+Commands for execution
+---
+done
+```
+
+- similar to the while llop the, the set of commands that need to be repeated should be enclosed between do and done.
+
+---
+
+##### Debugging bash scripts
+
+---
+
+**Script Debug Mode**
+
+- before fixing an error its vital to locate the source.
+
+- we can run a bash script in debug mode by either doing **bash -x./script_file** or bracketing parts of the script with set -x and set +x.
+
+- debugging helps identifies errors as it traces and prefixes each command in the + character. displays each command before executing, it can debug only selected parts of a script with:
+
+```
+set -x # turns on debugging
+
+set +x # turns off debugging
+
+```
+
+---
+
+**redirecting errors to file and screen**
+
+- in linux we have three open file streams:
+
+![](images/debug.png)
+
+- by using redirection, we can save the standard output and error streams to one file or two separate files for later analysis after a program or command is executed.
