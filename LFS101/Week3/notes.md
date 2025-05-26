@@ -1060,3 +1060,45 @@ set +x # turns off debugging
 ![](images/debug.png)
 
 - by using redirection, we can save the standard output and error streams to one file or two separate files for later analysis after a program or command is executed.
+
+---
+
+**creating temporary files and directories**
+
+- when in need to retrieve certain data from a bigger collection of data we need to have a place to store the extracted information, best approach will be with a temporary file(temp file)/directory.
+
+- used mainly to store data for a short amount of time. they dissapear when the program using them terminates.
+
+- we can use touch to create a temporary file. best practice to have a data protection on your machine is to create them in temporary storage with random an dunpredictable filenames.
+
+- good way to do that is to use **mktemp** utility.
+
+![](images/mktemp.png)
+
+---
+
+**creating temp files and directories**
+
+- sloppines in creation of temporary files can lead to real damage, either by accident or if there is a malicious actor.
+
+- example: if some were to create a symbolic link from a known temporary file used by roo to the /ect/passwd like:
+
+```
+$ ln -s /etc/passwrd /tmp/tempfile
+```
+
+- it can lead to a problem if a script run by root has a line like
+
+```
+echo $VAR > /tmp/tempfile
+```
+
+- the passwword will be overwritten by the temporary file contents. to prevent tis we need to randomize our temp file names by replacing like:
+
+```
+TEMP=$(mktemp /tmp/temfile.XXXXXX
+)
+echo $VAR > $TEMP
+```
+
+---
