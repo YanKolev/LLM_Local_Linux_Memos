@@ -1154,3 +1154,87 @@ $ ls -lR /tmp >& /dev/null
 ---
 
 ##### Configuration
+
+- Printing on Linux- to be able to use printer with your local computer or across a network, you need to configure and install a printer.
+
+- Printer itself requires software to convert the information- the standarts software is **CUPS** (Common Unix Printing System).
+
+- CUPS uses modular printing system that accommodates a wide variety of printers and also processes various data formats.
+
+- How does CUPS work?
+
+![](images/cups.png)
+
+---
+
+**scheduler**
+
+- CUPS is designed around a print scheduller that manages print jobs, handles administrative commands, allows users to query the printer status and manages the flow of data through all cups components.
+
+---
+
+**configuration files**
+
+- print scheduler reads server settings from several configuration files. most important files are located in **cupsd.conf** and **printers.conf**. both of them are sorted under directory **/etc/cups/**.
+
+- cupsd.conf is where system-wide settings are located, it does not contain any printer-specific details. most of the settings available in this file relate to network security, which systems can access CUPS network capabilities, how printerrs are advertised on the local network, what management features are offered.
+
+- printers.conf is where you find the printer-specific settings. for everty printer connected to the system, a corresponding section describes the printer's status and capabilities. This file is generated and modified only after adding a printer to the system and should not be modified by hand.
+
+- full list of configuration files can be found with:
+
+```
+ls -lF /etc/cups
+```
+
+---
+
+**job files**
+
+- CUPS stores print requests asfiles under the **/var/spool/cups** directory. Data files are prefixed with **d**, while control files are prefixed with **c**.
+
+- after a printer succesfulyl handles a job, data files are automatically removed. These data files belong to what is commonly known as **print queue**.
+
+![](images/cupsjobs.png)
+
+---
+
+**log files**
+
+- found in directory **/var/logs/cups** and are used by the scheduler to record activities that have taken place. they include access, error and page records.
+
+```
+$ sudo ls -l /var/log/cups
+```
+
+---
+
+**filters, printer drivers, and backends**
+
+- CUPS uses filters to conver job file format to printable formats. Printer divers contain descriptions for currently connected and configured printers, and are usually stored under **/etc/cups/ppd/**. The print data is then sent to the printer through a filter, via a abckend that helps to locate devies connected to the system.
+
+- process is like: you execute a print command, the scheduler validates the command and processes the print job, creating job files according to the settings specified in the configuration files. Simultaneously, the scheduler records activities in the log files. Job files are processed with the help of the filter, printer driver, and backend, and then sent to the printer.
+
+![](images/cupsfilters.png)
+
+---
+
+**managing cups**
+
+- after CUPS has been installed, you will need to manage CUPS, it can be done with **systemctl** utility:
+
+```
+$ systemctl status cups
+$ sudo systemctl [enable|disable] cups
+$ sudo systemctl [start|stop|restart] cups
+```
+
+---
+
+**other ways to use printers**
+
+- are through the GUI interface with the associated distro that you are using.
+
+- You can use your browser to access the CUPS web interface at http://localhost:631/ to monitor the status of the printing job.
+
+**printing from CLI**
