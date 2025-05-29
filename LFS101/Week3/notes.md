@@ -1238,3 +1238,17 @@ $ sudo systemctl [start|stop|restart] cups
 - You can use your browser to access the CUPS web interface at http://localhost:631/ to monitor the status of the printing job.
 
 **printing from CLI**
+
+- CUPS provides two command-line interfaces, descended from the system V and BSD flavors of UNIX. We can use **lp** (system V) or **lpr** (BSD).
+
+- lp is just a command line front-end to the lpr utility that passes input to lpr.
+
+- lp and lpr accept command line options that can help perform all the operations available from the GUI as well.
+
+![](images/lp.png)
+
+- lpoptions can be used to set printer options and defaults. each printer has set of tags associated with it(default number of copries and authentitication requirements). lpoptions can be used to set system-wide values-> default printer.
+
+- Print jobs. there is also ablities to created printjobs from the CLI with the following commands:
+
+![](images/lpjobs.png)
