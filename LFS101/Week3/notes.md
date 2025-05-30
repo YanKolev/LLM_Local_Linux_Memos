@@ -1252,3 +1252,132 @@ $ sudo systemctl [start|stop|restart] cups
 - Print jobs. there is also ablities to created printjobs from the CLI with the following commands:
 
 ![](images/lpjobs.png)
+
+---
+
+##### Manipulating Postscript and PDF files
+
+**Working with PostScript and PDF**
+
+- PostScript is a standard page description language. It effectivel manages scaling of fonts and vector graphics to provide quality printouts.
+
+- its a text format that contains thta fed to a PostScript interpter. The format itself is a langugage that Adobe developed in the early 1980s.
+
+- structure of postscript:
+
+![](images/postscript.png)
+
+- features of postscript: - can be used on any printer that is compatible. i.e.any modern printer.
+- any program that understand the PostScript specification can printo to it
+- information about page appearance.
+
+- PDF format had superseded the PostScript, but is found in legacy documents.
+
+---
+
+**working with enscript**
+
+- enscriopt is a tool that is used to convert a text file to PostScript and other formats. it supports RTF(Rick Text Format) and HTML.
+
+- if you want to convert a text file to two columns(-2) formatted PostScript using the command:
+
+```
+$ enscript -2 -r -p psfile.ps textfile.txt
+```
+
+![](images/enscript.png)
+
+---
+
+**converting between postscript and pdf**
+
+- when there is need to convert files from one format to another, ps2pdf and pdf2ps are part of the ghostscript package installed on or available on all Linux distributions. As an alternative, there are pstopdf and pdftops which are usually part of the poppler package, which may need to be added through your package manager.
+
+- Another possibility is to use the very powerful convert program, which is part of the ImageMagick package. Some newer distributions have replaced this with Graphics Magick, and the command to use is gm convert.
+
+- usage:
+
+![](images/pdf1.png)
+
+---
+
+**manipulating PDFs**
+
+At times, you may want to merge, split, or rotate PDF files; not all of these operations can be achieved while using a PDF viewer. Some of these operations include:
+
+- Merging/splitting/rotating PDF documents
+- Repairing corrupted PDF pages
+- Pulling single pages from a file
+- Encrypting and decrypting PDF files
+- Adding, updating, and exporting a PDF’s metadata
+- Exporting bookmarks to a text file
+- Filling out PDF forms.
+
+- In order to accomplish these tasks, there are several programs available:
+
+  - qpdf
+  - pdftk
+  - ghostscript.
+
+- qpdf is widely available on Linux distributions and is very full-featured. pdftk was once very popular but depended on an obsolete unmaintained package (libgcj), and a number of distributions dropped it. However, it has now been reimplemented in Java and is available again on most distributions under the name pdftk-java. Ghostscript (often invoked using gs) is widely available and well-maintained. However, its usage is a little complex.
+
+**qpdf**
+
+![](images/qpdf.png)
+
+**pdftk**
+
+![](images/pdftk.png)
+
+---
+
+**encrypting pdf files with pdftk**
+
+- when working with a PDF filled with confidential information is a good practices to encrypt it with a password. The preffered method is **user_pw**
+
+```
+$ pdftk public.pdf output private.pdf user_pw PROMPT
+```
+
+- when you run this comand, you will receive a prompt to set the required password, which have maximum of 32 characters. A new file private.pdf will be created with the identical content as public pdf, but anyone ill need to type the password to be able to view it.
+
+---
+
+**ghostscript**
+
+- more information can be found ot the man pages **man gs**.
+
+- however is rather complicated to use:
+
+- combine three PDF files into one:
+
+```
+$ gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite  -sOutputFile=all.pdf file1.pdf file2.pdf file3.pdf
+```
+
+- split pages 10 to 20 out of a pdf file:
+
+```
+$ gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dDOPDFMARKS=false -dFirstPage=10 -dLastPage=20\
+-sOutputFile=split.pdf file.pdf
+```
+
+---
+
+**additional tools**
+
+- pdfinfo: It can extract information about PDF files, especially when the files are very large or when a graphical interface is not available.
+
+- flpsed: It can add data to a PostScript document. This tool is specifically useful for filling in forms or adding short comments into the document.
+
+- pdfmod: It is a simple application that provides a graphical interface for modifying PDF documents. Using this tool, you can reorder, rotate, and remove pages; export images from a document; edit the title, subject, and author; add keywords; and combine documents using drag-and-drop action.
+
+![](images/pdftools.png)
+
+---
+
+#### Chapter 19 Local Security Principles
+
+---
+
+#### Understanding Linux Security
