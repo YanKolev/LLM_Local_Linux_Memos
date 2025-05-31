@@ -4,9 +4,9 @@ Notes of the LFS101 course for revision and test-taking.
 
 ## 📚 Structure
 
-1. [Week 1](chapter1/notes.md)
-2. [Week 2](chapter2/notes.md)
-3. [Week 3](chapter3/notes.md)
+1. [Week 1](LFS101/Week1/notes.md)
+2. [Week 2](LFS101/Week2/notes.md)
+3. [Week 3](LFS101/Week3/notes.md)
 
 ---
 
