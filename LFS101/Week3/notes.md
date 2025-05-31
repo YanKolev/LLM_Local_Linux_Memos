@@ -1381,3 +1381,164 @@ $ gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dDOPDFMARKS=false -dFirstPage=10 -dLas
 ---
 
 #### Understanding Linux Security
+
+**User Accounts**
+
+- Linux kernal allows properly authenticated users to access files and applications, while each user is identified by unique integer or user ID or UID, a separate database associates a usersname with each UID. Upon account creation, new user information will be added to the user db and user's home directory must be created and populated with some essential files.
+
+- **useradd** and **userdel** are the CLI programs used to creating and removing accounts. For each user, the following severn fields are maintained in the /etc/passwd:
+
+![](images/useradd.png)
+
+---
+
+**types of accounts**
+
+- in Linux there are several types of accounts, in order processes and workloads: root, system, normal, network.
+
+- for safe environment, it is advised to grant the minimum priviliges possible and necessary to accounts, and remove inactive accounts.
+
+- last utility - shows the last time each user logged into the system, can be used to help identify potentially inactive accounts, which are prime candidates for system removal.
+
+- root- is the most priviledge account to the Linux/Unix system. When you are signed in as, or acting as root the shell promp displays #.
+
+- Operations requiring root privileges:
+
+  - creating, removing and managing user accounts.
+  - managing software packages
+  - removing or modyingin system files
+  - restarting system files
+
+- Operations not requiring root privileges: regular user account can perform some operations requiring special permissions.
+
+- SUID(Set owner USer ID)- provides temporary permissions to a user to run a program with the permissions of the file owner,instead of the permissions held by the user.
+
+![](images/suid.png)
+
+---
+
+**sudo vs su**
+
+![](images/sudo.png)
+
+---
+
+**sudo features**
+
+- sudo has the ability to keep track of unsuccessful attempts at gaining root access. user's authorization using sudo is based on configuration information stored in the /etc/sudoers file in the /etc/sudoers.d directory.
+
+![](images/sudo2.png)
+
+---
+
+**sudoers file**
+
+- when sudo is invoked, a trigger will loot at the /etc/sudoers and the files in /etc/sudoers.d to determine if the user has the right to use sudo and what the scope of their privilege is. Unknown user requests and requests to do operations not allowed to the user even with sudo are reported.
+
+- /etc/sudoers contains a lot of documentation in it about how to customize. most linux distributions now prefer you add a file in the directory /etc/sudoers.d with a name the same as the user. this file contains the individual user's sudo configuration, and one should leave the main configuration file untouched except for changes that affect all users.
+
+- You should edit any of these configuration files by using visudo, which ensures that only one person is editing the file at a time, has the proper permissions, and refuses to write out the file and exit if there are syntax errors in the changes made. The editing can be accomplished by doing a command such as the following ones:
+
+```
+# visudo /etc/sudoers
+# visudo -f /etc/sudoers.d/student
+```
+
+- The actual specific editor invoked will depend on the setting of your EDITOR environment variable.
+
+---
+
+**command logging**
+
+sudo commands and any failures are logged in /var/log/auth.log under the Debian distribution family, and in /var/log/messages and/or /var/log/secure on other systems. This is an important safeguard to allow for tracking and accountability of sudo use. A typical entry of the message contains:
+
+    Calling username
+    Terminal info
+    Working directory
+    User account invoked
+    Command with arguments
+
+- Running a command such as sudo whoami results in a log file entry such as:
+
+      Dec 8 14:20:47 server1 sudo: op : TTY=pts/6 PWD=/var/log USER=root COMMAND=/usr/bin/whoami
+
+---
+
+**process isolation**
+
+- Linux is considered to be more secure than many other OS because the processes are naturally isolated from each other. The process normally cannot access the resources of anoher process even when that process is running with the same user privileges.
+
+- security mechanism include:
+
+- control groups (cgroups): allows system administrators to group rocesses and associate finite resources to each cgroup
+
+- containers- makes it possible to run multiple isolated linux systems containers on a single system by relying on cgroups.
+
+- virtualization- hardware is emulated in such way that not ony can processes be siolated, but entire systems are run simultaneously as isolated and insulad guests on one physical host.
+
+![](images/processes.png)
+
+---
+
+**hardware device access**
+
+- Linux limits user access to non-networking hardware devices in a manner that is extremely similar to regular file access.
+
+- Applications interact by engaging the filesystem layer (which is independent of the actual device or hardware the file resides on). This layer will then open a device special file (often called a device node) under the /dev directory that corresponds to the device being accessed. Each device special file has standard owner, group and world permission fields. Security is naturally enforced just as it is when standard files are accessed.
+
+Hard disks, for example, are represented as /dev/sd\*. While a root user can read and write to the disk in a raw fashion, for example, by doing something like:
+
+```
+# echo hello world > /dev/sda1
+```
+
+The standard permissions, as shown in the figure, make it impossible for regular users to do so. Writing to a device in this fashion can easily obliterate the filesystem stored on it in a way that cannot be repaired without great effort, if at all. The normal reading and writing of files on the hard disk by applications is done at a higher level through the filesystem and never through direct access to the device node.
+
+---
+
+**passwords**
+
+- password storage: originally encrypted passwords were stored in the /etc/passwd file which was readable by everyone.
+
+- on modern systems, passwords are actually sored in an encrypted format in a secondary file named /etc/shadow.(only root access can read or modify this file)
+
+![](images/passwords.png)
+
+**password encryption**
+
+- Most Linux distributions rely on a modern password encryption algorithm called SHA-512 (Secure Hashing Algorithm 512 bits), developed by the U.S. National Security Agency (NSA) to encrypt passwords.
+
+- passoword aging is a method to ensure that users get prompts that remind them to crea new passowrd after a specific period- impmelemnted with **change**.
+
+- Another method is to force users to set strong passwords using Pluggable Authentication Modules (PAM). PAM can be configured to automatically verify that a password created or modified using the passwd utility is sufficiently strong. PAM configuration is implemented using a library called pam_cracklib.so, which can also be replaced by pam_passwdqc.so to take advantage of more options.
+
+---
+
+**boot loader passwords**
+
+- You can secure the boot process with a secure password to prevent someone from bypassing the user authentication step. This can work in conjunction with password protection for the BIOS. Note that while using a bootloader password alone will stop a user from editing the bootloader configuration during the boot process, it will not prevent a user from booting from an alternative boot media such as optical disks or pen drives. Thus, it should be used with a BIOS password for full protection.
+
+- For the older GRUB 1 boot method, it was relatively easy to set a password for grub. However, for the GRUB 2 version, things became more complicated. However, you have more flexibility, and can take advantage of more advanced features, such as user-specific passwords (which can be their normal login ones).
+
+- Furthermore, you never edit grub.cfg directly; instead, you can modify the configuration files in /etc/grub.d and /etc/defaults/grub, and then run update-grub, or grub2-mkconfig and save the new configuration file.
+
+---
+
+**hardware vulnerability**
+
+When hardware is physically accessible, security can be compromised by:
+
+- Key logging
+- Recording the real-time activity of a computer user, including the keys they press. The captured data can either be stored locally or transmitted to remote machines.
+- Network sniffing
+- Capturing and viewing the network packet level data on your network.
+- Booting with a live or rescue disk
+- Remounting and modifying disk content.
+
+---
+
+**software vulnerability**
+
+- Like all software, hackers occasionally find weaknesses in the Linux ecosystem. The strength of Linux (and open source community in general) is the speed with which such vulnerabilities are exposed and remediated. Specific coverage of vulnerabilities is beyond the scope of this course, but the Discussion Board can be used to carry out further discussion.
+
+---
