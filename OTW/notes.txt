@@ -1,0 +1,4 @@
+# Day 1 of OTW
+-Started with OTW practices, was able to ssh to the remote client. Couple of fails until I figured out the syntax. 
+-Passed level 0, Level 1 located the file with password, attempted scp to copy it to local machine, was not able, need to troubleshoot more.
+-Look into alternative of scp and work the text with nano to copy it/or extract. 
