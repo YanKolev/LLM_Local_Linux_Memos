@@ -41,3 +41,27 @@
 ##### 20. Serverless Computing
 
 ##### 21. Distributed Tracing
+
+---
+
+##### 1. Introduction
+
+- Key features of Cloud Computing:
+
+1. Speed and Agility
+2. Cost
+3. Easy Access to Reources
+4. Maintenance
+5. Multi-tenancy
+6. Reliability
+7. Scalability and Elasticity
+8. Security
+
+- Cloud deployment models:
+  1. Private Cloud
+  2. Public Cloud
+  3. Hybrid Cloud
+  4. Community Cloud
+  5. Distributed Cloud
+  6. Multicloud
+  7. Poly Cloud
