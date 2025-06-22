@@ -58,6 +58,7 @@
 8. Security
 
 - Cloud deployment models:
+
   1. Private Cloud
   2. Public Cloud
   3. Hybrid Cloud
@@ -65,3 +66,13 @@
   5. Distributed Cloud
   6. Multicloud
   7. Poly Cloud
+
+- Breakdown of deployment models:
+
+  - Private:
+  - Public:
+  - Hybrid:
+  - Community:
+  - Disctributed:
+  - Multicloud:
+  - Polycloud:
