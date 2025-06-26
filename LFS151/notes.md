@@ -450,3 +450,40 @@ SCRIPT
 - It can be Managed (with AWS, IBM cloud, Azure), self-managed, Red hat Container platform, Red hat Kubernetes engine.
 
 ---
+
+#### Containers
+
+---
+
+**Container Overview**
+
+- Containers are used for isolation applications from one another to avoid conflicts between dependencies, libraries and runtimes.
+
+- OS level virtualization allows to run multiple isolated user-space instances in parallel. These isolated user-space instances incliude the application, source code, required libraries and runtime to run the application without any external dependencies.
+
+---
+
+**Introduction to containers**
+
+- Containers address the challenges with portability, when application needs to work consistently on multiple hardware and platforms.
+
+Running application diagram:
+
+![](images/docker%20containers.png)
+
+By using a container technology such as Docker or Podman, the application and all its dependencies can be bundled in a box.
+
+Docker Diagram:
+![](images/appcontainer.png)
+
+---
+
+**Images and Containers**
+
+- The box containing app source code and all its dependencies and libraries is called an **image**. Runnin instance of the box is called a **container**. We can run multiple containers from the same image.
+
+- Image contains application, dependencies and user-space libraries. User-space librareis like glibc enable switching from the user-space to the kernel-space. An image does not contain any kernel-space components.
+
+- When a container from an image, it runs as a process on the host's kernel. It is the host kerne's job to isolate the container process and to provide resources for each container.
+
+---
