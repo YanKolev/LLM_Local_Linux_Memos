@@ -623,3 +623,113 @@ $ docker container rm <container id/name>
 ```
 
 ---
+
+**Podman**
+
+---
+
+**Summary**: Podman or Pod manager - open source, daemonless tool designed to simplyfy the searching, running, building, sharing and deploying of application using OCI containers and images. Provides similar CLI to Docker CLI. Podman relies on an OCI- compliant Container Runtime such as runc to create the running containers, making it a great alternative containerization tool to Docker. Another advantage- can run containers in rootless mode by default, while rooted mode is also supported and desired. Image building process- uses Containerfile, similar in format to the popular Dockerfile.
+
+- Red Hat, developed Podman, created 2 additional tools- Bulidah- supports container image builds one step at a time by taking an interactive approach to processeing Dockerfile instructions, Skopeo- tool for working with both local and remote repositories.
+
+- The Docker CLI interacts with the Docker daemon prior to invoking the containerd daemon responsible to run the runc runtime, while Podman is a daemonless tool capable of running the runc runtime without an intermediary daemon such as containerd.
+
+![](images/podmanvdocker.png)
+
+---
+
+**Basic Podman Operations**
+
+- For smooth transition w ecan set following alias **docker=podman**
+
+Short list of podman CLI commands:
+
+```
+- List images available in the local cache:
+$ podman image ls
+
+- Pulling an alpine image from the Docker Hub registry into the local cache:
+$ podman image pull docker.io/library/alpine
+
+- Run a container from an image (if the image is not found in the local cache, it will be pulled from registry). The run command is equivalent of podman container create followed by podman container <id> start:
+$ podman container run -it alpine sh
+
+- Run a container in the background (-d option) from an nginx image from the Docker Hub registry:
+$ podman container run -d docker.io/library/nginx
+
+- List only running containers:
+$ podman container ls
+
+- List all containers:
+$ podman container ls -a
+
+- Inject a process inside a running container. This will start a bash shell in interactive (-i option) terminal (-t option) mode inside the container:
+$ podman container exec -it <container_id/name> bash
+
+- Stop a running container:
+$ podman container stop <container id/name>
+
+- Delete a stopped container:
+$ podman container rm <container id/name>
+
+```
+
+---
+
+**Nerdctl / crictl**
+
+- Alternative runtimes to Docker.
+
+- Basic Operations:
+
+```
+List images available in the local cache:
+$ nerdctl images
+
+Pulling an alpine image from the Docker Hub registry into the local cache:
+$ nerdctl pull docker.io/library/alpine
+
+Run a container from an image (if the image is not found in the local cache it will be pulled from the registry):
+$ nerdctl run -it alpine sh
+
+Run a container in the background (-d option) from an nginx image from the Docker Hub registry:
+$ nerdctl run -d docker.io/library/nginx
+
+List images available in the local cache:
+$ crictl images
+
+Pulling an alpine image from the Docker Hub registry into the local cache:
+$ crictl pull alpine
+
+Run a container from an image (if the image is not found in the local cache it will be pulled from the registry):
+$ crictl run -it alpine sh
+
+List running containers:
+$ crictl ps
+```
+
+---
+
+**Project Moby**
+
+---
+
+- Summary: Docker runs on different platforms and architectures: bare metal (both x86 and ARM), Linux, macOS, and Windows. We can also find pre-configured VM images to run Docker on popular cloud and virtualization providers.
+
+- It is an open source project that provides a framework for assembling different container systems to build a container platform like Docker. Individual container systems provide features such as image, container, and secret management.
+
+- Moby is particularly useful for engineers who want to build their container-based system, to customize and patch an existing Docker build, or just to experiment with the latest container technologies. It uses a Lego-like approach to assemble various open source toolkits, such as:
+
+  - LinuxKit - to build minimal Linux distributions for containers.
+  - InfraKit - to manage infrastructure in a declarative manner.
+  - SwarmKit - to orchestrate distributed systems at scale.
+  - containerd - as container runtime.
+  - runc - to spawn and run OCI-compliant containers.
+  - Notary - for trusted data sets.
+  - LibNetwork - for networking.
+
+- However, Moby is not recommended for application developers in search of an easy way to use the container system to run their containerized applications.
+
+![](images/moby.png)
+
+---
