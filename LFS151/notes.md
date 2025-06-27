@@ -564,3 +564,62 @@ Docker Diagram:
 - General info: OCI compatible runtime, implementation of the Kubernetes Container Runtime Interface. Lighweight, high-level alternative to using Docker as the runtime for Kubernetes.
 
 ---
+
+## **Containers vs VMs**
+
+- General Info: A VM is provisioned with the help of a hypervisor, the software layer that virtualizes a host system's hardware resources such as CPU, memory and networking to allow a guest OS to be installed and take advantage of them. Various OS can be installed. There are multiple layers for an app to run- guest OS, hypervisor and even host OS.
+
+- Containers can run directly as a processes on the host OS. There is no middle layer as we seen in the VMs. containers provide near-native performance. Very light footprint, so we can pack more containers than VMs on the same physical machine. However we need to chech if the containers are compatible with the host OS.
+
+![](images/vmcontainer.png)
+
+---
+
+**Docker**
+
+- Docker Platform is a collection of development tools that follow client-server architecture with Docker client connecting to a Docker Host server that runs the Docker Daemon to execute commands for containers and images management in responce to client requests.
+
+- Docker is capable of running rooted containers by defaults. It is also capable of rootless container mode aiming to address issues with security.
+
+- Docker Personal- free for individual developers, education, small businessses.
+- Docker Pro- professional developers, image pulls from Docker hub, private repositories.
+- Docker Team- subscription for developer collaboration.
+- Docker Business- subscriptin extends the developer experience with features such as image access, control plane, etc.
+
+---
+
+**Basic Docker Operations**
+
+- Some of the basic docker cli commands.
+
+```
+- List images available in the local cache:
+$ docker image ls
+
+-Pulling an alpine image from the registry into the local cache:
+$ docker image pull alpine
+
+- Run a container from an image (if the image is not found in the local cache, it will be pulled from the registry). The run command is equivalent of docker container create followed by docker container <id> start:
+$ docker container run -it alpine sh
+
+- Run a container in the background (-d option) from an nginx image:
+$ docker container run -d nginx
+
+- List only running containers:
+$ docker container ls
+
+- List all containers:
+$ docker container ls -a
+
+- Inject a process inside a running container. This will start a bash shell in interactive (-i option) terminal (-t option) mode inside the container:
+$ docker container exec -it <container_id/name> bash
+
+- Stop a running container:
+$ docker container stop <container id/name>
+
+- Delete a stopped container:
+$ docker container rm <container id/name>
+
+```
+
+---
