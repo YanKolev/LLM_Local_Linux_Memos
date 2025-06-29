@@ -565,7 +565,9 @@ Docker Diagram:
 
 ---
 
-## **Containers vs VMs**
+### **Containers vs VMs**
+
+---
 
 - General Info: A VM is provisioned with the help of a hypervisor, the software layer that virtualizes a host system's hardware resources such as CPU, memory and networking to allow a guest OS to be installed and take advantage of them. Various OS can be installed. There are multiple layers for an app to run- guest OS, hypervisor and even host OS.
 
@@ -731,5 +733,9 @@ $ crictl ps
 - However, Moby is not recommended for application developers in search of an easy way to use the container system to run their containerized applications.
 
 ![](images/moby.png)
+
+---
+
+### Micro OSes for containers
 
 ---
