@@ -961,3 +961,175 @@ FCOS- it combines CoreOS container Linux and Fedora Atomic Host while aiming to 
 - also supports Apache Mesos.
 
 ---
+
+---
+
+---
+
+## **Container Orchestration**
+
+---
+
+---
+
+---
+
+**Overview**
+
+- Container orchestration is an umbrella concept that encompasses container scheduling and cluster management. Container scheduling becomes a policy-driven mechanism that automates the decision process that distributes containers across the nodes of the cluster. However, cluster operators are allowed to control the scheduling process through custom policies or scheduling properties.
+
+- The decision making process during scheduling is aided by cluster management aspects such as the state of existing workloads and cluster node resources availability. With cluster management orchestrators, we can manage the resources of cluster nodes, as well as add or delete nodes from the cluster through the cluster scaling mechanism. Some of the available solutions for container orchestration are:
+
+  - Kubernetes
+  - Docker Swarm
+  - Nomad
+  - Amazon ECS.
+
+---
+
+---
+
+**Kuberenetes Overview**
+
+---
+
+---
+
+- Kubernetes is an Apache 2.0- licensed open source project for automating deployment operations, and scaling of containerized applications. Started by google in 2014. in 2015- CNCF accepted Kubernetes as its first hosted project. Supported runtimes-containerd, CRI-O, Docker Engine nad Mirantis Container Runtime.
+
+---
+
+- Achritecture of Kuberenetes:
+
+![](images/kuberenetesarchitecture.png)
+
+--
+
+- Key Komponents:
+
+  - Cluster: Cluster is a collection of systems (bare-metal or virtual) and other infra resources used by Kubernetes to run containerized applications.
+
+  - Control-Plane Node: a system that takes containerized workload scheduling decisions, manages the worker nodes, enforces access control policies, and reconciles changes in the state of the cluster. Its main components are the kube-apiserver, etcd, kube-scheduler, and kube-controller-manager responsible for coordinating tasks around container workload scheduling, deployment, scaling, self-healing, state persistence, state reconciliation, and delegation of container management tasks to worker node agents. Multiple control-plane nodes may be found in clusters as a solution for High Availability.
+
+  - Worker Node: A system where containers are scheduled to run in workload management units called Pods. The node runs a daemon called kubelet responsible for intercepting container deployment and lifecycle management related instructions from the kube-apiserver, delegating such tasks to the container runtime found on the node, implementing container health checks, enforcing resource utilization limits, and reporting node status information back to the kube-apiserver. kube-proxy, a network proxy, enables applications running in the cluster to be accessible by external requests. Both node agents - kubelet and kube-proxy, together with a container runtime are found on worker nodes and on control-plane nodes as well.
+
+  - Namespace: The namespace allows us to logically partition the cluster into virtual sub-clusters by segregating the cluster's resources, addressing the multi-tenancy requirements of enterprises requiring ab isolation method for their projects, applications, users, and teams.
+
+---
+
+- **Key API resources**:
+
+- **Pod**: The pod is a logical workload management unit, enabling the co-location of a group of containers with shared dependencies such as storage Volumes. However, a pod is often managing a single container and its dependencies such as Secrets or ConfigMaps. The pod is the smallest deployment unit in Kubernetes.
+
+- A pod can be created independently, but it is lacking the self-healing, scaling, and seamless update capabilities which Kubernetes is know for. In order to overcome the pod's shortcomings, controller programs, or operators, such as the ReplicaSet, Deployment, DaemonSet, or the StatefulSet are recommended to be used to manage pods, even if only a single application pod replica is desired.
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    run: nginx-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.17.9
+    ports:
+    - containerPort: 80
+```
+
+---
+
+- **ReplicaSet**
+
+- mid-level controller, or operator, that manages the lifecycle of pods. It rolls out a desired amount of pod replicas, uses state reconciliation to ensures that the desired number of application pod replicas is running at all times, and to self-heal the application if a pod replica is unexpectedly lost due to a crash or lack of computing resources.
+
+---
+
+- **Deployment**
+
+- Top-level controller that allows us to provide declarative updates for pods and ReplicaSets. We can define Deployments to create new resources, or replace existing ones with new ones. The Deployment controller, or operator, represents the default stateless application rollout mechanism. Typical Deployment use cases and a sample deployment are provided below:
+
+  - Create a Deployment to roll out a desired amount of pods with a ReplicaSet.
+  - Check the status of a Deployment to see if the rollout succeeded or not.
+  - Later, update that Deployment to recreate the pods (for example, to use a new image) - through the Rolling Update mechanism.
+  - Roll back to an earlier Deployment revision if the current Deployment isn’t stable.
+  - Scale, pause and resume a Deployment.
+
+- Sample of deployment:
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-deployment
+  template:
+    metadata:
+      labels:
+        app: nginx-deployment
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.17.9
+        ports:
+        - containerPort: 8
+```
+
+---
+
+- **DaemonSet**
+
+- controller, or operator, that manages the lifecycle of node agent pods. It rolls out a desired amount of pod replicas while ensuring that each cluster node will run exactly one application pod replica. It also uses state reconciliation to ensures that the desired number of application pod replicas is running at all times, and to self-heal the application if a pod replica is unexpectedly lost due to a crash or lack of computing resources.
+
+---
+
+- **Service**
+
+- The Service is a traffic routing unit implemented by the kube-proxy providing a load-balancing access interface to a logical grouping of pods, typically managed by the same operator. The Service enables applications with DNS name registration, name resolution to a private/cluster internal static IP. It can reference a single pod or a set of pods managed by ReplicaSets, Deployments, DaemonSets, or StatefulSets.
+
+- Example:
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app: nginx-deployment
+    tier: frontend
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 80
+  selector:
+    app: nginx-deployment
+    tier: frontend
+```
+
+---
+
+- **Label**
+
+- The Label is an arbitrary key-value pair that is attached to resources like a pod or a ReplicaSet. In the code examples we provided, we defined labels with keys such as run, app, and tier. Labels are typically used to tag resources of a particular application, such as the Pods of a Deployment, to logically group them for management purposes - for updates, scaling, or traffic routing.
+
+---
+
+- **Selector**
+
+- Selectors allow controllers, or operators, to search for resources or groups of resources described by a desired set of key-value pair Labels. In the examples provided, the frontend Service will only forward traffic to Pods described simultaneously by both labels app: nginx-deployment and tier: frontend.
+
+---
+
+- **Volume**
+
+- The Volume is an abstraction layer implemented through Kubernetes plugins and third-party drivers aimed to provide a simplified and flexible method of container storage management with Kubernetes. Through Kubernetes Volumes, containers are able to mount local host storage, network storage, distributed storage clusters, and even cloud storage services, in a seamless fashion.
+
+---
