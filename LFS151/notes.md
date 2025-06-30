@@ -890,3 +890,74 @@ FCOS- it combines CoreOS container Linux and Fedora Atomic Host while aiming to 
 ![](images/k3OS.png)
 
 ---
+
+**Ubuntu Core Overview**
+
+- UC is a lightweighr version of Ubuntu, for IoT devices. Size around 260mb. Ubuntu Core works with software packages called snaps (like ubuntu server and ubuntu desktop).
+
+- Bigger than Alpine Linux but ahead of much larger OSes like CoreOS (around 800mb).
+
+- Securitu is top concern for the designer of UbuntuCore:
+
+  - hardened security with immutable packages and persistend digital signatures.
+  - strict application isolation
+  - reduced attack surface by keeping a small OS, stipped down to bare essentials.
+  - automatic vulnerability scanning of packages.
+
+- Ubuntu Core was designed with extreme reliability, implemented by:
+
+  - transactional updates that increase OS and data resiliency by allowing automate rollbacks when erroes are encountered.
+  - automated restore points to allow returns to the last working boot in th ecase of unsuccessful kernel update.
+  - consistent application data snapshots.
+
+- UC is built for enterprise- by secure app stora management and license compliance.
+
+- UC is designed to run on bare-metal on hypervisors such as KVM, or wire range of hardware. Top features are:
+  - immutable image for simple and consistent installation and deployment.
+  - isolated applications run with explicit permissions such as read-only access to the filesystem.
+  - transactional updates.
+  - security at snap level.
+  - AppArmor
+  - Seccomp
+
+---
+
+- Snaps are secure isolated, dependecy free portable software pakcages for Linux, including:
+
+  - automatic updates,
+  - automated recovery in the case of failed updates.
+  - critical update provision for unscheduled updates.
+  - flexible hardware and network conditions support for unpredictable systems, redundancy roll-backs.
+
+  - snap : application package format and the CLI
+  - snapd : the background service managing and maintaining snaps.
+  - snapcraft : framework cincluding hte command to build custom snaps
+  - snap store- repository to share and store snaps
+
+- Types of snaps :
+  - kernel- defines the linux kernel
+  - gadget- defines specific system properties
+  - core- execution environment for application snaps
+  - app- including applications, daemons and various tools.
+
+---
+
+**VMware Photon OS overview**
+
+- minimal linux container host provided by VMware, optimized for cloud- native applications. Designed with a small footpring in order to boot extremely quickly on VMwave vSphere deployments and on cloud computing platforms.
+
+- Photon OS can be deployed on AWS EC2, GCE and Azure instances, while supporting a variaty of container formats as a container host or as a kubernetes node.
+
+- Minimal version: lightweight container host runtime environment including a minimum of packaging and functionality to mangage containers while still remainig a fast runtime environment.
+
+- full version- packages of tools for development, testing and deployment of containerized applications.
+
+- yum- compatible package managed called Tiny DNF (tdnf) manages services with systemd.
+
+- security-hardenend Linux, kernel and other aspects are built with the recommendations provided by the Kernel self- protection project.
+
+- easily managed, patched and update.
+
+- also supports Apache Mesos.
+
+---
