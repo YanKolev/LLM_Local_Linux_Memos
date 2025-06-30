@@ -451,7 +451,15 @@ SCRIPT
 
 ---
 
+---
+
+---
+
 #### Containers
+
+---
+
+---
 
 ---
 
@@ -565,7 +573,15 @@ Docker Diagram:
 
 ---
 
+---
+
+---
+
 ### **Containers vs VMs**
+
+---
+
+---
 
 ---
 
@@ -736,6 +752,141 @@ $ crictl ps
 
 ---
 
+---
+
+---
+
 ### Micro OSes for containers
+
+---
+
+---
+
+---
+
+- Why to run applicatons in containers? To aim for lightweight isolated environments for them. By doing so, we can remove pakcages that are not essential to boot the base OS and run container-related service. Those trimmed versions are called- specilized OSes or Micro OSes for containers. They allow for faster container startup and provide a lightweight container enviromnent that is secrure and easy to customize.
+
+Example of microOS:
+
+![](images/microOS.png)
+
+---
+
+---
+
+**Alpine Linux Overview**
+
+---
+
+---
+
+- independent, non-commercial Linux distro designed for security, simplicty and resource efficiency. Built on top of BusyBox.
+
+- small between 5MB and 8MB per container or 130 mb as minimal stanadlone OS install is quire resouce-efficient.
+
+- uses its own package manager- apk, OpenRC init system and set-up scripts. users can add packages as PVR, iSCSi storage controllers, a mail server container or an embedded switch.
+
+- it allows:
+
+  - diskless mode: default mode where the entire system runs from RAM
+  - data mode: mostly runs from ram, but mounts /var as a writable data partition.
+  - sys mode : typical hard disk install that mounts /boot, swap and /.
+
+- It provides increased security by compiling user binaries as Position Independent Executables (PIE) with stack smashing protection.
+
+---
+
+- Variants:
+  - Standard- requires network connection
+  - Extended- includes the most used packages, and runs from RAM
+  - Netboot- Includes kernel, initramfs and modloop
+  - Mini root filesystem- minimal for container and chroots
+  - Virtual- lighter kernel and Standard
+  - Raspery Pi- (includes the raspberry kerne)
+  - Generic ARM- includes the default ARM kernel with the uboot bootloader.
+
+---
+
+---
+
+**BusyBox Overview**
+
+---
+
+---
+
+- Used for Embedded Linux, combines very small version of several popular Unix utilities into a single compact executable.
+
+- Size between 1 MB and 5MB, licensensed under GNU license.
+
+- Modular and highly customizable. its can be easily ported to FreeBSD, Solaris and macOS.
+
+- Can be built on various architectures: ARM, CRIS, H8/300, x86, ia64, x86_64, m68k, MIPS, PowerPC, S390, SH3/4/5, Sparc, v850e, and x86_64.
+
+- Can be found running in products by Cisco, ASUS, Synology, Western Digital, Sharp, Linksys, Dell, NetGear, Belkin, Siemens, Trendnet, and others.
+
+---
+
+---
+
+**Fedora CoreOS overview**
+
+---
+
+---
+
+FCOS- it combines CoreOS container Linux and Fedora Atomic Host while aiming to provide the best container host to run containerized workloards securely and at scale.
+
+- CoreOS is operable in both clusters and standalone instance. In addition it is optimized to work with Kubernetes, but runs well without containerized workload orchestrator.
+
+---
+
+- Features:
+
+  - Ignition from CoreOS Container Linux: provisioning utility designed specifically for CoreOS Container Linux, which allows users to manipulate discks during early boot, such as parititioning disks, formatting parititions, writing files and configuration users. Ignitions runs early in the boot process (in the initramfs) and runs its configuration before the userspace boot, which provides advandef features to administrators.
+
+  -rpm-stree from FAH- can nont manage indivitual packages on Atomic Host, as there is no rpm or other related commands. To get any required service, you would have to start a respective container. Atomic Host has bootable, immutable and versioned filesystem one is used to boot the desystem and the other is used to fetch updates from upstream. rpm-ostree is the tool to manage those two versioned filesystems.
+
+  - SELinux hardening from FAH- containers secured with SELinux providecolse-to-VM isolation, security and increased flexibility and efficiency.
+
+- Installation methods:
+- Cloud lanuchable: To launch directly on Amazon's AWS Platform.
+
+- Bare metal and virtualized: from ISO, PXE(Preboot Execution Environment) or Raw, vms on OpenStack, Quemu, Virtualbox, VMWare
+
+- Cloud operators (Alibaba Cloud, AWS, Azure, DigitalOcean, Exoscale, GCP, IBM Cloud, OpenStack, and Vultr.)
+
+---
+
+**Flatcar Container Linux**
+
+- Flatcar Container Linux is a drop-in replacement for Red Hat CoreOS Container Linux, being directly derived from CoreOS and enabling a seamless in-place migration. Users of CoreOS can effortlessly migrate to Flatcar Container Linux either by modifying a deployment to install Flatcar Container Linux, or by updating directly from Red Hat CoreOS Container Linux.
+
+- Benefits:
+  - It is a container-optimized Linux OS distribution.
+  - An immutable/read-only filesystem makes it less vulnerable.
+  - A minimal OS implies a minimized attack surface.
+  - It receives automated security updates and patches.
+  - As a CoreOS successor, it supports two easy migration methods from Red Hat CoreOS Container Linux to Flatcar Container Linux.
+  - It runs on bare-metal and virtualization platforms such as QEMU, libVirt, VirtualBox, and Vagrant.
+  - It runs on public clouds such as Amazon EC2, GCE, Azure, Equinix, VMware, and DigitalOcean.
+  - Its first time boot is supported by the Ignition provisioning utility.
+  - Supports containerd and Docker container runtimes for Kubernetes clusters.
+
+---
+
+**k3OS Overview**
+
+- k3OS - the Kuberenetes Operating System is a Linux distribution that aims to minimize the OS maintenance tasks in a Kuberenetes cluster. IT was designed to work iwth Rancher's K3s lightweight Kuberenetes distirbution.
+
+- K3OS speeds up the k3s cluster boot time, at the boot time the k3OS image becomes available to k3s and the cluster takes full control over all the nodes maintenance, eliminating the need to log into each individucal node for upgdrades orother maintenance activities.
+
+- Benefits:
+  - minimalist OS that elimiates unnecessary libraries and services.
+  - decreases complexity and boot time
+  - It is highly secure due to small code base and a decreased attack surface.
+    -OS configuration is simplfied with **cloud-init**
+
+![](images/k3OS.png)
 
 ---
