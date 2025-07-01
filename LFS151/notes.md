@@ -1133,3 +1133,300 @@ spec:
 - The Volume is an abstraction layer implemented through Kubernetes plugins and third-party drivers aimed to provide a simplified and flexible method of container storage management with Kubernetes. Through Kubernetes Volumes, containers are able to mount local host storage, network storage, distributed storage clusters, and even cloud storage services, in a seamless fashion.
 
 ---
+
+**Key Features of Kubernetes**
+
+- Automatically distributes containers on cluster nodes based on container's resource requirements, cluster technology and other custom constrains.
+
+- Supports horizontal scaling through the CLI or UI. In addition, it can auto-scale based on resource utilization.
+
+- Supports rolling updates and rollbacks.
+
+- It supports several volume drivers from public cloud providers such as AWS, Azure, GCP, and VMware, together with network and distributed storage plugins like NFS, iSCSI, and the CephFS driver to orchestrate storage volumes for containers running in pods.
+- It automatically self-heals by restarting failed containers, rescheduling containers from failed nodes, and supports custom health checks to ensure containers are continuously ready to serve.
+- It manages sensitive and configuration data for an application without rebuilding the image.
+- It supports batch execution.
+- It supports High Availability of the control-plane node to add control plane resiliency.
+- It eliminates infrastructure lock-in by providing core capabilities for containers without imposing restrictions.
+- It supports application deployments and updates at scale.
+- It supports cluster topology aware routing of traffic to service endpoints.
+
+---
+
+**Kubernetes Hosted Solutions and Platforms**
+
+- Amazon Elastic Kubernetes Service (Amazon EKS)
+  Offers a managed Kubernetes service on AWS.
+- Azure Kubernetes Service (AKS)
+  Offers managed Kubernetes clusters on Microsoft Azure.
+- Google Kubernetes Engine (GKE)
+  Offers managed Kubernetes clusters on Google Cloud Platform.
+- IBM Cloud Kubernetes Service
+  Fully-managed Kubernetes service at scale, providing continuous availability and high availability, multi-zone, and multi-region clusters.
+- NetApp Project Astra (fusion between NetApp and Stackpoint.io)
+  Provides Kubernetes infrastructure automation and management for multiple public clouds optimized for stateful application data lifecycle management.
+- Oracle Container Engine for Kubernetes (OKE)
+  Enterprise-grade Kubernetes service offering highly available clusters optimized to run on Oracle Cloud Infrastructure.
+- Red Hat OpenShift
+  Offers managed Kubernetes clusters powered by Red Hat on various cloud infrastructures such as AWS, GCP, Microsoft Azure, and IBM Cloud.
+- Vultr Kubernetes Engine (VKE)
+  A managed Kubernetes service integrated with Vultr cloud load balancers and storage services.
+- VMware Tanzu Kubernetes Grid (TKG)
+  An enterprise-grade multi-cloud Kubernetes service that runs both on-premises in vSphere and in the public cloud.
+
+- Additional hosted solutions:
+
+- Managed Kubernetes by Canonical, a Kubernetes as a Service offering with built-in monitoring, analytics, security and compliance, optimized for multi-cloud deployment.
+- D2iQ Enterprise Kubernetes Platform (DKP) is a managed Kubernetes service that incorporates features of DC/OS.
+- Kubermatic Kubernetes Platform automates Kubernetes cluster management on premises and in the public cloud.
+- Mirantis Kubernetes Engine, an Enterprise Kubernetes Platform, formerly Docker Enterprise, manages containerized workloads on any infrastructure.
+- Platform9 Managed Kubernetes (PMK) is a managed SaaS that simplifies Kubernetes management on premises and in the public cloud.
+- Rackspace Managed Platform for Kubernetes (MPK) - Powered by Platform9 Managed Kubernetes (PMK) solution, is a Kubernetes as a Service offering built-in monitoring, alerting, security management, infrastructure as code (IaC) to provision the entire stack. It is a flexible, cross-cloud portable solution.
+- Rancher Kubernetes Engine (RKE) is a Kubernetes distribution that runs in containers on any platform.
+
+---
+
+**Amazon EKS**
+
+- Users are no longer involved in the infrastructure management, deployment, and maintenance of the Kubernetes control plane. EKS provides a scalable and highly-available control plane that runs across multiple AWS availability zones. It can automatically detect the unhealthy Kubernetes control plane nodes and replace them as needed.
+
+- EKS supports cluster autoscaling, to dynamically add worker nodes into the cluster, based on the workload and resource utilization. It also integrates with Kubernetes Role-Based Access Control (RBAC) to support AWS IAM authentication.
+
+- Although master nodes are managed by AWS, users will still need to pay the hosting cost. They will also have to pay for the worker nodes.
+
+![](images/AKS.png)
+
+---
+
+**Azure Kubernetes Service (AKS)**
+
+- AKS also supports cluster autoscaling to dynamically add worker nodes into the cluster, based on the workload and resource utilization. It supports Kubernetes Role-Based Access Control (RBAC) and can integrate with Azure Active Directory for identity and security management.
+
+- With AKS, users only pay for the agent/workers nodes that get deployed, while the control-plane nodes are managed by AKS for free.
+
+---
+
+**Google Kubernetes Engine (GKE)**
+
+- GKE Kubernetes can be integrated with all GCP services, like the Google Cloud operations suite for monitoring, tracing, diagnostics, logging, identity and access management, etc.
+
+---
+
+**Docker Swarm**
+
+- Native container orchestration tool from Docker. Swarm mode, logically groups multiple Docker Engines in to a swarm or a cluster that allows for applications to be deployed and managed at scale.
+
+- Swarm Manager Nodes: accept commands on behalf of the cluster and make scheduling decisions. They manintain the cluster state and store it using the Internal Distributed State Store, which uses the Raft consensus algorithm. One or more nodes can be configured as managers for fault-tolerance. When multiple managers are present, they are configured in active/passive modes.
+
+- Swarm Worker Nodes: Run Docker Engine and the sole purpose of the worker nodes is to run the container workload given by the manager nodes.
+
+![](images/dockerswarm.png)
+
+---
+
+**Features of Docker Swarm**
+
+- compatible with Docker tools and API
+- provides native docker support for networking and volumes.
+- it can scale up to large numbers of nodes.
+- supports failover and high availability for the cluster manager for fail-tolerance.
+- uses declarative approach to define the desired state of the various services of the application stack.
+- for each service you can declare the number of tasks you want to run. swarm manager automatically adapts by adding or removing tasks to maintain the desired state.
+- docker swarm manager node constantly monitors the cluster state and reconciles any differences between the actual state and your expressed desired state.
+- communication between the nodes of docker swarm is enforced with Transport Layer Security (TLS).
+- supports rolling updates to control a delay between service depolyment to different sets of nodes. if rollout is unsuccessful you can roll back a task to a previous version of the service.
+
+---
+
+**Nomad Overview**
+
+- HashiCorp Nomad is a cluster manager and resource scheduler from HashiCorp, which is distributed, highly available, and scales to thousands of nodes. It is designed to run microservices and batch jobs, and it supports different types of workloads, from Docker containers, VMs, to individual Java applications. In addition, it is capable of scheduling applications and services on different platforms like Linux, Windows, and Mac, both on-premises and public clouds.
+
+- Although an alternative to the Kubernetes container orchestrator, it can run in conjunction with Kubernetes in a multi-orchestrator pattern, complementing each other especially in large enterprises where multiple types of applications need to be deployed and managed on diverse infrastructures through mixed scheduling mechanisms.
+
+- It is distributed as a single binary, which has all of its dependency and runs in a server and client mode. To submit a job, the user has to define it using a declarative language called HashiCorp Configuration Language (HCL) with its resource requirements. Once submitted, Nomad will find available resources in the cluster and run it to maximize the resource utilization.
+
+- Example of sample job:
+
+```
+# Define the hashicorp/web/frontend job
+job "hashicorp/web/frontend" {
+
+    # Job should run in the "us" region
+    region = "us"
+
+    # Run in two datacenters
+
+    datacenters = ["us-west-1", "us-east-1"]
+
+    # Only run our workload on linux
+
+    constraint {
+        attribute = "$attr.kernel.name"
+        value = "linux"
+    }
+
+    # Configure the job for rolling updates
+    update {
+        # Stagger updates every 30 seconds
+        stagger = "30s"
+
+        # Update a single task at a time
+        max_parallel = 1
+    }
+
+    # Define the task group together with an individual task (unit of work)
+    group "frontend" {
+        # Ensure we have enough servers to handle traffic
+        count = 10
+
+        task "web" {
+            # Use Docker to run our server
+            driver = "docker"
+            config {
+                image = "hashicorp/web-frontend:latest"
+            }
+
+            # Specify resource limits
+            resources {
+                cpu = 500
+                memory = 128
+                network {
+                    mbits = 10
+                    dynamic_ports = ["http"]
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+**Nomad Features**
+
+- handles both cluster management and resource scheduling.
+- It supports multiple workloads, like Docker containers, VMs, unikernels, and individual Java applications.
+- It has multi-datacenter and multi-region support. We can have a Nomad client/server running in different public clouds, while still part of the same logical Nomad cluster.
+- It bin-packs applications onto servers to achieve high resource utilization.
+- In Nomad, millions of containers can be deployed or upgraded by using the job file.
+- It provides a built-in dry run execution facility, which shows the scheduling actions that are going to take place.
+- It ensures that applications are running in failure scenarios.
+- It supports long-running services, as well as batch jobs and cron jobs.
+- It provides a built-in mechanism for rolling upgrades.
+- It can run in conjunction with Kubernetes in a multi-orchestrator pattern.
+- It seamlessly integrates with Terraform, Consul, and Vault for provisioning, networking, and sensitive data management.
+- Blue-green and canary deployments are supported through a declarative job file syntax.
+- If nodes fail, Nomad automatically redistributes the applications from unhealthy nodes to healthy nodes.
+
+---
+
+---
+
+##### Cloud Container Orchestration services
+
+---
+
+---
+
+**Amazon ECS Overview**
+
+- Fully managed containers ochestration services that is fast, secure and highly scalable, making it easy to run, stop and manage containers on a cluster.Has 3 different launch modes :
+
+---
+
+- Fargate Launch type: AWS Fargate allows us to run containers without managing servers and clusters. In this mode, we have to package our applications in containers along with CPU, memory, networking and IAM policies. Do not have to provision, configure and scale clusters of virtual machines to run containers as AWS will take care of that.
+
+![](images/awsfargate.png)
+
+---
+
+- EC2 Launch type: Can provision, patch and scale at the ECS cluster. This gives more control to our servers and provides a range of customization options.
+
+![](images/ec2launch.png)
+
+---
+
+- External launch type: enables to run containerized application on premises, on our physical/virtual infra with the help of amazon ECS anywhere.
+
+---
+
+** AWS ECS Components**
+
+- Cluster: It is a logical grouping of tasks or services. With the EC2 launch type, a cluster is also a grouping of container instances.
+
+- Container istance: It is only applicable if we use the EC2 launch type. We define the Amazon EC2 instance to become part of the ECS cluster and to run the container workload.
+
+- Container Agent: It is only applicable if we use the Fargate launch type. It allows container instances to connect to your cluster.
+
+- Task Definition: It specifies the blueprint of an application, which consists of one or more containers.
+
+- Example:
+
+```
+{
+"containerDefinitions": [
+  {
+    "name": "wordpress",
+    "links": [
+      "mysql"
+    ],
+    "image": "wordpress",
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 80,
+        "hostPort": 80
+      }
+    ],
+    "memory": 500,
+    "cpu": 10
+  },
+  {
+    "environment": [
+      {
+        "name": "MYSQL_ROOT_PASSWORD",
+        "value": "password"
+      }
+    ],
+    "name": "mysql",
+    "image": "mysql",
+    "cpu": 10,
+    "memory": 500,
+    "essential": true
+  }
+],
+"family": "hello_world"
+}
+```
+
+- Scheduler: places tasks on the cluster
+- Service: It allows one or more instances of tasks to run, depending on the task definition. f there is an unhealthy task, then the service restarts it. One elastic load balancer (ELB) is attached to each service.
+
+- Example:
+
+```
+{
+    "cluster": "",
+    "serviceName": "",
+    "taskDefinition": "",
+    "loadBalancers": [
+        {
+            "loadBalancerName": "",
+            "containerName": "",
+            "containerPort": 0
+        }
+    ],
+    "desiredCount": 0,
+    "clientToken": "",
+    "role": "",
+    "deploymentConfiguration": {
+        "maximumPercent": 200,
+        "minimumHealthyPercent": 100
+    }
+}
+```
+
+- Task: a running container instance from the task definition.
+
+- Container: container created from the task definition
