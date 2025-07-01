@@ -1430,3 +1430,39 @@ job "hashicorp/web/frontend" {
 - Task: a running container instance from the task definition.
 
 - Container: container created from the task definition
+
+---
+
+**AWS ECS Features**
+
+- It is compatible with Docker containers and Windows containers as well.
+- It provides a managed cluster so that users do not have to worry about managing and scaling the cluster.
+- The task definition allows the user to define the applications through a JSON file. Shared data volumes, as well as resource constraints for memory and CPU, can also be defined in the same file.
+- It provides APIs to manage clusters, tasks, etc.
+- It allows easy updates of containers to new versions.
+- The monitoring feature is available through AWS CloudWatch.
+- The logging facility is available through AWS CloudTrail.
+- It supports third party hosted Docker registries, the public Docker Hub, or the Amazon Elastic Container Registry (ECR).
+- AWS Fargate allows you to run and manage containers without having to provision or manage servers.
+- It allows you to build all types of containers. You can build a long-running service or a batch service in a container and run it on ECS.
+- You can apply your Amazon Virtual Private Cloud (VPC), security groups and AWS Identity and Access Management (IAM) roles to the containers, which helps maintain a secure environment.
+- You can run containers across multiple availability zones within regions to maintain High Availability.
+- It can be integrated with AWS services like Elastic Load Balancing (ELB), Virtual Private Cloud (VPC), Identity and Access Management (IAM), Amazon ECR, AWS Batch, Amazon CloudWatch, AWS CloudFormation, AWS CodeStar, AWS CloudTrail, and more.
+
+---
+
+**Azure Container Instances**
+
+- ACI is a solution designed for scenarios where container isolation is desired for simple applications, automated tasks, or jobs because it only provides some of the basic scheduling capabilities of dedicated orchestration platforms. Therefore, when advanced features such as service discovery and auto-scaling are desired, as provided by full container orchestration platforms, then the recommended solution is Azure Kubernetes Service (AKS). However, ACI can be used in conjunction with an orchestrator such as AKS in a layered approach, to schedule and manage single containers while the orchestrator manages the multi-container groups.
+
+- **Features:**
+
+- They expose containers directly to the internet through IP addresses and fully qualified domain names (FQDN).
+- Allow user interaction with the environment of a running container by executing commands in the container through a shell.
+- Offer VM-like application isolation in the container.
+- Allow for resource specification, such as CPU and memory.
+- They allow containers to mount directly Azure File shares to persist their state.
+- They support the running of both Linux and Windows containers.
+- They support the scheduling of single- and multi-container groups, thus allowing patterns like the sidecar pattern.
+
+---
