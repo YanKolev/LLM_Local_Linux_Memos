@@ -1466,3 +1466,19 @@ job "hashicorp/web/frontend" {
 - They support the scheduling of single- and multi-container groups, thus allowing patterns like the sidecar pattern.
 
 ---
+
+---
+
+## **Unikernels**
+
+---
+
+---
+
+**Overview of the Unikernel**
+
+- Summary: developer's target goal is to run an application, and the container technology is helping to achieve this goal by packaging the application, dependencies, and libraries into an image, which ultimately ensure the application runs in an easily reproducible fashion on any environment, not only on the distribution where it was built. As part of the containers' running process, there is a necessity to ship the entire user-space libraries of the respective distribution with the application. In most cases, the majority of the libraries would not be consumed by the application. Therefore, it makes sense to ship the application only with the set of user-space libraries which are needed by the application.
+
+- With unikernels, we can also select the part of the kernel needed to run with the specific application. The unikernel image becomes a single address space executable, including both application and kernel components. The image can be deployed on VMs or bare metal, based on the unikernel's type.
+
+- Unikernels are specialized, single-address-space machine images constructed by using library operating systems.
