@@ -1482,3 +1482,86 @@ job "hashicorp/web/frontend" {
 - With unikernels, we can also select the part of the kernel needed to run with the specific application. The unikernel image becomes a single address space executable, including both application and kernel components. The image can be deployed on VMs or bare metal, based on the unikernel's type.
 
 - Unikernels are specialized, single-address-space machine images constructed by using library operating systems.
+
+---
+
+**Specialized VM Images**
+
+- The Univekernel goes one step further than other technolgies creating specialized virtual machine images with just the following parts:
+
+  - applicatin code
+  - configuration files of the application
+  - user-space libraries needed by the application
+  - application runtime (like JVM)
+  - the system libraries of the unikernel, which allows back and forth communication with the hypervsior.
+
+- According to the protection ring of the x86 architecture, we run the kernel on ring0 and the application on ring3, which has the least privileges. ring0 has the most privileges, like access to hardware, and a typical OS kernel runs on that. With unikernels, a combined binary of the application and the kernel runs on ring0.
+
+- Unikernel images would run directly on top of a hypervisor like Xen or on bare metal, based on the unikernels' type. The following image shows how the Mirage Compiler creates a unikernel VM image.
+
+![](images/unikernel1.png)
+
+---
+
+**Benefits of Running Unikernel**
+
+- A minimalistic VM image to run an application, which allows us to have more applications per host.
+- A faster boot time.
+- Efficient resource utilization.
+- A simplified development and management model.
+- A more secured application than the traditional VM, as the attack surface is reduced.
+- An easily-reproducible VM environment, which can be managed through a source control system like Git.
+
+---
+
+**Unikernel Implementations**
+
+- Specialized and purpose-built unikernels : they utilize all the modern feature of software and hardware, while disregarding backward compatibility. They are not POSIX- compliant. Examples: HaLVM, MirageOS, Clive.
+
+- Generalized "fat" unikernels- they run unmodified applications, which make them fat. Examples: OS, Drawbridge.
+
+---
+
+**Unikernels and Docker**
+
+- Docker made unikernels first-class citizen of the docker ecosystem. Both containers and unikernels can co-exist on the same host and can be managed by the same docker binary.
+
+- When unikernels have been introduced, further simplification of them resulted in significat boost in performance. These specialized VM are lighter than containers because they remove the unnecessary components of the OS such as permissions and isolation and further decrease the attack surface.
+
+- MirageOS, was big success because it was able to produce a library OS that is flexible, secure, resuable and trimmed any additional bloat.
+
+- Unikernels can help Docker to run the Docker Engine on top of Alpine Linux on Mac and Win with their default hypervisors(xhyve VM and Hyper V VM)
+
+![](images/unikernel2.png)
+
+---
+
+**How to create Unikernel with NanoVM/ops**
+
+- NanoVMs- open source project aiming to promote unikernels. Uses ops CLI to buld and run unikernels or nanos across several public cloud providers and on-premises. The base of the VM images are lightweight packages that support - Golang, PHP and Nodejs apps.
+
+- Steps for creation:
+
+  1. Define JS webserver
+
+  ```
+  cat demo.js
+  ```
+
+  2. Run a local Node.js unikernel through pkg load
+
+  ```
+  ops pkg load eyberg/node:20.5.0 -p 8083 0 -a demo.js
+  ```
+
+  3. once the Node.js unikernel is running it will server traffic on localhost port 8083.
+
+  ```
+  curl localhost:8083
+  ```
+
+- Second method is via VM image (targeteed for a specific visor or cloud provider). Image below is for VirtualBox hypervisor. Instance can be listed with the ops CLI.
+
+![](images/unikernel3.png)
+
+---
