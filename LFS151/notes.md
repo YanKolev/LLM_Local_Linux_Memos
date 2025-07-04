@@ -1695,6 +1695,36 @@ Control plane > forwarding tables > Data plane > network management
 
 2. Container Networking Interface (CNI):
 
--CNCF project that consist of specification and libraries for writing plugins to configure network interfaces in Linux containers, along with supported plugins. Limited to network connectivity of containers and removing allocated resources when the container is deleted.
+- CNCF project that consist of specification and libraries for writing plugins to configure network interfaces in Linux containers, along with supported plugins. Limited to network connectivity of containers and removing allocated resources when the container is deleted.
 
 ---
+
+- Service Discovery - a mechanist that enables processes and services to find each other automatically and to talk to each other. Used to map a container name with its IP address so that we can access the container directly by its name without worrying about its exact location(IP address) which may change during the life of the container.
+
+- Achieved with 2 steps:
+
+1. Registration: When a container starts, the container scheduler registers the container name to the container IP mapping in a key-value store such as etcd or Consul. And if the container restarts or tops the scheduler updates the mapping accordingly.
+
+2. Lookup: Services and application use Lookup to retrieve the IP address of a container, so that they can connect to it. Generally its supported by DNS (Domain name Server), which is local to the environment. The DNS used resolves the requests by looking at the entries in the key-value store, which is used for Registration. Consul, Core DNS, SkyDNS and Mesos-DNS are examples for such DNS services.
+
+---
+
+##### Docker Networking
+
+---
+
+- Single-Host Networking : If we list the available networks after installing the Docker daemon, we should see the follwoing example:
+
+```
+$ docker network ls
+
+NETWORK ID          NAME          DRIVER
+6f30debc5baf        bridge        bridge
+a1798169d2c0        host          host
+4eb0210d40bb        none          null
+
+```
+
+- bridge, null and host are distinct network drivers available on a single Docker host.
+
+- Bringe Driver:
