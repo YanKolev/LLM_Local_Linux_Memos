@@ -1565,3 +1565,136 @@ job "hashicorp/web/frontend" {
 ![](images/unikernel3.png)
 
 ---
+
+---
+
+## Microservices
+
+---
+
+---
+
+##### Overview
+
+- Technology evolved towards a new approach where an application is deployed and managed via a small set of services. Each service runs its own process and communicates with other services via lightweight mechanisms like REST APIs. Each of these services is independently deployed and managed. Technologies like containers and unikernels are becoming default choices for creating such services.
+
+![](images/microservices.png)
+
+---
+
+- Refactoring a monolith into Microservices, best approaches could be:
+
+- If you have a complex monolith application, then it is not advisable to rewrite the entire application from scratch. Instead, you should start carving out services from the monolith, which implement the desired functionalities for the code we take out from the monolith. Over time, all or most functionalities will be implemented in the microservices architecture.
+
+- We can split the monoliths based on the business logic, front-end (presentation), and data access. In the microservices architecture, it is recommended to have a local database for individual services. And, if the services need to access the database from other services, then we can implement event-driven communication between these services.
+
+- As mentioned earlier, we can split the monolith based on the modules of the monolith application, and each time we do it, our monolith shrinks.
+
+- Benefits of Microservices:
+
+- There is no language or technology lock-in. As each service works independently, we can choose any programming language, technology, or framework for its development. We just need to make sure its API endpoints return the expected output.
+- Each service in a microservice can be deployed independently.
+- We do not have to take an entire application down just to update or scale a component. Each service can be updated or scaled independently. This gives us the ability to respond faster.
+- If one service fails, then its failure does not have a cascading effect. This helps in debugging as well.
+- Once the code of a service is written, it can be used in other projects, where the same functionality is needed.
+- The microservice architecture enables continuous delivery.
+- Components can be deployed across multiple servers or even multiple data centers.
+- They work very well with container orchestration tools like Kubernetes, Nomad and Swarm.
+
+---
+
+---
+
+---
+
+## Software-defined networking and container networking
+
+---
+
+---
+
+###### Overview
+
+- Traditional networks cannot cope with the demand of mobile devices, cloud computing and other similar technologies that are generating. CPU and memory become more and more decentralized. Compute units such as VMs, services, microservices, and containers follow global deployment and availability patterns, which introduce new challenges in the management of such distributed architectures.
+
+- To connect devices, applications, VMs, and containers, we need a similar level of flexibility which can only be achieved by virtualizing the networking. This will allow us to meet the end-to-end business requirements.
+
+- Software-defined networking (SDN) decouples the network control layer from the traffic forwarding layer. This allows SDN to program the control layer and to create custom rules in order to meet these new networking requirements.
+
+---
+
+##### SDN (Software-defined Networking)
+
+- Overview of SDN:
+
+- Networking is usually defined in three different planes.
+
+  1. Data Plane
+  2. Control Plane
+  3. Management Plane
+
+- Data plane- also known as Forwarding Plane- responsible for handling data packets and apply actions to them absed on rules which we program into lookup-tables.
+
+- Control Plane- tasked with calculating and programming the actions from Data plane. This is where the forwarding decisions are made and where services such as QoS(Quality of Service) and VLANs are Implemented.
+
+- Management Plane- place where can configure, monitor and manage network devices.
+
+---
+
+- Network device acitivities:
+
+1. Ingress and Egress packets - performed at the lowest layer, which decides what to do with ingress packets and which packets to forward, absed on forwaring tables. Those activities are mapped as Data Plane activities. All routes, switches, modem are part of this plane.
+
+2. Collect, process and manage network information- by doing all that the network device makes the forwarding decisions, which the Data Plane follows. These activities are mapped by Control Plane activities. Some protocols which run on the Control Plane are routing and adjecent device discovery.
+
+3. Monitor and manage network- tools available in the Management Plane- we can interact with th enetwork device to configure it and monitor with tools line SNMP(Simple Network Management Protocol).
+
+---
+
+- In SDN- we decouple the Control Plane with the Data Plane. Control Plane has a centralized view of the overall network, which allows it to create forwarding tables of interest. These tables are then submited to the Data Plane to manage network traffic.
+
+```
+Control plane > forwarding tables > Data plane > network management
+```
+
+![](images/SDN.png)
+
+- Control Plane has well-defined APIs that receive requests from applications to configure the network. After preparing the desired state of the network, the Contol Plane communicates that to the Data Plane(Forwarding Plane) using well-defined protocol like OpenFlow.
+
+- Tools like Ansible or Chef can cingure SDN- which brings agility and flexibility.
+
+---
+
+##### Container Networking
+
+- Overview: Just like VMS, containers need to be able to communicate with containers running on the same host with containers running on different hosts.
+
+- The host is using Linux kernel's network namespace to isolate the network from one container to another on the system. Networking namespaces can be shared between container, a feature extensively used even by Kubernetes.
+
+- When using virtual Ethernet (vEth) with Linux bridging, we can give a virtual network interface to each container and assign it an IP address. We can configure each container to have unique worl-wide IP address with tools like Macvlan and IPVlan.
+
+- Multi-host networking with containers can be achieved by using some form of Overlay network driver, which encapsulates the Layer 2 traffic to a higher layer (examples- Docker Overlay Driver, Flannel, Weave). Other types such as Calico allow implementatin to be multi-host on Layer 3 using BGP- Border Gateway Protocol.
+
+---
+
+- Container Networking Standarts:
+
+1. Container Network Model (CNM):
+
+- Docker is the primary driver for this networking model implemented using the libnetwork project. Libnetwork standardizes the container network creation process through three main build components: network sandbox, one or multiple endpoints and one or multiple networks.
+
+- Libnetwork has different modes. Example:
+
+- Null - NOOP implementation of th edriver. It is used when no networking is required.
+
+- Bridge- Linux-specific bridging implementation based on Linux Bridge.
+
+- Overlay/Swarm - provides multi-host communication over VXLAN.
+
+- Remote- does not provide a driver, Instead it provides a means of supporting drivers over a remote transport by which we can write third-party divers.
+
+2. Container Networking Interface (CNI):
+
+-CNCF project that consist of specification and libraries for writing plugins to configure network interfaces in Linux containers, along with supported plugins. Limited to network connectivity of containers and removing allocated resources when the container is deleted.
+
+---
