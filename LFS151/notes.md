@@ -1729,6 +1729,284 @@ a1798169d2c0        host          host
 
 ---
 
-- Overview of the network drivers:
+#### Overview of the network drivers:
 
-- Bringe Driver:
+---
+
+- **Bringe Driver (BD)**
+
+- Definition of BD: we can emulate a software bridge network on a Linux host. It can forward traffic between two networkds based on a MAC(hardware) addresses.
+
+- By default Docker creates a **docker0** Linux bridge network. Each container running on a single host receives a unique IP address from this bridge network unless we specify some other network with the **--net=** option. Docker uses the Linux's Ethernet (vEth) feature to create a pair of two virtual interfaces, with the interface on the end attached to the container and the interface on the other end of the pair attacked to the **docker0** bridge network.
+
+- Example of displaying network configuration after installing Docker on a single host should reveal th default bridge network as illustrated below:
+
+```
+$ ifconfig
+docker0   Link encap:Ethernet HWaddr 02:42:A9:DB:AF:39
+          inet addr:172.17.0.1 Bcast:0.0.0.0 Mask:255.255.0.0
+          UP BROADCAST MULTICAST MTU:1500 Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:0 (0.0 B) TX bytes:0 (0.0 B)
+```
+
+- creating a new container using the following command, then list its IP address:
+
+```
+$ docker container run -it --name=c1 busybox /bin/sh
+
+/ # ip a
+```
+
+- will return:
+
+```
+1: lo: <LOOPBACK,UP,LOWE_UP> mtu 65536 qdisc noqueue qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+7: eth0@if8: <BROADCAST,MULTICAST,UP, LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue
+    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.2/16 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:acff:fe11:2/64 scope link
+       valid_lft forever preferred_lft forever
+```
+
+- can inspect a network to list detailed information about it. container c1 appears to be connected to the bridge network:
+
+```
+$ docker network inspect bridge
+```
+
+```
+[
+     {
+        "Name": "bridge",
+        "Id": "6f30debc5baff467d437e3c7c3de673f21b51f821588aca2e30a7db68f10260c",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16"
+                }
+            ]
+        },
+        "Internal": false,
+        "Containers": {
+            "613f1c7812a9db597e7e0efbd1cc102426edea02d9b281061967e25a4841733f": {
+                 "Name": "c1",
+                 "EndpointID": "80070f69de6d147732eb119e02d161326f40b47a0cc0f7f14ac7d207ac09a695",
+                 "MacAddress": "02:42:ac:11:00:02",
+                 "IPv4Address": "172.17.0.2/16",
+                 "IPv6Address": ""
+
+...
+
+]
+
+```
+
+- how to create own own custom bridge network with the following command
+
+```
+$ docker network create --driver bridge my_bridge
+```
+
+- it creates a custom Linux bridge on the host system. to create a container and have it use the newly created network, we have to start the container with the **-net=my_bridge** option:
+
+```
+$ docker container run --net=my_bridge -itd --name=c2 busybox
+```
+
+- Docker allows us to attach a container to as many networks as we like. A new container is attached to a network with the --net flag, whiche an already running container is attached to an additional network with the **docker network connect** command.
+
+- A bridge network does not support automatic service discovery, so we rely on the legacy --link option.
+
+![](images/dockernetworking.png)
+
+---
+
+**Null Driver**
+
+- Null Driver Definition- NULL means no networking. If we run a container with the null driver, then it would just get the loopback interface. IT would not be accessible from any other network.
+
+```
+$ docker container run -it --name=c3 --net=none busybox/bin/sh
+
+
+/# ip a
+```
+
+- it will return the following:
+
+```
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 1disc noqueue qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet ::1/128 scope host
+       valid_lft forever preferred_lft forever
+```
+
+---
+
+**Host Driver**
+
+- host driver allows us to share the host machine's network namespace with a container. By doing so, the container would have full access to the host's network, which is not a recommended approach due to its security implication. If you run an **ifconfig** command inside the container it will list all the interfaces of the host system.
+
+```
+$ docker container run -it --name=c4 --net=host busybox /bin/sh
+
+
+/ # ifconfig
+```
+
+- it will return:
+
+```
+docker0   Link encap:Ethernet HWaddr 02:42:A9:DB:AF:39
+
+
+          inet addr:172.17.0.1 Bcast:0.0.0.0 Mask:255.255.0.0
+          inet6 addr: fe80::42:a9ff:fedb:af39/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST MTU:1500 Metric:1
+          RX packets:8 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:8 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:536 (536.0 B) TX bytes:648 (648.0 B)
+
+eth0      Link encap:Ethernet HWaddr 08:00:27:CA:BD:10
+          inet addr:10.0.2.15 Bcast:10.0.2.255 Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:feca:bd10/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST MTU:1500 Metric:1
+          RX packets:3399 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:2050 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:1021964 (998.0 KiB) TX bytes:287879 (281.1 KiB)
+
+eth1      Link encap:Ethernet HWaddr 08:00:27:00:42:F9
+          inet addr:192.168.99.100 Bcast:192.168.99.255 Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:fe00:42f9/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST MTU:1500 Metric:1
+          RX packets:71 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:46 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:13475 (13.1 KiB) TX bytes:7754 (7.5 KiB)
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1 Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING MTU:65536 Metric:1
+          RX packets:16 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:16 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1
+          RX bytes:1021964376 (1.3 KiB) TX bytes:1376 (1.3 KiB)
+
+vethb3bb730 Link encap:Ethernet HWaddr 4E:7C:8F:B2:2D:AD
+          inet6 addr: fe80::4c7c:8fff:feb2:2dad/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST MTU:1500 Metric:1
+          RX packets:8 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:16 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:648 (648.0 B) TX bytes:1296 (1.2 KiB)
+```
+
+---
+
+**Sharing Container Network Namespaces**
+
+- its similar to host. we can share network namespaces among containers. as a result two or more containers can share the same network stack and reach each other through localhost.
+
+- command:
+
+```
+$ docker container run -it --name=c5 busybox /bin/sh
+
+/ # ip a
+```
+
+- it will return:
+
+```
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+        valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+        valid_lft forever preferred_lft forever
+
+10: eth0@if11: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue
+    link/ether 02:42:ac:11:00:03 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.3/16 scope global eth0
+        valid_lft forever preferred_lft forever
+    inet6 fe80::42:acff:fe11:3/64 scope link
+        valid_lft forever preferred_lft forever
+```
+
+- If we start a new container with the --net=container:CONTAINER option, the second container will show the same IP address.
+
+- command:
+
+```
+$ docker container run -it --name=c6 --net=container:c5 busybox /bin/sh
+/ # ip a
+```
+
+- return result:
+
+```
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+        valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+        valid_lft forever preferred_lft forever
+
+12: eth0@if13: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue
+    link/ether 02:42:ac:11:00:03 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.3/16 scope global eth0
+        valid_lft forever preferred_lft forever
+    inet6 fe80::42:acff:fe11:3/64 scope link
+        valid_lft forever preferred_lft forever
+```
+
+- Kubernetes uses the feature to share the same network namespaces among multiple containers in a pod.
+
+---
+
+**Multi-Host Networking**
+
+- Docker supports multi-host networking which allows containers from one Docker host to communicate with containers from another Docker host when they are part of a Swarm. By default Docker supports two drivers for multi-host networking.
+
+- Docker uses overlay driver- to encapsulate the container's IP packet inside a host's packet while sending it over the wire. While receiving, Docker on the other host decapsulates the whole packet and forwards the container's packet to the reveiving container. Theis is accomplished with libnetwork, a built-in VXLAN-based overlay network driver.
+
+- Image of the Docker Overlay Driver:
+
+![](images/dockeroverlay.png)
+
+---
+
+- **Macvlan** driver - Docker assigns a MAC(physical) address for each container and makes it appear as a physical device on the network. As the containers appears in the same physical network as the Docker host, we cannassign them in an IP from the network subnet as the host.
+
+- Due to this direct container-to-container communication is enabled between different hosts. Containers can also directly talk to hosts. However, we need hardware support to implement the Macvlan driver.
+
+---
+
+-- **Third-Party Network Plugins**
+
+- There are two types of plugins that we will look at and also we can write our own driver with Docker remote driver APIs.
+
+- OpenStack's Kuryr plugin- implements libnetwork's remote driver API- by utilizing Neutron.
+
+- Wave Net Network Plugin- provides Multi-Host container networking for Docker. It also provides service discovery and does not require any external cluster store tosave the networking configuration. Can be used with Docker Deployment.
+
+---
