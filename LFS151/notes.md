@@ -2052,3 +2052,16 @@ $ podman network inspect bridgenet
 - The pods in the host network of a Node can communiate with all pods on all nodes without NAT ( for linux or other supporting PODS running on the host network)
 
 ---
+
+**Cloud Foundry: Container-to-Container Networking**
+
+- By default, Gorouter routes the external and internal traffic to different Cloud Foundry components. The container-to-container networking feature of CF enables application instances to communicate with each other directly. However, when the container-to-container networking feature is disabled, all application-to-application traffic must go through the Gorouter.
+
+- Container-to-container networking is made possible by several components of the CF architecture:
+
+  - Network Policy Server: A management node hosting a database of app traffic policies.
+  - Garden External Networker: Sets up networking for each app through the CNI plugin, exposing apps to the outside, by allowing incoming traffic from Gorouter, TCP Router, and SSH Proxy.
+  - Silk CNI Plugin: For IP management through a shared VXLAN overlay network that assigns each container a unique IP address. The overlay network is not externally routable and it prevents the container-to-container traffic from escaping the overlay.
+  - VXLAN Policy Agent: Enforces network policies between apps. When creating routing rules for network policies, we should include the source app, destination app, protocol, and ports, without going through the Gorouter, a load balancer, or a firewall.
+
+---
