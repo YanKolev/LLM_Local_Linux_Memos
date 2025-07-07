@@ -2107,3 +2107,25 @@ $ podman network inspect bridgenet
 - Cepth File system _CephFS_ : provides POSIX- compliant distributed filesystem on top of Ceph. Relies on Ceph MDS.
 
 ---
+
+**GlusterFS**
+
+- FOSS scalable network file system. Can utilize common off-the-shelf hardware.Used for bandwith-intensive tasks.
+
+- GlusterFS Volumes: to create a shared storage, we need to start by grouping the machines in a trusted pool. When we group the directories- called bricks- from those machines is a GlusterFS volume-using Filesystem in a Userspace (FUSE).
+
+- GlusterFS supports different types of volumes:
+
+  - Distributed GlusterFS volume
+  - Replicated GlusterFS volume
+  - Distributed replicated GlusterFS volume
+  - Dispersed GlusterFS volume
+  - Distributed dispersed GlusterFS volume.
+
+![](images/glusterfs.png)
+
+- GlusterFS does not have a centralized metadata server. It uses an elastic hashing algorith to store files on bricks.
+
+- It can be accessed usin one of the following methods: NAtive FUSE mount, Network File System (NFS), Common internet File system (CIFS).
+
+---
