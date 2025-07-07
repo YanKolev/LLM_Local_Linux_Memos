@@ -2010,3 +2010,45 @@ $ docker container run -it --name=c6 --net=container:c5 busybox /bin/sh
 - Wave Net Network Plugin- provides Multi-Host container networking for Docker. It also provides service discovery and does not require any external cluster store tosave the networking configuration. Can be used with Docker Deployment.
 
 ---
+
+**Podman network Drivers**
+
+- Podman network- allows us to list network,s create custome networks, inspect them attach containers to to them and remove them when no longer needed. Podman supports the creation of CNI- compliant container networks.
+
+- Podman supports drivers from different network types: The default is the bridge driver, usable in both rootless and rooted modes.
+
+- In Rooted mode, two additional drivers can be used, the macvlan and ipvlan drivers, with options such as parent to designate a host device and the mode to be set on the interface. The macvlan and ipvlan drivers are only available in rooted mode because they require access to the host network interfaces, otherwise the rootless networking needs a separate network namespace.
+
+- A mix of rootless ($) and tooted network operations can be seen in the example:
+
+```
+$ podman network ls
+
+$ podman network create --subnet 192.168.20.0/24 --gateway 192.168.20.3 bridgenet
+
+$ podman network inspect bridgenet
+
+# podman network create -d macvlan -o parent=eth0 macvnet
+
+# podman network inspect macvnet
+```
+
+---
+
+**Kubernetes Networking**
+
+- Smallest deployment unit in Kubernetes is a Pod, which may include one or more containers. Kubernetes assigns a unique IP address to each Pod. Containers in a Pod share the same network namespace, thus sharing the same IP address of the pod, and can refer to each other by localhost.
+
+- Containers in a POD can expose unique ports and become accessible through the same pod IP address.
+
+- As each POD gets a unique IP, Kubernetes assumes that pods should be able to communicate with each other, irrespecitve of the nodes they get scheduled on. We can achieve this in a couple of ways:
+
+- Container Network interface (CNI) specification for container networking together with the following requirements that need to be implemented by Kubernetes networking driver developers, and they are:
+
+- All podes on a node can communicate with all pods on all nodes without NAT.
+
+- Agents on a Node (system daemons, kubelet) can communicatite with all pods on that NODE.
+
+- The pods in the host network of a Node can communiate with all pods on all nodes without NAT ( for linux or other supporting PODS running on the host network)
+
+---
