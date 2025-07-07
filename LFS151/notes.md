@@ -2065,3 +2065,45 @@ $ podman network inspect bridgenet
   - VXLAN Policy Agent: Enforces network policies between apps. When creating routing rules for network policies, we should include the source app, destination app, protocol, and ports, without going through the Gorouter, a load balancer, or a firewall.
 
 ---
+
+## Software-defined storage and storage management
+
+---
+
+#### Overview of Storage solutions
+
+- Definition: Software-defined storage (SDS) represents storage virtualization aimed to separate the underlying storage hardware from the software that manages and provisions it. Physical hardware from various sources can be combined and managed with software, as a single storage pool. SDS replaces static and inefficient storage solutions backed directly by physical hardware with dynamic, agile, and automated solutions. In addition, SDS may provide resiliency features such as replication, erasure coding, and snapshots of the pooled resources. Once the pooled storage is configured in the form of a storage cluster, SDS allows multiple access methods such as File, Block, and Object.
+
+![](images/sds.png)
+
+---
+
+**Ceph**
+
+- Ceph is a unified, distributed storage system designed for excellent perfomance, reliability and scalability.
+
+- It provides- object, block and filesystem storage in a single unified storage cluster.
+
+- Everything in Ceph is stored as objects. It uses CRUSH ( Controlled Replication Under Scalable Hashing) algo to deterministically find, write and read the location of objects.
+
+- Architecture can be represented as following:
+
+![](images/ceph.png)
+
+- Reliable Autonomic Distributed Object Store (RADOS) :
+
+- Is the object store which stores the objects. This layer makes sure that data is always in a consistent and reliable state. It performs operations like replication, failure detection, recovery, data migration and rebalancing across cluster nodes. Has 3 major components:
+
+  1. OSD- Object Storage Device: the actual user content is written and retrieved with read operations. One OSD daemon is typically tied to one physical disk in the cluster.
+  2. MON- Ceph Monitors: Monitors are responsible for monitoring the cluster state. All cluster notes report to Monitors. Monitors map the cluster state through the OSD, Place groups (PG), CRUSH and Monitor maps.
+  3. MDS- Ceph Metadata Server- used only but CephFS- to store the file hierarchy and mdetada for files.
+
+- Librados: library that allows direct access to RADOS from languages- C, C++, Python, Java, PHP, etc. Ceph Block Device, RADOSGW, and CephFS
+
+- Ceph Block Device _RBD_: Provides block interfrace for Ceph- thin provisioning and snapshots.
+
+- RADOS Gateway _RADOSGW_: Provides REST API for ceph- compatible with AWS S3 and Open Stack Swift.
+
+- Cepth File system _CephFS_ : provides POSIX- compliant distributed filesystem on top of Ceph. Relies on Ceph MDS.
+
+---
