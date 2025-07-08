@@ -2129,3 +2129,70 @@ $ podman network inspect bridgenet
 - It can be accessed usin one of the following methods: NAtive FUSE mount, Network File System (NFS), Common internet File system (CIFS).
 
 ---
+
+#### Docker volumes
+
+- Dockerss option for software-defined storage.
+
+- Containers are ephemeral in nature, meaning that all data stored inside the container''s filesystem would be lost when the contaienr is deleted. It is best practice to store data outside the container, which keeps the data accessible even after the container is deleted.
+
+- In a multi-host or clustered environment, containers can be scheduled to run on any host. We need to make sure the data volume required by the container is available on the host on which the container is scheduled to run.
+
+- Volume is used persistent data, that allows vendors to support their storage to its ecosystem Plugins.
+
+---
+
+**Docker Storage Drivers**
+
+- Docker uses copy-on-write mechanism when containers are started from container images. The image is protected from direct edits by being saved on a read-only filesystem layer. All of the changes performed by the container to the image filesystem are saved on a writable filesystem layer of the container. Docker images and container are stored on the host system and we can choose the storage drievr for Docker Storage, depending in our requirements.
+
+- Docker supports the following storage drivers on Linux:
+
+  - BtrFS : Supports snapshots
+  - Device Mapper: For earlier CentOS nad RHEL releases.
+  - Fuse-Overlay: Preferred for rootless mode.
+  - Overlay2: Preffered for all supported linux distros.
+  - VFS: Virtual File System- for testing only, not production
+  - ZFS: Supports snapshots.
+
+---
+
+**Managing Data in Docker**
+
+- There are 3 different variants to support data in Docker:
+
+  - Volumes: stored in **/var/lib/docker/volumes** directory and they are directly managed by Docker. Volumes are recommended method of storing persistent data in Docker.
+  - Bind Mounts: allow docker to mount any file or directory from the host system into a container.
+  - Tmpfs: Stored in the host's memory only, but not persisted on its filesystem, recommended for non-persistent state data.
+
+- For the cases of volumes and bind mounds, Docker bypasses the Union Filesystem by using the copy-on-write mechanism- it writes directly to the host direcotry. Docker also supports third party colume plugins.
+
+---
+
+**Docker Containers with Volumes**
+
+- In docker, a container with mounted volume can be created sing the:
+
+```
+docker container run/docker container create command:
+
+$ docker container run -d --name web -v webvol:/webdata myapp:latest
+```
+
+- this comand would create a docker volume inside the Docker working directory **/var/lib/docker/volumes/webvol/\_data** on the host system. mounted on the container at the **/webdata** mount point. We may list the exact mount path via the docker container inspect command:
+
+```
+$ docker container inspect web
+```
+
+- in docker, a container with a bind mount can be created by using either the docker container run or the docker container create commands:
+
+```
+$ docker container run -d --name web - /mnt/webvol:/webdata myapp:latest
+```
+
+- it will mount the hosts's **/mnt/webvol** directory to the webdata mount poin on the container as its is being started.
+
+- Volume plugins are especially helpful when we migrate a stateful container, like a dataabse on a multi-host environment. In such an environent, we have to make sure that the volume attached to a container is also migrated to the host where the container is migrated or started afresh.
+
+---
