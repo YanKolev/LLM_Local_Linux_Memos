@@ -2248,3 +2248,77 @@ $ podman container run -d --name=web -v /mnt/webvol:/webdata myapp:latest
 - It mounts the host's /mnt/webvol directory to the /webdata mount point on the container as it is being started.
 
 ---
+
+#### Kubernetes Volumes
+
+**Kubernetes Volume Management**
+
+- Kubernetes uses volumes to attach external storage to containers managed by Pods. A volumes is essentially a directory, backed by a storage medium. The storage medium and its contents are determined by the volume type.
+
+- example diagram: pod with 2 container, a file puller and a web server sharing a storage volume.
+
+![](images/kubernetesvolumes.png)
+
+- A volume in k8s is linked to a pod and shared among containers of that POD. The volume has the same lifetime as the Pod but it outlives the containers of that pod, meaning-> data remains presrved across container restarts. However, once the POD is deleted, the volume and all its data are lost as well.
+
+- A volume may be shared by some f the containerrs running in the same POD.
+
+---
+
+**Types of Volumes**
+
+- A volume mounted inside a POD is a backed by an underlying volume type. A volume type decides the properties f the volume, such as size and content type.
+
+- K8s is migrating from in-tree always available storage plugs apprach . New approach is based on third-party drivers implementing the container storage interface (CSI) and it impacts most cloud storage types.
+
+- Different types: AWS ElastickBlockStore, AzureDisk, AzureFile, cephfs, configMap, emptyDir, gcePersistentdist, hostPath, nfs, persistentVolumeClaim, rbd, seret,cspherevolume.
+
+---
+
+**Persistent Volumes**
+
+- usually the storage infra is managed by the storage/sysadmins while the end-user recives precise instruction only on how to use the storage.
+
+- In k8s, this is achieved with the persistent volume subsystem, which provides APIs to manage and consume the storage. To manage the volume it uses the PersistentVolume (PV) resource type and to consume it, it uses the PersistentVolumeClaim (PVC) resourse type.
+
+- Peristent volumes can be provisioned statically or dynamically. example below: k8s admin has statially created several PVs.
+
+![](images/k8sstaticvolume.png)
+
+- Dynamic provisioning of Persistent Volumes- K8s uses the StorageClass resource, which containers predefined provisioners and parameters for PV creation. With PVC, a user sends the request for dynamic PV creation, which gets wired to the StorageClass resource.
+
+---
+
+**Persistent Volumes Claim**
+
+- PVC- is a reques for storage by a user. Users reuqest for PV resoures based on the size, access modes and volume type. Once a suitable PV i found, its bound to PVC.
+
+- After a successful bind, the PVC can be used in a POD, to allow the containers's access to the PV.
+
+![](images/k8spvc.png)
+
+- Once a user completed his/her tasks and the POD is deleted, the PVC may be detached from the PV releasing it for possible future use. NB! PVC may be detached from the PC once all the pods using the same PVC have completed their activities and have been deleted. Once released, the PV can be either deleted, retainer or recycled for future usage, all based on the relaim policy the user has defined on the PV.
+
+---
+
+**Distributed Storage Management**
+
+- The Volume property of a Pod definition, or the PersistentVolume paired with a matching PersistentVolumeClaim seem to be quite simple to manage with the help of the Kubernetes supported storage plugins. This is true, when we have to manage only a handful of such resources. Once our application grows to hundreds, possibly thousands of distinct microservices, managing an equally large number of PersistentVolume and PersistentVolumeClaim objects could become very challenging. In addition, lots of very specific storage requirements will definitely not help to improve in any way the management process.
+
+- As storage platforms and services mature, users may be faced with increased complexity and the possibly of vendor lock-in which would tightly couple a cluster's storage resources with cloud storage services. As a result, it becomes nearly impossible to pick up the cluster and move it to another infrastructure, without adversely impacting applications, requiring manual reconfiguration of many definition manifests for PersistentVolume and PersistentVolumeClaim objects, StorageClass definitions, and possibly Pod definitions as well.
+
+- Kubernetes best practices recommend that we should aim for decoupling as much as possible, that includes decoupling our applications from the underlying storage infrastructure. This can be achieved by introducing a new abstraction layer between the Kubernetes storage resource definitions and the storage infrastructure - storage interfaces that are not available as Kubernetes native storage plugins. Open source projects that implement such interfaces are Rook and Longhorn.
+
+---
+
+**Rook**
+
+- Rook is graduated project of the Cloud Native Computing Foundation (CNCF) capable of managing File, Block and Object storage for Kubernetes clusters. Rook simplifies and automates the deployment, scalability, self-healing, disaster recovery, management, and monitoring of distributed storage systems such as Ceph. It minimizes data loss through distribution and replication, and it optimizes the usage of commodity hardware in favor of costly storage solutions therefore preventing possible vendor lock-in scenarios.
+
+![](images/rook.png)
+
+- Longhorn : s an incubating project of the Cloud Native Computing Foundation (CNCF) originally developed by Rancher; it implements highly available persistent storage for Kubernetes. Longhorn is capable of managing cloud-native persistent block storage at reduced costs, unlike proprietary cloud storage service alternatives. It has built-in backups and incremental snapshots capabilities, together with cross-cluster disaster recovery, much desired features for today's multi-cluster Kubernetes deployment models.
+
+![](images/longhorn.png)
+
+---
