@@ -2196,3 +2196,55 @@ $ docker container run -d --name web - /mnt/webvol:/webdata myapp:latest
 - Volume plugins are especially helpful when we migrate a stateful container, like a dataabse on a multi-host environment. In such an environent, we have to make sure that the volume attached to a container is also migrated to the host where the container is migrated or started afresh.
 
 ---
+
+#### Podman Volumes
+
+- Just as Docker, Podman also uses the Volume feature to store persistent data, together with Volme drivers.
+
+**Types of Podman Storage**
+
+- Podman is also capable of using the copy-on-write mecanism when containers are run. Container image is saved on a read-only filesystem layer while all changes performed by the container are saaved on a writable filesystem layer of the container.
+
+- Supported types below: AUFS (another union file system), BtrFS, ThinPool (device mapper), Overlay, VFS (Virtual File system), ZFS.
+
+---
+
+**Managing Data in Podman**
+
+- Volumes: stored under the /var/lib/containers/storage/volumes directory for root an under the $HOME/.local/share/containers/storage/volumes for regular users. Direcly managed by Podman, and represent the recommended method of storing persistent data with Podman.
+
+- Bind: Podman can mount a named volume from the host system into the container.
+
+- Tmpfs : it is stored in the hosts memory only but not persisted on its filesystem, and the content is erased when the container is stopped.
+
+- Image- To mount an OS image fie.
+
+- Devpts- to mount a filesystem storing pseudoterminal (telnet,ssh,xterm) data.
+
+---
+
+**Podman Containers with Volumes**
+
+- podman container with a mounted volume can be created with the following commands:
+
+```
+$ podman container run -d --name=web -v webvol:/webdata myapp:latest
+```
+
+- The above command would create on the host system a volume in the Podman working directory of the current user $HOME/.local/share/containers/storage/volumes/webvol/\_data, or in the /var/lib/containers/storage/volumes/webvol/\_data if run by root, and mount it on the container at the /webdata mount point.
+
+- to display the mount we need the follwing command:
+
+```
+$ podman container inspect web
+```
+
+- A bind mount can be achieved with either the podman container run or the podman container create command:
+
+```
+$ podman container run -d --name=web -v /mnt/webvol:/webdata myapp:latest
+```
+
+- It mounts the host's /mnt/webvol directory to the /webdata mount point on the container as it is being started.
+
+---
