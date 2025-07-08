@@ -2322,3 +2322,19 @@ $ podman container run -d --name=web -v /mnt/webvol:/webdata myapp:latest
 ![](images/longhorn.png)
 
 ---
+
+#### Cloud Foundry Volume Service
+
+- On Cloud foundty, apps connect to other service ia a service marketplae, Each service has a service broker, which encapsulates the logi for creating, managing and binding services to applications.
+
+- With volume services, the broker allows CF apps to attach external storage
+
+![](images/cfvolumes.png)
+
+- With the volume bind command, the service broker issues a volume mount instruction which instructs the Diego scheduler to schedule the app instances on cells which have the appropriate volume driver. In the backend, the volume driver gets attached to the device. Cells then mount the device into the container and start the app instance.
+
+-nfs-volume-release: nfs-volume-release allows for easy mounting of external Network File System (NFS) shares for Cloud Foundry applications.
+
+- smb-volume-release: smb-volume-release allows for easy mounting of external Server Message Block (SMB) shares for Cloud Foundry applications.
+
+---
