@@ -2450,3 +2450,29 @@ run:
 - Concourse is driven by the fly CLI and a web UI. we can use fly to login to our Concourse setup and execute tasks. while the web will help visualize jobs and resources.
 
 ---
+
+##### Cloud Native CI/CD
+
+- Overview: In the Cloud Native approach, we design a package and run applications on top of our infrastructure (on-premises or public cloud) using operations tools like containers, container orchestration, and services like continuous integration, logging, monitoring, etc. Kubernetes integrated with several tools meets our requirements to run Cloud Native applications.
+
+---
+
+##### Tools
+
+- Helm: Helm is a popular package manager for Kubernetes. Helm packages Kubernetes applications into Charts, with all the artifacts, objects, and dependencies an entire application needs in order to successfully be deployed in a Kubernetes cluster. Using Helm Charts, which are stored in repositories, we can share, install, upgrade, or rollback an application that was built to run on Kubernetes. Helm is a graduated project of the Cloud Native Computing Foundation (CNCF).
+
+- Skaffold: is a tool from Google that helps us build, push, and deploy code to the Kubernetes cluster. It supports Helm, and it also provides building blocks and describes customizations for a CI/CD pipeline.
+
+- Argo: is a cloud native family of tools aimed at workflow management on Kubernetes clusters. The Argo Workflows tool is responsible for orchestrating multi-step task sequences as CI/CD pipelines on Kubernetes, while also managing Kubernetes clusters, complemented by Argo CD to perform GitOps, and Argo Rollouts for advanced deployment strategies. Argo is a graduated project of the Cloud Native Computing Foundation (CNCF).
+
+- Flux: is a set of open source tools that enable GitOps and continuous deployment (CD) on Kubernetes. Flux integrates with Helm, GitHub, GitLab, Harbor, and it can be extended with components from the GitOps Toolkit for source control management, Kubernetes kustomization, Helm, notifications, and image management automation. Flux is a graduated project of the Cloud Native Computing Foundation (CNCF).
+
+- Gitlab: is a DevOps platform that incorporates continuous integration (CI), automated delivery pipelines, enables GitOps and DevSecOps. For GitOps it enforces version control of the infrastructure configuration code, it integrates with Terraform to allow for easy deployment from bare metal, VMs, containers, to the public cloud. GitLab enables DevSecOps with built-in security and compliance through automated vulnerability scans, static and dynamic application security testing, and implementing supply chain security.
+
+- JFrog Pipelines: A highly optimized CI/CD tool that automates the end-to-end orchestration of software builds, testing, deployment. It uses containers to isolate releases, supporting both legacy and modern cloud native applications. JFrog Pipelines are offered as a free service with monthly limitations, or paid subscription for teams and enterprises.
+
+- CircleCI: is a fast, highly scalable, reliable and extensible CI/CD tool that builds pipelines to Kubernetes. It provides native Docker support and it integrates with Kubernetes services and tools such as GKE, Amazon EKS, AKS, Red Hat OpenShift, Kublr, Nirmata, and Helm. It uses orbs to package CircleCI configuration defining commands, executors and jobs. CircleCI is offered free with limitations on jobs and build times, or as a paid service for enterprises.
+
+- Jenkins X: is a very popular tool for CI/CD that can be used on Kubernetes as well. But the Jenkins team built a new cloud-native CI/CD tool, Jenkins X, from the ground up. The new tool leverages Terraform for infrastructure management, Helm for GitOps, open source or cloud secret management services, and Tekton for cloud native pipeline orchestration. Collectively they help to deploy a CI/CD pipeline directly on Kubernetes, simplify and automate a full CI/CD pipeline. In addition, Jenkins X automates the preview of pull requests for fast feedback before changes are merged, and then it automates the environment management and the promotion of new application versions between different environments. Jenkins X is an incubating project while Tekton is a graduated project of CD Foundation.
+
+- Spinnaker: is an open source multi-cloud continuous delivery platform, originally created by Netflix, for releasing software changes with high velocity. It supports all the major cloud providers like Amazon Web Services, Microsoft Azure, Google Cloud Platform and OpenStack and it integrates with Kubernetes natively. Spinnaker is an incubating project of the CD Foundation.
