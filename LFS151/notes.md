@@ -2420,3 +2420,33 @@ $ podman container run -d --name=web -v /mnt/webvol:/webdata myapp:latest
 - Travis CI supports most languages, such as C, C++, C#, Visual Basic, Go, Java, Matlab, Perl, PHP, Python, Ruby, Rust, just to name a few.
 
 ---
+
+##### Concourse
+
+---
+
+**Overview**
+
+- Concourse is open source CI/CD system , written in Golang.
+
+- With it we run series of tasks to perform desired operations. For containerization it uses Docker and Docker-Compose, while the series of tasks together with resources allow us to build a job or pipeline.
+
+- Example of task file:
+
+```
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: busybox}
+
+run:
+  path: echo
+  args: [hello world]
+```
+
+- With the task config we are creating a Linux container using the busybox container image from docker hub and inside that container we would run the echo hello world program.
+
+- Concourse is driven by the fly CLI and a web UI. we can use fly to login to our Concourse setup and execute tasks. while the web will help visualize jobs and resources.
+
+---
