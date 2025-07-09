@@ -2380,3 +2380,43 @@ $ podman container run -d --name=web -v /mnt/webvol:/webdata myapp:latest
 - Native integration for branch and pull requests to maximize collaboration ot Github and Bitbucket.
 
 ---
+
+##### Travis CI
+
+---
+
+**Overview**
+
+- a hosted, distributed CI solution for projects hosted on Github, Bitbucket.
+
+- to run it, you need to link a github account with travis and selcet the project, then create a **.travis.yml** file which defines ho our build should be executed step-by-step.
+
+---
+
+**Build and Charateristics**
+
+- Typical job build with Travis consist of two major phases :
+
+  1. install: to install any dependency on pre-requisite
+  2. script: to run the build sript.
+
+- steps can e added and defined in the .travis.yml file. steps with asterisk(\*) are optional:
+
+  - before_install
+  - install
+  - before_script
+  - script
+  - before_cache \*
+  - after_success or after_failure
+  - before_deploy \*
+  - deploy \*
+  - after_deploy \*
+  - after_script
+
+- Travis CI supports various databases, like MYSQL, PostgreSQL, MariaDB, MongoDB, CouchDB, Redis, Cassandra, and Memcached.
+
+- The build phase is supported by various isolation environments, such as Docker, LXD containers, Linux VMs, and various operating systems such as MacOS, Ubuntu Linux, Windows Server, and FreeBSD.
+
+- Travis CI supports most languages, such as C, C++, C#, Visual Basic, Go, Java, Matlab, Perl, PHP, Python, Ruby, Rust, just to name a few.
+
+---
