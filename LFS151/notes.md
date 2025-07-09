@@ -2476,3 +2476,106 @@ run:
 - Jenkins X: is a very popular tool for CI/CD that can be used on Kubernetes as well. But the Jenkins team built a new cloud-native CI/CD tool, Jenkins X, from the ground up. The new tool leverages Terraform for infrastructure management, Helm for GitOps, open source or cloud secret management services, and Tekton for cloud native pipeline orchestration. Collectively they help to deploy a CI/CD pipeline directly on Kubernetes, simplify and automate a full CI/CD pipeline. In addition, Jenkins X automates the preview of pull requests for fast feedback before changes are merged, and then it automates the environment management and the promotion of new application versions between different environments. Jenkins X is an incubating project while Tekton is a graduated project of CD Foundation.
 
 - Spinnaker: is an open source multi-cloud continuous delivery platform, originally created by Netflix, for releasing software changes with high velocity. It supports all the major cloud providers like Amazon Web Services, Microsoft Azure, Google Cloud Platform and OpenStack and it integrates with Kubernetes natively. Spinnaker is an incubating project of the CD Foundation.
+
+---
+
+## Tools for Cloud Infrastructure: Configuration Management
+
+---
+
+##### Ansible
+
+---
+
+**Overview**
+
+- Red hat product, easy-to use, open source configuration management tool. It is agentless tool that works through SSH. Ansible can automate infrastructure provisioning (on-premises or public cloud), application deployment and orchestration.
+
+---
+
+**Deployment Workflow**
+
+- Ansible's advantage is the agentless architecture. Ensures that maintenance tasks are restricted to a single management node, and not to every managed instance in the cluster.
+
+- All updates to managed nodes are pushed via SSH, to lists of nodes that are managed through inventory files. To list the nodes which we want to manage in an inventory file we need the following command:
+
+```
+[webservers]
+www1.example.com
+www2.example.com
+
+[dbservers]
+db0.example.com
+db1.example.com
+
+```
+
+![](images/ansiblemultinode.png)
+
+- The nodes can be grouped togeher as shown. Ansibled supports dynamic invetory files for cloud providers like AWS and OpenStack. The management node connects to these nodes with a password or it can do passowrdless login, using SSH keys.
+
+- Ansible ships with a default set of modules, like packaging network which can be executed directly via Playbooks. Creation of custom modules is also possible.
+
+---
+
+**Playbooks**
+
+- THey are Ansible's configuration, deployment and orchestration language.
+
+- Example with multiple tasks based on roles
+
+```
+# This playbook deploys the whole application stack in this site.
+- name: apply common configuration to all nodes
+  hosts: all
+  remote_user: root
+
+  roles:
+    - common
+
+- name: configure and deploy the webservers and application code
+  hosts: webservers
+  remote_user: root
+
+  roles:
+    - web
+
+- name: deploy MySQL and configure the databases
+  hosts: dbservers
+  remote_user: root
+
+  roles:
+    - db
+```
+
+- sample tasks in playbook:
+
+```
+# These tasks install http and the php modules.
+
+- name: Install http and php etc
+  yum: name={{ item }} state=present
+  with_items:
+   - httpd
+   - php
+   - php-mysql
+   - git
+   - libsemanage-python
+   - libselinux-python
+
+- name: insert iptables rule for httpd
+  lineinfile: dest=/etc/sysconfig/iptables create=yes state=present regexp="{{ httpd_port }}" insertafter="^:OUTPUT "
+              line="-A INPUT -p tcp --dport {{ httpd_port }} -j ACCEPT"
+  notify: restart iptables
+
+- name: http service state
+  service: name=httpd state=started enabled=yes
+```
+
+- Ansible management node connects to the nodes listed in the inventory file and runs the tasks included in the playbook. A management node can be installe on any Unix based systemd like Linux or macOS. It can manage any node which supports SSH and Python.
+
+- Ansible Galaxy is a free side for sharing Ansible roles.
+
+- Ansible enterprise product- Ansible Automation Platform.
+
+---
