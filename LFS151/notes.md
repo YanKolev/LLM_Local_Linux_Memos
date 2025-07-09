@@ -2338,3 +2338,45 @@ $ podman container run -d --name=web -v /mnt/webvol:/webdata myapp:latest
 - smb-volume-release: smb-volume-release allows for easy mounting of external Server Message Block (SMB) shares for Cloud Foundry applications.
 
 ---
+
+### DEVOPS AND CI/CD
+
+---
+
+##### Jenkins
+
+- Overview:
+
+- popular automation tools, open source, written in Java tht supports CICD.
+
+- versions: Cloudbees Jenskis- primary sponsor, large variety. Servana- managed service provider of Jenskins, using Cloudbees but with their own data centers. All other cloud services providers also support Jenskins.
+
+---
+
+- Jenskins Functionality: supports all the Apache flavors. As well as build of a pipeline- a concept representing an entire application's lifecycle. Jenskis pipeline is a series of plugins that collectively implement cd.
+
+- Notable features are:
+
+  1. Code: Pipelines are implemented in code and typically checked into source control, giving teams the ability to edit, review and iterate upon their delivery pipeline.
+
+  2. Durable: Pipelines can survive both planned and unplanned restarts of your jenkins master.
+
+  3. Pausable: Pipelines can optionally stop and wait for a human input or approval before completing the jobs for which they were built.
+
+  4. Versatile: Pipelines support complex real-world CD requirements, including the ability to fork or join, loop and work in parallel with each other.
+
+  5. Extensivle: The pipeline plugin supports custom extensions to its DSL (domain scripting language) and multiple options for integration with other plugins.
+
+- Pipeline Flowchart:
+
+![](images/jenkinspipeline.png)
+
+- To reduce complexity Jenkins introduced Blue Ocean, UI designed to improve the user experience by simplifying the Pipeline build process. Blue Ocean introduced the following features:
+
+- Sophisticated visualization- comprehensive display of the CD pipeline status.
+- Pipeline Editor that visually and intuitively guides the user through the Pipeline build process.
+- Personalization- to cater to each other's role.
+- Pinpoint precision by highlighting areas where user's attention is required.
+- Native integration for branch and pull requests to maximize collaboration ot Github and Bitbucket.
+
+---
