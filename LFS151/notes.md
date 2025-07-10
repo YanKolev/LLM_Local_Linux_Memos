@@ -2920,3 +2920,9 @@ instance_groups:
 - default key-value store for Apache Mesos, high availability, offers hierarchiral key-value store for distributed systems.
 
 ---
+
+---
+
+## Tools for Cloud Infrastructure: Image Building
+
+---
