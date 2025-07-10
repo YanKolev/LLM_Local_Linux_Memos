@@ -2579,3 +2579,79 @@ db1.example.com
 - Ansible enterprise product- Ansible Automation Platform.
 
 ---
+
+---
+
+##### Puppet
+
+---
+
+**Puppet Overview**
+
+- open source confiuration management tool, it uses agent/server model to configure the systems. The agent is reffered to as the Puppet Agent and the server is reffered as the puppet Server. Puppet also supports the agentless model to manage target systems.
+
+---
+
+**Puppet Agent**
+
+- Puppet agent needs to be intalled on each ysstem we want to maage/configure with Puppert. It can be installed in linux, windows and macOS.
+
+- Agent is responsible for :
+
+  1. Connecticng securely to the puppet server to pull updates and a series f instructions in a file referred to as the Catalog File.
+  2. Performing operations from the Catalog File to get to the the desired state.
+     3.Sending back the status to the Puppet Server.
+
+---
+
+**Puppet Server**
+
+- Puppet sever can be installed only on Unix-based system. Its responsibe for:
+  1. Compiling the Catalog file for hosts based on the system, configuration, manifest file.
+  2. Sending the Catalog File to Agents when they query the server.
+  3. Storing information about the entire environment, such as host information, metadata(authentication keys etc)
+  4. Gathering report from each agent and then preraprin the overall report.
+
+---
+
+**Catalog File**
+
+- Puppet prepares a Catalog File based on the manifest file. A manifet file is created using the pippet code like :
+
+```
+user { 'student':
+  ensure     => present,
+  uid        => '1001',
+  gid        => '1001',
+  shell      => '/bin/bash',
+  home       => '/home/student'
+}
+```
+
+- Which defines and creates a user studet with:
+
+  - UID//GID as 1001
+  - login shell is set to bin/bash
+  - home directory is set to /home/sudent.
+
+- Manifest file can have one or more sections of code, as we exeplfified above, and each of these sections of code can have a sigurature like the following:
+
+```
+resource_type { 'resource_name'
+  attribute => value
+  ...
+}
+```
+
+- Puppet defines resources on a system as Tyype which can be file, user, package, service etc. Check documentation.
+- After processing manifest file the puppet server prepares the catalog file based on the target platform
+
+---
+
+**Puppet Tools**
+
+- Centralized reporting with PuppetDB- helps generate reports, search a system etc.
+- live system management
+- Puppert forge: ready-to use modules for manifest fies from the community.
+
+---
