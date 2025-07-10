@@ -2892,3 +2892,21 @@ instance_groups:
 - service discovery in conjunction with tools like skyDNS, metadata and configuration data for service discovery, container management.
 
 ---
+
+**Consul KV**
+
+- made of hashicorp, distributed highly-available system which can be used for service discovery ad configuration.
+
+- provides also: service discovery in conjunction with DNS and HTTP, health checks for services and nodes, multi-datacenter support.
+
+- can be configured on a single node, a multi-node configuration is recommended. built on to of Serf, which provides membership, failure detection and event broadcast.
+
+- Runs on Raft-consensus algorithm for leadership election and consistency.
+
+- Use cases include:
+  - Store connections, configuration and other settings.
+  - Service discovery and health checks in conjunction with DNS or HTTP.
+  - Network infrastructure automation with dynamic load balancing while reducing downtime and outages.
+  - Multi-platform secure service-to-service communication.
+
+---
