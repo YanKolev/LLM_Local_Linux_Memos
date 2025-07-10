@@ -2767,3 +2767,26 @@ end
 - Change Automation: Complex changesets can be applied to your infrastructure with minimal human interaction. With the previously mentioned execution plan and resource graph, you know exactly what Terraform will change and in what order, avoiding many possible human errors.
 
 ---
+
+#### CloudFormation
+
+- Tool that allows us to define our infrastructure as code on Amazon AWS. configuration can be written in YAML or JSON format.
+
+- Features:
+
+- Extensibility
+  It supports the modeling, provisioning, and management of third-party app resources through the AWS CloudFormation Registry, for monitoring, incident management, and version control.
+- Authoring with JSON or YAML
+  To model the infrastructure and describe resources in a text file. The CloudFormation Designer helps with visual design when required.
+- Authoring with programming languages
+  Through AWS Cloud Development Kit (AWS CDK) it supports TypeScript, Python, Java, and .Net to model cloud applications, integrated with CloudFormation for infrastructure provisioning.
+- Safety controls
+  It provides Rollback Triggers to safely roll back to a prior state.
+- Preview environment changes
+  To model the possible impact of the proposed changes to any of the existing resources.
+- Dependency management
+  Determines actions sequence during stack operations.
+- Cross-account and cross-region management
+  Allowed from a single template, called StackSet.
+
+---
