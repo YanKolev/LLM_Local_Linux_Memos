@@ -2655,3 +2655,48 @@ resource_type { 'resource_name'
 - Puppert forge: ready-to use modules for manifest fies from the community.
 
 ---
+
+##### Chef
+
+**Overview**
+
+- It uses the client/server model or the clientless model to perform the configuration management. The client is installed on each host which we want to manage and its referred to as Chef Client, while pulling updates from the server is referred to as Chef Server. Additionally, there is the Chef Workstatons which is used to:
+
+  1. develop cookbooks and recipes.
+  2. sync
+     rhronize chef-repo with the version control system.
+     3.run command line tools
+  3. configure policy, roles, etc.
+  4. interact with nodes to perform as one-off configuration.
+
+![](images/chefstructure.png)
+
+---
+
+**Chef Cookbook**
+
+- Cookbook is the basic unit of configuration which defines a scenario and containes everything that support the scenarion. It has 2 important sub-components:
+
+- Recipes: A recipe is the most fundamental unit of configuration, which contains resources, resource names, attribute-value pairs and actions.
+
+```
+package "apache2" do
+  action :install
+end
+
+service "apache2" do
+  action [:enable, :start]
+end
+```
+
+- Attributes: helps us define the state of the node, After each chef-client run- the node's state is updated on the Chef Server.
+
+---
+
+**Support of Chef**
+
+- Chef client- AIX, Linux distros and FreeBSD, Unix-based systems, MacOS, Window.
+
+- Chef Server is supporte on the following platfors- RedHat Enterprise, Suse, Unbuntu.
+
+---
