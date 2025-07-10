@@ -2742,3 +2742,28 @@ end
 - With the above tools and information in hand, the master can easily set up a minion with a specific state. This can also be referred to as Configuration Management. Salt has different State Modules to manage a state.
 
 ---
+
+## Tools for Clound Infrastructure: Build and Release
+
+---
+
+#### Terraform
+
+**Overview**
+
+- Tool for allowing us to define infrastructure as code. Helps us deploy same infrastructure on Virtual Machines, bare metal or cloud. Configuration files can be written in Hashicoprp configuration language.
+
+- Providers:
+
+  - IaaS: AWS, DigitalOcean, GCP, OpenStack, Azure, Alibaba Cloud, etc.
+  - PaaS: Heroku, Cloud Foundry, etc.
+  - SaaS: DNSimple, etc.
+
+- Key features:
+
+- Infrastructure as Code: Infrastructure is described using a high-level configuration syntax. This allows a blueprint of your datacenter to be versioned and treated as you would any other code. Additionally, infrastructure can be shared and re-used.
+- Execution Plans: Terraform has a "planning" step where it generates an execution plan. The execution plan shows what Terraform will do when you call apply. This lets you avoid any surprises when Terraform manipulates infrastructure.
+- Resource Graph: Terraform builds a graph of all your resources, and parallelizes the creation and modification of any non-dependent resources. Because of this, Terraform builds infrastructure as efficiently as possible, and operators get insight into dependencies in their infrastructure.
+- Change Automation: Complex changesets can be applied to your infrastructure with minimal human interaction. With the previously mentioned execution plan and resource graph, you know exactly what Terraform will change and in what order, avoiding many possible human errors.
+
+---
