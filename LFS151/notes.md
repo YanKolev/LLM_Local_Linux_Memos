@@ -2700,3 +2700,45 @@ end
 - Chef Server is supporte on the following platfors- RedHat Enterprise, Suse, Unbuntu.
 
 ---
+
+##### Salt
+
+**Overview**
+
+- Open source configuration management system build on top of a remote exectution framework. It can be used in a client/server moder or agentless model as well.
+
+- In a client/server model the server pushesh commands and configurations to all the clients in a parallel mananer, which the clients run, returning back the status. In agentless mode, the server connect with a remote system via SSH, however this model offers liited functionality.
+
+- Developed by VMware.
+
+---
+
+**Salt Minions and Salt Masters**
+
+- Salt Minions - Each client is referred to as a Salt minion, receiving configuration command from the Master and reporting back the results
+
+![](images/saltminion.png)
+
+- Salt Master - a central managemnt server is referred to as Salt master. Multi-master is also supported.
+
+![](images/saltmaster.png)
+
+- Salt master and minions communicate over high speed data bus, ZeroMQ which requires an agent to be installed on each minion. Salt supports a agentless setup using SSH for secure and encrypted communication between the master and the managed systems.
+
+---
+
+**Other Modules**
+
+- Remote execution is based on Execution Modules and Returner Modules.
+
+- Execution Modules provide basic functionality, like installing packages, managing files, managing containers, etc. All support modules are listed in the Salt documentation. We can also write custom modules.
+
+- Returners allow for minions' responses to be saved on the master or other locations. We can use default Returners or write custom ones.
+
+- All the information collected from minions is saved on the master. The collected information is referred to as Grains. Private information like cryptographic keys and other specific information about each minion which the master has, is referred to as Pillar Data. Pillar Data is shared between the master and the individual minion.
+
+- By combining Grains and Pillar Data, the master can target specific minions to run commands on them. For example, we can query the hostname of all the nodes where the installed OS is Fedora 23.
+
+- With the above tools and information in hand, the master can easily set up a minion with a specific state. This can also be referred to as Configuration Management. Salt has different State Modules to manage a state.
+
+---
