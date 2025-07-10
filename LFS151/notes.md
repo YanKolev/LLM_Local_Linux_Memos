@@ -2910,3 +2910,13 @@ instance_groups:
   - Multi-platform secure service-to-service communication.
 
 ---
+
+**ZooKeeper**
+
+- centralized service for maintaining configuration information providing distrubuted synchronization together with group services for distributed application, Under the Apache software Foundation.
+
+- provides: node coordination in a clustered environment, manage cloud node memberships while coordinating distributed jobs,
+
+- default key-value store for Apache Mesos, high availability, offers hierarchiral key-value store for distributed systems.
+
+---
