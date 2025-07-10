@@ -2790,3 +2790,69 @@ end
   Allowed from a single template, called StackSet.
 
 ---
+
+#### BOSH
+
+- Overiew- "BOSH is an open source tool for release engineering, deployment, lifecycle management, and monitoring of distributed systems".
+
+- BOSH was primarily developed to deploy the Cloud Foundry PaaS, but it can deploy other software as well (e.g., Hadoop). BOSH supports multiple Infrastructure as a Service (IaaS) providers. BOSH creates VMs on top of IaaS, configures them to suit the requirements, and then deploys the applications on them.
+
+- Key Concepts:
+
+- Stemcell: is a versioned IaaS- specific, operating system image with some pre-installed utilities such as the BOSH agent. Stemcells do not contain any application-specifici code. The Bosh team is in charge of releasing stemcells.
+
+- Release: is placed on top of a stemcell and consists of a versioned collection of configuration properties, templates, scripts, source code to build and deploy software.
+
+- Deployment: a collection of VMs which are built from stemcells, populated with specific releases on top of them and having disks to keep persistent data.
+
+- BOSH Director: central ochestrator component of BOSH, which, controls the VM creation and deployment. It also controls software and service lifecycle events. WE need to appload stemcells, releases and deployment manifest files to the Director. The Director processes the manifest file and does the deployment.
+
+- Example of deployment manifest:
+
+```
+name: zookeeper
+
+releases:
+- name: zookeeper
+  version: 0.0.5
+  url: ht‌tps://bosh.io/d/github.com/cppforlife/zookeeper-release?v=0.0.5
+  sha1: 65a07b7526f108b0863d76aada7fc29e2c9e2095
+
+stemcells:
+- alias: default
+  os: ubuntu-xenial
+  version: latest
+
+update:
+  canaries: 2
+  max_in_flight: 1
+  canary_watch_time: 5000-60000
+  update_watch_time: 5000-60000
+
+instance_groups:
+- name: zookeper
+  azs: [z1, z2, z3]
+  instances: 5
+  jobs:
+  - name: zookeeper
+    release: zookeeper
+    properties: {}
+  vm_type: default
+  stemcell: default
+  persistent_disk: 10240
+  networks:
+  - name: default
+
+- name: smoke-test
+  azs: [z1]
+  lifecycle: errand
+  instances: 1
+  jobs:
+  - name: smoke-tests
+    release: zookeeper
+    properties: {}
+  vm_type: default
+  stemcell: default
+  networks:
+  - name: default
+```
