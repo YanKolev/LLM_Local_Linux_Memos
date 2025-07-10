@@ -2856,3 +2856,39 @@ instance_groups:
   networks:
   - name: default
 ```
+
+---
+
+---
+
+## Tools for Cloud Infrastructure: Key-Value Pair Store
+
+---
+
+---
+
+**Overview**
+
+- While building any distributed and dynamically-scalable environment, we need an endpoint which is a single point of truth. For example, we need such an endpoint if we want each node in a distributed environment to look up specific configuration values before performing an operation. For such cases, all the nodes can reach out to a central location and retrieve the value of a desired variable or key.
+
+- As the name suggests, the key-value pair storage provides the functionality to store or retrieve the value of a key. Most of the key-value stores provide REST APIs to support operations like GET, PUT, and DELETE, which help with operations over HTTP. Some examples of key-value stores are:
+
+  - etcd
+  - Consul KV
+  - ZooKeeper
+
+---
+
+**etcd**
+
+- open source distributed key-value pair storage and it uses RAFT consensus algorithm for communication between instances of distributed multi-instance scenarios. Written in Go.
+
+- can be configured to run standalone or in a distributed cluster. In a cluster mode, for High availability it can handle the leader election during network partitions nd can tolerate machine failures including the leader.
+
+- allows users or services to watch the value of a key, to then perform certain operations as a result of any change in that particular value.
+
+- used to store connections, configuration, cluster bootstrapping keys and other settings.
+
+- service discovery in conjunction with tools like skyDNS, metadata and configuration data for service discovery, container management.
+
+---
