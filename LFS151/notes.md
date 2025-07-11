@@ -2992,7 +2992,7 @@ CMD ["bash", "/usr/src/app/start.sh"]
 
 ---
 
-#### Building Container image siwht Podman
+#### Building Container images with Podman
 
 ---
 
@@ -3031,3 +3031,25 @@ CMD [ "/usr/sbin/nginx" ]
 - Explore Docker Hub, or another container image registry to locate a Dockerfile/Containerfile. This is the Nginx registry on Docker Hub. Select a desired tag, such as the alpine-slim tag.
 
 ---
+
+#### Building Container images with Buildah
+
+- Buildah has a feature that allows to red instructions from text file then generate the requrested image. It is flexible so it can work with both Dockerfile or Containerfile. To run it the command **buildah bud** is used.
+
+- It supports another method to buld container images, by running a sequence of individual insructions that would otherwide be stored in a Containerfile/Dockerfile.
+
+- Example of the file:
+
+```
+buildah from fedora
+buildah run containerID -- dnf -y update && dnf clean all
+buildah run containerID -- dnf -y install nginx && dnf clean all
+buildah run containerID -- sh -c 'echo "daemon off;" >> /etc/nginx/nginx.conf'
+buildah run containerID -- sh -c 'echo "nginx on Fedora" >
+/usr/share/nginx/html/index.html'
+
+buildah config --port 80 containerID
+
+buildah config --cmd '/usr/sbin/nginx' containerID
+
+```
