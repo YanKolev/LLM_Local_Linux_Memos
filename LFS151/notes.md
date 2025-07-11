@@ -3130,3 +3130,13 @@ buildah config --cmd '/usr/sbin/nginx' containerID
 - Post-build operatins- allows us to copy/move the resulted machine image to a cental reporsitory or create a Vagrant box.
 
 ---
+
+#### Image Registers
+
+- Once container images have been built, including other artifacts, packaging configuration and internalization data - it is good practice to store them in a safe place that is easily accessible. Easy access allows for uncomplicated future image retrieval, sharing and availability for components of a CI/CD pipeline.
+
+- Container images and other types of artifacts are commonly stored in a registry. A registry is a repository or has the capability to store multiple repositories which provide means to segregate the registry into isolated projects dedicated to individual users, teams, organizations, etc.
+
+Popular Registries- ArtifatHub, Jfrog Artifactory, Docker Hub, Harbor, Quay, Google container registry, Amazon Elastic Container registry, Azure container registy, Skopeo,
+
+---
