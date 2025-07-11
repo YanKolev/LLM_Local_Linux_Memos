@@ -3199,3 +3199,19 @@ nerdctl top
 ```
 
 ---
+
+#### Sysdig
+
+**Overview**
+
+- Provides on-cloud and on-premises platform for DevOps security for containers, K8s, monitoring and forensics. Sysdig is : **strace + tcpdump + htop + iftop + lsof + awesome sauce**
+
+- Tools:
+
+- Sysdig: saves low-level system info from running a linux instance, can be filtered and further analyzed.
+- Sysdig monitor: paid ofering- full-stack monitoring and alerting in addition to the open source version- with Prometheus compatibility
+- Sysdig secure: paid oering for compliance and threats.
+
+- sysding agent needs to be installed on all the nodes if we want to collect the information at a central location. in addition a kernel componenct has to be installed in order to captire system calls and OS events.
+
+---
