@@ -2926,3 +2926,68 @@ instance_groups:
 ## Tools for Cloud Infrastructure: Image Building
 
 ---
+
+#### Building Container images with Docker
+
+**Dockerfiles**
+
+- A custome container image can be created with Docker by starting a container from mage image and afer making any desired changes(installing software) the docker commit command can be used to save these changes to persistent storage, resulting in a new container image. (not a scalable and efficient solution).
+
+- Docker has a feature that allows it to read instructions from a text file in order to generate an image. Internally, it creates container after each instruction and then commits it to persistent storage. To file with instructions is referred to as Dockerfile.
+
+- To build a container image from a Dockerfile the docker build command is run. Sample Dockerfile:
+
+```
+FROM fedora
+RUN dnf -y update && dnf clean all
+RUN dnf -y install nginx && dnf clean all
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+RUN echo "nginx on Fedora" > /usr/share/nginx/html/index.html
+
+EXPOSE 80
+
+CMD [ "/usr/sbin/nginx" ]
+```
+
+- **FROM, RUN, EXPOSE, CMD** are reserved instructions and are followed by arguments. The instructions are well-documented in the documentation.
+
+- Docker files start from a parent image or a base image, specified with the **FROM** instruction. A parent image is an inage used as a reference, modified by a subsequient Dockerfile instructions. PArent images can be built directly out of working machines, r with tool such as Debootstrap.
+
+- A base image has **FROM scratch** in the Dockerfile.
+
+---
+
+**Multi-Stage Dockerfile**
+
+- Multi-stage build is an advanced feature of Docker, very useful for optimizing the Dockerfiles and minimizing the size of a container image.
+
+- With this approach we createa new Docker image in every stage. Every stage can copy files from images created either in earlier stages or from already available images.
+
+- In the first stage we can copy the soure code, coplke it to create a binary and then in the second stage, we can copy just the binary to a resulting image. Before multi-stage builds, we would need to create multiple Dockerfiles to achieve similar results.
+
+- Example of multi-stage Dockerfile:
+
+```
+# stage - 1
+FROM ubuntu AS buildstep
+RUN apt update && apt install -y build-essential gcc
+COPY hello.c /app/hello.c
+WORKDIR /app
+RUN gcc -o hello hello.c && chmod +x hello
+
+# stage - 2
+FROM ubuntu
+RUN mkdir -p /usr/src/app/
+WORKDIR /usr/src/app
+COPY --from=buildstep /app/hello ./hello
+COPY ./start.sh ./start.sh
+ENV INITSYSTEM=on
+CMD ["bash", "/usr/src/app/start.sh"]
+
+```
+
+- The COPY --from=buildstep line copies only the built artifact from the previous stage into this new stage.
+
+- C SKD and any intermediate artifacts are not copied in the final image.
+
+---
