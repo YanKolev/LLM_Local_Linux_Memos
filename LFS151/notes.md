@@ -2991,3 +2991,43 @@ CMD ["bash", "/usr/src/app/start.sh"]
 - C SKD and any intermediate artifacts are not copied in the final image.
 
 ---
+
+#### Building Container image siwht Podman
+
+---
+
+**Conterfile and Dockerfile**
+
+- Custom contaienr image can be cread with Podman by starting a container from a base image and after making the required changes (installing the software) we can use the **podman commit** comand to shave it to persistent storage, resulting in a new container image. This is not scalable and efficient route.
+
+- Podman has a feature that allows it to read instruction from a text file and then generate the requrested image. Internally, it creates a container after each instruction and then commit it to persistent storage. The file ith instructions and then commits it to persistent storage.
+
+- That file is reffered to as Containerfile or a Dockerfile. Syntax is identical for both files. To build it we need to use the command **podman build**.
+
+- Sample of Containerfile:
+
+```
+FROM fedora
+RUN dnf -y update && dnf clean all
+RUN dnf -y install nginx && dnf clean all
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+RUN echo "nginx on Fedora" > /usr/share/nginx/html/index.html
+
+EXPOSE 80
+
+CMD [ "/usr/sbin/nginx" ]
+```
+
+- FROM, RUN, EXPOSE, and CMD are reserved instructions, and are followed by arguments. The instructions are well-documented in the Containerfile reference.
+
+- Containerfiles start from a base image specified with the FROM instruction. A base image is an image used as a reference, modified by subsequent Containerfile instructions. Base images can be built directly out of working machines, or with tools such as Debootstrap.
+
+---
+
+**Creating a Container image with Podman**
+
+- While a container image is considered the source for a running container, the image itself is built from a source as well. This source is a Dockerfile (for Docker and Podman) or a Containerfile (for Podman). Container images are stored on many container image registries, public or local, and for this reason they are easily shared between developers and teams. However, some images can be significant in size and as a result may delay the creation of application containers if the image pull phase takes a longer time. The alternative is to download the source of the image, the Dockerfile and/or Containerfile instead. While a text file downloads much faster, the image then needs to be built locally by the developer, a step that may delay the application container deployment.
+
+- Explore Docker Hub, or another container image registry to locate a Dockerfile/Containerfile. This is the Nginx registry on Docker Hub. Select a desired tag, such as the alpine-slim tag.
+
+---
