@@ -3053,3 +3053,80 @@ buildah config --port 80 containerID
 buildah config --cmd '/usr/sbin/nginx' containerID
 
 ```
+
+---
+
+#### Container images with Packer
+
+- Packer from hashiCorop is open source tool for creating VM images from a configuration file for different platforms. they are written in HCL.
+
+- Sample of configuration file for EC2 and Google Compute Engine:
+
+```
+{
+  "variables": {
+    "aws_access_key": "abc",
+    "aws_secret_key": "xyz",
+    "atlas_token": "123"
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "us-west-2",
+    "source_ami": "ami-9abea4fb",
+    "instance_type": "t2.micro",
+    "ssh_username": "ubuntu",
+    "ami_name": "packer-example {{timestamp}}"
+  }, {
+  "type": "googlecompute",
+  "account_file": "user.json",
+  "project_id": "useapp",
+  "source_image": "ubuntu-1404-trusty-v20160114e",
+  "zone": "us-central1-a",
+  "image_name": "myimage"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "inline": [
+      "sleep 30",
+      "#!/bin/bash",
+      "sudo apt-get -y update",
+      "sudo apt-get -y install apache2",
+      .....
+      .....
+    ]
+  }],
+  "post-processors": [{
+        "type": "atlas",
+        "only": ["amazon-ebs"],
+        "token": "{{user `atlas_token`}}",
+        "artifact": "user/stack",
+        "artifact_type": "amazon.image",
+        "metadata": {
+          "created_at": "{{timestamp}}"
+        }
+      }, {
+        "type": "atlas",
+        "only": ["googlecompute"],
+        "token": "{{user `atlas_token`}}",
+        "artifact": "user/stack",
+        "artifact_type": "googlecompute.image",
+        "metadata": {
+          "created_at": "{{timestamp}}"
+        }
+  }]
+}
+```
+
+---
+
+**Steps to create VMS with packer**
+
+- Building base image: Under builders of the configuration file. Packer offers an advanced feature where it supports multiple machine images to be created from the same template file. It is called parallel builds and it ensures "near-identical" machine images built for different environments.
+
+- Provision the base image for configuration: once its built, we can provision to the base machine image to further configure it and make changes like install software,etc. Packer supports ifferent provisioners such as shell, ansible, puppet and chef.
+
+- Post-build operatins- allows us to copy/move the resulted machine image to a cental reporsitory or create a Vagrant box.
+
+---
