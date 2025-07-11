@@ -3140,3 +3140,62 @@ buildah config --cmd '/usr/sbin/nginx' containerID
 Popular Registries- ArtifatHub, Jfrog Artifactory, Docker Hub, Harbor, Quay, Google container registry, Amazon Elastic Container registry, Azure container registy, Skopeo,
 
 ---
+
+---
+
+---
+
+## Tools for Cloud Infrastructure: Debugging, Logging and Monitoring
+
+---
+
+---
+
+**Overview**
+
+- Containers bring additional challenges:
+
+- Containers are ephemeral, so, when they are deleted, all their metadata, including logs, gets deleted as well, unless we store it in some other, possibly persistent storage location.
+- Containers do not have kernel space components.
+- We want to keep a container's footprint as small as possible, but installing debugging and monitoring tools make that nearly impossible.
+- Collecting per container statistics, debugging information individually, and then analyzing data from multiple containers is a tedious process.
+
+- It would be beneficial to have external tools for logging and monitoring instead of collecting them directly from individual containers. This may be achieved because each container runs as a process on the host OS, which has complete control of that process. Once we have collected the data from all the containers running on a system or in a cluster, like Kubernetes or Swarm, we can run a logical mapping of all collected logs and gain a system/cluster-wide visibility, known as observability.
+
+---
+
+**Native features for Container Debugging**
+
+- Docker, podman, nerdctl and crictl have some built-in command line options that can help with that
+
+- Debugging:
+
+```
+docker inspect
+podman inspect
+nerdctl inspect
+crictl inspect
+```
+
+- Logging:
+
+```
+docker logs
+podman logs
+nerdctl logs
+crictl logs
+```
+
+- Monitoring:
+
+```
+docker stats
+podman stats
+nerdctl stats
+crictl stats
+docker top
+podman top
+nerdctl top
+```
+
+---
