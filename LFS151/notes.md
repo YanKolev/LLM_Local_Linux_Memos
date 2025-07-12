@@ -3386,3 +3386,27 @@ sudo docker run \
 - Service MeshCOntrol Plane: it Provides policy and configuration for the Data Plane. By using the control plane, we can specify settings for load balancing, weighted load balancing and circuit breakers.
 
 ---
+
+### Service Mesh Tools
+
+---
+
+#### Consul
+
+**Overview**
+
+- created by hashiCorp: open source project aiming to provide secure multi-clud service netwroking through automated network configuration and service discovery.
+
+- main focus- in its support to connect services running in multiple datacenters. Highly available for fault tolerance and increased perfomance, while supporting thousands of simulateneous client services.
+
+- Architecture:
+
+![](images/consul.png)
+
+- Client services are capable of automatic discovery of servers, while a distributed agent and node failure detection supports scalability more than the traditional heartbeating schemes. Very low coupling between datacenters, together with failure detection, connection caching, and multiplexing ensures fast and reliable cross-datacenter requests.
+
+- Consul forwards RPC requests between remote Consul servers when a request is made for a resource available in another datacenter. If the remote datacenter is not available, then the remote resources will not be available either.
+
+- Data caching is also supported by Consul, like connect certificates or optional results, which help with local decisions making about incoming connection requests even if the connection between servers is disrupted or if the servers are temporarily unavailable.
+
+---
