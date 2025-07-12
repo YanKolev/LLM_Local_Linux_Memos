@@ -3462,3 +3462,35 @@ sudo docker run \
   Pluggable extensions model based on WebAssembly that allows for custom policy enforcement and telemetry generation for mesh traffic.
 
 ---
+
+#### Kuma
+
+**Overview**
+
+- platform- agnostic, moder nad universal open source control plane for Service Mesh. IT can easily set up on VMs, Bare-metal and on Kubernetes.
+
+- is based on Envoy proxy- a sidecar proxy designed for cloud-native applications, that support monitoring security and reliability for microservice applications at scale. With Envoy used as a data plane- Kuma can handle any L4/L7 traffic to observe and route traffic between services.
+
+- It also provides data plane configuration policies for more expreienced service mesh users.
+
+- Includes 2 planes- Control-Plane and data-plane
+
+- Control plane- creates and configures policies that manage services within the service mesh.
+
+- Data- plane implemented on top of the Envoy proxy, runs as a instance together with every service to process incoming nad outgoing requests.
+
+![](images/kuma.png)
+
+- It supports 2 modes: Universal and Kubernetes Mode.
+
+- Universal mode: installed on Linux- compatible system such as macOS VMs, or bare metal including containers built on linux based Micro OSes, In this mode Kuma needs to store its state in a PostgreSQL database.
+
+- Kubernetes Mode- when deployed on kubernetes, kuma stoers its state and configuration directly on the Kubernetes API server, which incejcts a proxy sidecar into desired Kuberenets Pods.
+
+- Benefints: It is universal, Kubernetes-native, and platform-agnostic because it runs on bare-metal, VMs, and Kubernetes.
+  it is easy to use and automate.
+  It is simple to deploy on any supported platform.
+  It is built on top of the Envoy proxy, the most popular Service Mesh proxy.
+  It supports cluster or zone ingress and optional egress through dedicated proxies which act as traffic management gateways.
+
+---
