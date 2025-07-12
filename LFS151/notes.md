@@ -3253,4 +3253,20 @@ sudo docker run \
 
 - provides real-time search and analytics for structured on unstructured text, numeritcal data or geospacial data.
 
--
+- ***
+
+#### Fluentd
+
+**Overview**
+
+- open source data collector, which lets us unify the data collection and consumption for a better use and understanding of data.
+
+- it triess to structure the data in JSON as much as possible. It supports more than 500 plugins to connect input sources to output sorucers after perfoming filtering, buffering and routing.
+
+![](images/fluentd.png)
+
+- Docker support for Fluentd
+
+![](images/dockerfluentd.png)
+
+---
