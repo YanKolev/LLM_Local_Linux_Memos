@@ -3215,3 +3215,32 @@ nerdctl top
 - sysding agent needs to be installed on all the nodes if we want to collect the information at a central location. in addition a kernel componenct has to be installed in order to captire system calls and OS events.
 
 ---
+
+#### cAdvisor
+
+**Overview**
+
+- cAdvisor- Container Advisor- open source tool to collect resource usage and performance characteristics forthe host system and running containers.
+
+- in order to enable the tool to run as a docker container and start collecting statistics with the following command.
+
+```
+sudo docker run \
+  --volume=/:/rootfs:ro \
+  --volume=/var/run:/var/run:ro \
+  --volume=/sys:/sys:ro \
+  --volume=/var/lib/docker/:/var/lib/docker:ro \
+  --volume=/dev/disk/:/dev/disk:ro \
+  --publish=8080:8080 \
+  --detach=true \
+  --name=cadvisor \
+  --privileged \
+  –-device=/dev/kmsg \
+  gcr.io/cadvisor/cadvisor:latest
+
+
+```
+
+- Then we need to point the browser to **http://host_IP:8080** to get live statistics. It exposes raw and processed statistics via a versioned remote REST API, supports exporting to InfluxDB and even Prometheus metrics.
+
+---
