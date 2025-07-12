@@ -3270,3 +3270,25 @@ sudo docker run \
 ![](images/dockerfluentd.png)
 
 ---
+
+#### Datadog
+
+**Overview**
+
+- provides monitoring and analytics with integrated security as a service for DevOps- it can monitor infrastructure, network devices, network performance, cloud workloads, databases the entire CI environment.
+
+- supports EC2, Apache, java, MySQL, CentOS.
+
+- in order to run it we need to install an agent ont host system, which sends data to the datadog's server. once the data is sent we can manipulate it for our use.
+
+- it porivudes Kubernetes Monitoring for Containers as well :
+  - number of nodes in the cluster,
+  - running and stopped containers,
+  - most resource-consuming pods
+  - number of running pods per node
+  - number of running containers per node
+  - resource utilization per node
+
+![](images/datadogkuberenetes.png)
+
+---
