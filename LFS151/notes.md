@@ -3432,3 +3432,33 @@ sudo docker run \
   It can provide SSL communication.
 
 ---
+
+#### Istio
+
+**Overview**
+
+- service for mesh solutions, open source platform.
+
+- Istio is divided into the following planes: data plane and control plane
+
+- Data plane: it is composed of a set of Envoy proxies deployed as sidecars to provide a medium for communication and to control all network communication between microservices.
+
+- Control Plane: It manages and configures proxies to route traffic, enforces policies at runtime and collects telemetry. The control plane includes The Citadel, Gallery and Pilot.
+
+- Architecture:
+
+![](images/istio.png)
+
+- Components: Envoy Proxy and Istiod
+
+- Envoy Proxy: Istio uses an extended version of the Envoy proxy, which implements features like dynamic service discovery, load balancing, TLS termination, circuit breakers, health checks, etc, Envoy is deplayed as sidecars.
+
+-Istiod- provides service discovery, configuration and certificate management.
+
+- Additional benefits and features: Traffic control to enforce fine-grained traffic control with rich routing rules and automatic load balancing for HTTP, gRPC, WebSocket, and TCP traffic.
+  Internal and External Gateway support for ingress and egress traffic management.
+  Network resiliency to set up retries, failovers, circuit breakers, and fault injection.
+  Security and authentication to enforce security policies and enforce access control and rate limiting defined through the configuration API.
+  Pluggable extensions model based on WebAssembly that allows for custom policy enforcement and telemetry generation for mesh traffic.
+
+---
