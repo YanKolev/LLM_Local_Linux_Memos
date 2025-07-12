@@ -3308,3 +3308,25 @@ sudo docker run \
 ![](images/prometheus.png)
 
 ---
+
+#### Splunk
+
+**Overview**
+
+- scalable and fast real-time insigh into enterprise data. allows data aggregation and analysis.
+
+- can be deployed securely in th cloud, enables DevSecOps automation and orchestration.
+
+---
+
+#### OpenTelemetry
+
+**Overview**
+
+- a set of tools, APIs and SDKs that can be used to enable observability. It can create, retrieve and export mertics, logs and traces to help with software's perfomance and behaviour analysis.
+
+- Core of the achritecture is Collector- a vendor- agnostic single code base agent supporint telemetry data formats from Jaeger, Prometheus, Fluent Bit.
+
+- supports namy programming languages.
+
+![](images/opentelemetry.png)
