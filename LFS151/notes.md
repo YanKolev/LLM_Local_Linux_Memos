@@ -3330,3 +3330,19 @@ sudo docker run \
 - supports namy programming languages.
 
 ![](images/opentelemetry.png)
+
+---
+
+#### Dynatrace
+
+**Overview**
+
+- Offers AI- powered unified platform for observability, automation and security.
+
+- It automates cloud operations through the help of AI.
+- It enables cloud native DevOps continuous delivery (CD) pipelines.
+- It is optimized for dynamic containerized microservices and it natively supports the upstream Kubernetes and its distributions.
+- It is reliable and can be deployed securely in the public cloud, hybrid cloud, on premises, and edge for IoT monitoring.
+- It uses Keptn to implement GitOps.
+
+---
