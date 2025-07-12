@@ -3346,3 +3346,43 @@ sudo docker run \
 - It uses Keptn to implement GitOps.
 
 ---
+
+---
+
+## Service Mesh
+
+---
+
+---
+
+**Overview**
+
+- What is service mesh? - Network communication infrastructure layer for an microservices-based application. When multiple microservices are communicationg with each other, a service mesh allows us to decouple resilient communication patterns such as circuit breakers and timeouts from the application code.
+
+---
+
+#### Features and Implementation of Service Mesh
+
+- Generally implemtented as using sidecar proxy. A sidecar is a container that runs alongsite the primary application and complements it with additional features like logging, monitoring and traffic routing. In service mesh architecture the sidecar pattern impelements inter-service communiaction, monitoring or toehr feature taht can be decoupled and abstracted away from individual services.
+
+- Features:
+- Communication- between various service isntances.
+- Circuit Breakers- restrics traffic to unhealthy service instances.
+- Routing - it passes a REST request for /foo from the local service instance to which the service is connected.
+- Retires and Timeouts - automatically retry requests on certain failures
+- Service Discovery - discovers healthy available instances of services.
+- Observability- monitors latency, traces traffic
+- Authentication and Authorization- for incoming reuqets
+- TLS (Transport layer Security) encryption - secure service to service communication.
+
+---
+
+**Data Plane and Control Plane**
+
+- Similar to software- defined networking a service mesh also features data and control planes.
+
+- Sevvice Mesh Data Plane: It touches every packet/request in the system.
+
+- Service MeshCOntrol Plane: it Provides policy and configuration for the Data Plane. By using the control plane, we can specify settings for load balancing, weighted load balancing and circuit breakers.
+
+---
