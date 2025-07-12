@@ -3410,3 +3410,25 @@ sudo docker run \
 - Data caching is also supported by Consul, like connect certificates or optional results, which help with local decisions making about incoming connection requests even if the connection between servers is disrupted or if the servers are temporarily unavailable.
 
 ---
+
+#### Envoy
+
+**Overview**
+
+- CNCF projet, open sources, provides L7 proxy and communication bus for parge modern service- oriented architectures.
+
+- out-of- process acrhitecture-> nod dependent on the application code. It runs alongside the application and commnunicates with the application on localhost (sidecar pattern).
+
+- Envoy sidecar implementation, applications need not be aware of the network topology- it can be managed intedependently and work with any languages.
+
+- Can be configured as service and edge proxy. In the service type of configuration it is used as a communication bus for all traffic between microservices. The the edge type of configuration, it provides a single point of intgress to the exteranl world.
+
+- It is an open source project.
+  It makes the network transparent to the applications.
+  Due to its out-of-process architecture, it can be run alongside any language or runtime.
+  It has support for HTTP/2 and gRPC for both incoming and outgoing connections.
+  It provides all the features of service mesh that we mentioned earlier, like load balancing, service discovery, circuit breakers, etc.
+  It provides good monitoring using statistics, logging, and distributed tracing.
+  It can provide SSL communication.
+
+---
