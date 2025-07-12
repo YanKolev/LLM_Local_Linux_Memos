@@ -3244,3 +3244,13 @@ sudo docker run \
 - Then we need to point the browser to **http://host_IP:8080** to get live statistics. It exposes raw and processed statistics via a versioned remote REST API, supports exporting to InfluxDB and even Prometheus metrics.
 
 ---
+
+#### Elasticsearch
+
+**Overview**
+
+- distributed search and analytics engine at the core of elastic stack. responsible for data indexing, search and analysis. Kibata is an interface that enables inractive data visualization while providing insights into the data.
+
+- provides real-time search and analytics for structured on unstructured text, numeritcal data or geospacial data.
+
+-
