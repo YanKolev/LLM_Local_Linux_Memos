@@ -3292,3 +3292,19 @@ sudo docker run \
 ![](images/datadogkuberenetes.png)
 
 ---
+
+#### Prometheus
+
+**Overview**
+
+- Open source tool for system monitoring and alerting. Developed by SoundCloud. Suitable for any purely numeric time-series data. it works well for both machine-centric monitoring like CPU, memory usage, dynamic service-oriented architectures. Written in Go.
+
+- reliable, supports multi-dimensional data model with time series data identified by metric name and key/value pairs, supports query language .
+
+- The Prometheus server is the primary component that scrapes and stores pull- and push-based metrics. Once the data is collected, we can query it using the Prometheus Web UI or export it using HAProxy, StatsD, or Graphite. The Alertmanager handles alerts.
+
+- Architecture:
+
+![](images/prometheus.png)
+
+---
