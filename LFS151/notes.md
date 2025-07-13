@@ -3530,3 +3530,31 @@ sudo docker run \
   It is secured by access control policies.
 
 ---
+
+#### Tanzu Service mesh
+
+**Overview**
+
+- enterprise class service mesh developed by VMware, built on top of VMware NSX.
+
+- It consistently connects and secures applications running on all Kubernetes multi-clisters and multi-cloud environments. It can be installed on VMware Tanzu Kubernetes Grid Clusters or any kubernetes clusters.
+
+- Tanzu Service Mesh
+
+![](images/tanzi1.png)
+
+- UNIQUE FEATURE IS: the ability to support cross-cluster and cross-cloud application through Global Namespaces (GNS). A GNS further Isolates an application from its Kubernetes cluster namespace and networking , which helps the app securely stretch across clusters and clouts.
+
+- Global Namespaces introduce consistency in traffic routing, application resiliency and security policies for application across clouds.
+
+![](images/tanzu2.png)
+
+- It simplifies the service mesh lifecycle management through cross-platform portability.
+  It offers cross-cloud observability of communication between users, data, and services.
+  It offers a unified policy to manage multi-cluster mesh topologies through federation.
+  It normalizes the communication infrastructure across multi-clouds.
+  It utilizes global namespaces for portability and isolation.
+  It allows users to manage and configure failover and service behavior policies.
+  It implements the security and auditing of services running on multi-clouds.
+
+---
