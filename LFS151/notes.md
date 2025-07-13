@@ -3494,3 +3494,17 @@ sudo docker run \
   It supports cluster or zone ingress and optional egress through dedicated proxies which act as traffic management gateways.
 
 ---
+
+#### Linkerd
+
+**Overview**
+
+- Open source network proxy designed for Kubernetes, and its one of the CNCF member projects.
+
+- it supports all features of the service meshes listed earlier. In addition, Linkerd can be installed pr host or instance, as a replacement for the sidecar deployment in Kubernetes clusters.
+
+- it isimplemented by the Linkerd2-proxy, a micro proxy designed to be lighter and less comples than the popular envoy proxy.
+
+- Contrast with other service mesh implementations, for simplicity, linkerd does not hav3e its own implementation to handle ingress traffic into the kubernetes cluster. it supports well-known ingress controllers- nginxm traefik, gloo, contour, kong. It does support cross-cluster service communication through a simple gateway implementation.
+
+---
