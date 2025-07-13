@@ -3508,3 +3508,25 @@ sudo docker run \
 - Contrast with other service mesh implementations, for simplicity, linkerd does not hav3e its own implementation to handle ingress traffic into the kubernetes cluster. it supports well-known ingress controllers- nginxm traefik, gloo, contour, kong. It does support cross-cluster service communication through a simple gateway implementation.
 
 ---
+
+#### Traefik Mesh
+
+- open source service mesh, from Traefik labs. Simple and easy to configure service mesh that provides traffic visibility and management inside a Kubernetes cluster.
+
+- improves cluster security, simple implementation, resource allocation.
+
+- non-insvasive, does not require any sidecar containers to be injected into Kubernetes pods. Instead route through proxy endpoints, called mesh controllers that run on each node as dedicated pods. Traefik mesh operates in concunction with its own ingress controller the Traefik proxy .
+
+- Architecture diagram:
+
+![](images/traefik.png)
+
+- features: It is open source and prevents vendor lock-in.
+  It is easy to install and non-invasive, as it does not require sidecar container injections.
+  It supports OpenTracing and metrics through Prometheus and Grafana.
+  It supports HTTP, HTTP/2, native gRPC, Websockets, and TCP connection routing.
+  It supports weighted round-robin load balancing and canary deployments.
+  It offers resiliency with automated retries and failover, together with circuit breaker mechanisms and rate limits.
+  It is secured by access control policies.
+
+---
