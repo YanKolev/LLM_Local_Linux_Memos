@@ -3558,3 +3558,25 @@ sudo docker run \
   It implements the security and auditing of services running on multi-clouds.
 
 ---
+
+#### Meshery
+
+**Overview**
+
+- open source cloud native multi-cluster Kubernetes manager.
+
+- By design Meshery adds a Management plane on top of the existing Control planes and Data planes of typical service mesh implementations. The Management plane provides federation, backend system integration, expanded policy and governance, continuous delivery integration, workflow, chaos engineering, and application performance tuning. This enables operators, developers, and service owners to realize the full potential of a service mesh and it enhances in-network intelligence of the Data plane.
+
+- With the help of adapters, Meshery supports a number of Service mesh implementations, such as Consul, Istio, Kuma, Linkerd, Traefik Mesh, and others. This multi-mesh management interface supports various aspects of each managed service mesh, such as lifecycle, workload, performance, configuration, patterns and practices, chaos and filters.
+
+- Deployed as a containers on a docker container host or on Kubernetes. It consists of the Meshery server taht exposes the API to client request. The server can either request information or invoke an Adapter operation as a result of a client request. Adapters are used to manage different infrastructure layers while the Operator is deployd on each managed Kuberenetes cluster.
+
+![](images/meshery.png)
+
+- It is open source.
+  It runs in containers on Docker hosts or Kubernetes.
+  It manages service mesh deployments.
+  It manages Kubernetes clusters, their infrastructure, and hosted applications and services with the help of over 200 integrations.
+  It provides an easy to use web UI that supports graphical design of cloud native artifacts.
+
+---
