@@ -3621,3 +3621,25 @@ sudo docker run \
   Using OpenTelemetry, we collect tracing spans for our services and then forward them to different tracers. Tracers are then used to monitor and troubleshoot microservices-based applications.
 
 ---
+
+#### Jaeger
+
+**Overview**
+
+- open source tracer which is compatible with the OpenTelemetry data model to support spans. Jaeger was open soursed by Uber.
+
+- can be used for: Distributed content propagation
+  Distributed transaction monitoring
+  Root cause analysis
+  Service dependency analysis
+  Performance and latency optimization.
+
+- Architecture of jaeger:
+
+![](images/jaeger.png)
+
+- It uses language-specific Instrumentation to generate tracing data. Jaeger adopted the OpenTelemetry SDK to implement a replacement for its original Jaeger client and Jaeger agent component. The OpenTelemetry SDK exports and pushes the instrumented tracing data to the Jaeger collector.
+
+- The collector supports Cassandra and ElasticSearch as storage backends. We can then query the collected data using Jaeger-UI.
+
+---
