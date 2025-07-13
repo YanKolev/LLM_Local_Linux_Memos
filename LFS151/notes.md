@@ -3580,3 +3580,44 @@ sudo docker run \
   It provides an easy to use web UI that supports graphical design of cloud native artifacts.
 
 ---
+
+---
+
+## Distributed Tracing
+
+---
+
+---
+
+#### What is Distributed Tracing?
+
+---
+
+**Overview**
+
+- Organizations are adopting microservices for agility, easy deployment, scaling, etc. However, with a large number of services working together, sometimes it becomes difficult to pinpoint the root cause of latency issues or unexpected behaviors. To overcome such situations, we would need to instrument the behavior of each participating service in our microservices-based application. After collecting and combining the instrumented data from each participating service, we should be able to gain visibility of the entire system, known as Observability. Full observability is achieved through metrics, logs, and distributed tracing.
+
+- There are various distributed tracing tools like Zipkin, Dapper, HTrace, and X-Trace, but they instrument applications using their own specific APIs, which are not compatible with each other. Due to this tight coupling, developers do not feel very comfortable with them. Enter OpenTelemetry, a successor of OpenTracing, which offers consistent, expressive, vendor-neutral APIs. OpenTelemetry is an open source incubating project of the Cloud Native Computing Foundation (CNCF). OpenTelemetry is the result of the merger between two earlier projects, OpenTracing and OpenCensus, both archived.
+
+---
+
+#### OpenTelemetry
+
+**Overview**
+
+- A trace represents the details about the transaction, like how much time it took to call a specific function. A trace is referred by the directed acylic graph (DAG) of spans.
+
+- Each span can be referred to as a timed operation between contiguous segments of work. In distributed tracinbg, each service would contribute to its own span or set of spans. A parent can start other spans, either in serial or in parallel.
+
+- Tracing achritecture looks like:
+
+![](images/tracing.png)
+
+- This architecture does not give us timing information and is difficult to understand when parallelism is involved. The virtualization below presents srvice hierarchy, togehrtr with serial and parallel execution.
+
+![](images/tracing2.png)
+
+- OpenTelemetry Supported Tracers
+  Using OpenTelemetry, we collect tracing spans for our services and then forward them to different tracers. Tracers are then used to monitor and troubleshoot microservices-based applications.
+
+---
