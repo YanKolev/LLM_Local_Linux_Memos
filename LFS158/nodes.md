@@ -1,42 +1,42 @@
-#### Introduction to Kubernetes (LFS158)
+# Introduction to Kubernetes (LFS158)
 
-##### 1. Introduction
+### 1. Introduction
 
-##### 2. From Monolith to Microservices
+### 2. From Monolith to Microservices
 
-##### 3. Container Orchestration
+### 3. Container Orchestration
 
-##### 4. Kubernetes
+### 4. Kubernetes
 
-##### 5. Kubernetes Achitecture
+### 5. Kubernetes Achitecture
 
-##### 6. Installing Kubernetes
+### 6. Installing Kubernetes
 
-##### 7. Minikube: Installing local Kuberneets Clusters
+### 7. Minikube: Installing local Kuberneets Clusters
 
-##### 8. Accessing Minikube
+### 8. Accessing Minikube
 
-##### 9. Kubernetes Building Blocks
+### 9. Kubernetes Building Blocks
 
-##### 10. Authentication, Authorization, Admision control
+### 10. Authentication, Authorization, Admision control
 
-##### 11. Services
+### 11. Services
 
-##### 12. Deploy Standalone application
+### 12. Deploy Standalone application
 
-##### 13. Kubernetes Volume management
+### 13. Kubernetes Volume management
 
-##### 14. Configmaps And Secrets
+### 14. Configmaps And Secrets
 
-##### 15. Ingress
+### 15. Ingress
 
-##### 16. Advanced Topics
-
----
+### 16. Advanced Topics
 
 ---
 
-##### 1. Introduction
+---
+
+### 1. Introduction
 
 ---
 
@@ -46,7 +46,7 @@
 
 ---
 
-##### 2. From Monolith to Microservices
+### 2. From Monolith to Microservices
 
 ---
 
@@ -66,7 +66,7 @@
 
 ---
 
-##### 3. Container Orchestration
+### 3. Container Orchestration
 
 ---
 
@@ -120,5 +120,58 @@
 - Deployment of Container Orchestration: Most container orchestrators can be deployed on the infrastructure of our choice - on bare metal, Virtual Machines, on-premises, on public and hybrid clouds. Kubernetes, for example, can be deployed on a workstation, with or without an isolation layer such as a local hypervisor or container runtime, inside a company's data center, in the cloud on AWS Elastic Compute Cloud (EC2) instances, Google Compute Engine (GCE) VMs, DigitalOcean Droplets, IBM Virtual Servers, OpenStack, etc.
 
 - In addition, there are turnkey cloud solutions which allow production Kubernetes clusters to be installed, with only a few commands, on top of cloud Infrastructures-as-a-Service. These solutions paved the way for the managed container orchestration as-a-Service, more specifically the managed Kubernetes as-a-Service (KaaS) solution, offered and hosted by the major cloud providers.
+
+---
+
+### 4. Kubernetes
+
+---
+
+![](images/kubernetes.png)
+**Overview**
+
+- What is Kubernetes? - Open-source system for automating deployment, scaling and management of containerized appliactions.
+
+- called also k8s, inspired by Googl'es Borg system > a container and workload orchestrator for its global operations. Writen in Go.
+
+- . Several features/objects of Kubernetes that can be traced back to Borg, or to lessons learned from it, are:
+
+  - API servers
+  - Pods
+  - IP-per-Pod
+  - Services
+  - Labels.
+
+---
+
+**Kubernetes Features**
+
+1. Automatic bin packing
+   Kubernetes automatically schedules containers based on resource needs and constraints, to maximize utilization without sacrificing availability.
+2. Designed for extensibility
+   A Kubernetes cluster can be extended with new custom features without modifying the upstream source code.
+3. Self-healing
+   Kubernetes automatically replaces and reschedules containers from failed nodes. It terminates and then restarts containers that become unresponsive to health checks, based on existing rules/policy. It also prevents traffic from being routed to unresponsive containers.
+4. Horizontal scaling
+   Kubernetes scales applications manually or automatically based on CPU or custom metrics utilization.
+5. Service discovery and load balancing
+   Containers receive IP addresses from Kubernetes, while it assigns a single Domain Name System (DNS) name to a set of containers to aid in load-balancing requests across the containers of the set.
+
+6. Automated rollouts and rollbacks
+   Kubernetes seamlessly rolls out and rolls back application updates and configuration changes, constantly monitoring the application's health to prevent any downtime.
+7. Secret and configuration management
+   Kubernetes manages sensitive data and configuration details for an application separately from the container image, in order to avoid a rebuild of the respective image. Secrets consist of sensitive/confidential information passed to the application without revealing the sensitive content to the stack configuration, like on GitHub.
+8. Storage orchestration
+   Kubernetes automatically mounts software-defined storage (SDS) solutions to containers from local storage, external cloud providers, distributed storage, or network storage systems.
+9. Batch execution
+   Kubernetes supports batch execution, long-running jobs, and replaces failed containers.
+10. IPv4/IPv6 dual-stack
+    Kubernetes supports both IPv4 and IPv6 addresses.
+
+- Additional Features: Kubernetes supports common Platform as a Service specific features such as application deployment, scaling, and load balancing, but allows users to integrate their desired monitoring, logging and alerting solutions through optional plugins.
+
+- For example, support for role-based access control (RBAC) is stable only as of the Kubernetes 1.8 release, while cronjob support is stable only as of release 1.21.
+
+- **NB!** One of the main strengths- portability. It can be deployed in many environments such as local or remote Virtual Machines, bare metal, or in public/private/hybrid/multi-cloud setups.
 
 ---
