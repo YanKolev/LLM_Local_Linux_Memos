@@ -411,3 +411,68 @@
 **External-to-Pod Communication**
 
 - A successfully deployed containerized application running in Pods inside a Kubernetes cluster may require accessibility from the outside world. Kubernetes enables external accessibility through Services, complex encapsulations of network routing rule definitions stored in iptables on cluster nodes and implemented by kube-proxy agents. By exposing services to the external world with the aid of kube-proxy, applications become accessible from outside the cluster over a virtual IP address and a dedicated port number.
+
+---
+
+---
+
+---
+
+### 6. Installing Kubernetes
+
+---
+
+---
+
+---
+
+**Kubernetes Configuration types**
+
+1. ALL-in-One Single-Node Installation: all the control plane and workder components are installed and running on a single-node. while its useful for learning, development and testing its not recommended for production purposes
+
+2. Single-Conrol Plane and Multi-Worker installation: we havea single control plane node running a stacked etcd instance. multiple worker nodes can be managed by the control plane node.
+
+3. Single-Contol Plane with single-node etcd and a multi-workder Installation: single control plane node with external etcd instance. multiple worker nodes can be managed by the control plane node.
+
+4. Multi-Contol Plane and Multi- Worker Installation: multiple control plane nodes configured for High-Availability (HA), with each control plane node running a stacked etcd instance. The Etcd instances are also configured in an HA etcd clisted and multiple worker nodes can be managed by the HA control plane.
+
+5. MUlti-Control Plane with Multi-node etcd and multi-worker installation: multiple control plane nodes configured in HA mode, with each control plane node paired with an external etcd instace. The External etcd instances are also configured in an HA etcd cluste and multiple workder nodes can be managed by HA control plane. Most advanced cluster config + recommended for production environments.
+
+- NB! With the complexing increasesing, the hardware resource requirement also grow.
+
+---
+
+**Infrastructure for Kubernetes**
+
+- Upon a decision is made on the installation type, there needs to be an infrastructure support most common requirements fall into fields of :
+
+1. set up k8s on bare metal, public cloud, private or hybrid cloud?
+2. Which OS? Linux? Red-Hat or Debian or Windows?
+3. Which networking CNI solution is needed?
+
+---
+
+**Installing Local Learning Clusters**
+
+- There are different variations of k8s clusters that we can implement.
+
+1. Minikube: single and multi-node local k8s cluster recommended for a learning environment deployed on a single host.
+2. Kind: multi-node K8s cluster deployed in a docker containers acting as kubernetes nodes, for learning
+3. Docker Desktop: Including a local k8s for docker users.
+4. Podman Desktop: Including kubernetes integration for Podman Users.
+5. Microk8s: local and cloud k8s cluster for developer and production from Canonical
+   6.K3S- lightweight cluster for local deployments, originally from Rancher.
+
+---
+
+**Installing Production Clusters with Deployment Tools**
+
+- There are several recommended tools: kubeadm, kubespray, kops.
+
+- Kibeadm: first-class citizen of k8s ecosystem- recommended method to bootstrap a multi-node producting ready HA k8s clusters, on premises or in the cloud. it can also bootstrap a single-node cluster for leanring. it does not support the provisioning of hosts thay should be provisioned separately with a tool of admin's choice.
+
+- Kubespray: known as kargo, allows installation of HA production ready clusters on AWS, GCP, Azure, Open stack, vSphere or bare metal. is based on Ansible and is available fro most linux distros.
+
+- kops: enables to create, upgrade and maintain production-grade HA kubernetes clustrs from the CLI, it can provision the required infrastructure as well, currently AWS an GCE are officially suppored. Support for Digital Ocean and OpenStack is in beta.
+
+- Windows support fo Kuberntes- at time of these notes- only Windows Server 2019 and Windows Server 2022 are suppored by Kubernetes, but the control plane nodes are limited to running on Linux only.
