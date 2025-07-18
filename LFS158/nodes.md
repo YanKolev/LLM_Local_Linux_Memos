@@ -476,3 +476,47 @@
 - kops: enables to create, upgrade and maintain production-grade HA kubernetes clustrs from the CLI, it can provision the required infrastructure as well, currently AWS an GCE are officially suppored. Support for Digital Ocean and OpenStack is in beta.
 
 - Windows support fo Kuberntes- at time of these notes- only Windows Server 2019 and Windows Server 2022 are suppored by Kubernetes, but the control plane nodes are limited to running on Linux only.
+
+---
+
+---
+
+---
+
+### 7. Minikube: Installing local Kuberneets Clusters
+
+---
+
+---
+
+---
+
+**Overview**
+
+- Minikube- easiers most flexible and popular methods to run all in one or multi node local Kubernets cluster isolated by VM or Cotnainers run directly on workstations. Its a tool responsible for installation of Kubernets components, cluster bootstrapping and cluster tear-down when no longer needed. It includes additional features aimed to ease the user interaction with the kubernetes cluster, but its a fully functional non-production kuberernetes cluster for learnning purposes.
+
+---
+
+**Minikube**
+
+- Minikube is one of the easiers , most flexible and popular methods to run an all in one or multi-node local Kubernetes cluster Directly on a local workstation.
+
+- It installs and runs on any native OS such as Linux, MacOs or Windows, In order to take full advantage of all its features, a Type-2 Hypervisor or a Container Runtime should be installed on the local workstation, to run in conjuction with Minikube. The role of the hypervisor or container runtime is to offer an isolated infrastructure for the Minikube kubernttes cluster components, that is easily reporducible, easy to use and tear down.
+
+- The isolation of the cluster components from our daily environment ensure tht once no longer needed, the minikube components can be safely removed leaving beind con configuration canges to our workstations thus no traces of their experience. This does not mean however that we are responsible for the provisioning of any VMs or containers with guest OS with the help of the hypervisors or container runtime. Minikune includes the ncessary adapters to interact directly with the isolation software of choice to build all its infrastructure as log as the type-2 hypervisor or container runtime is installed on our workstation.
+
+- Minikube is built on the capabilities of the libmachine library originally designed by Docker to buld Virtual machine container hosts on any physical infrastructure. Making Minikube very flexible.
+
+- Minikube can be also installed without an isolation software, on bare metal > leading to in permanent configuration changes to the host OS. To prevent such permanent onfiguration changes, a second form of isolation can be achieved by installing Minikube inside a VM provisioned with a Type-2 Hypervisor of choice, and a desktop OS of choice (with GUI). As a result when installed inside VM Minikube will end up making configuration changes to the guet environment, still isolated from the host workstation. Therefore, now we have two distinct methods to isolate the minikube environment from our host workstation.
+
+- The isolation software can be specified by the user with --driver option, otherwise Minikube will try to find a preferred method for the host OS of the workstation.
+
+- Once dedicated on the isolation method, the next step is to determine the required number of Kubernetes cluster nodes, and their sizes in terms of CPU, memory and disk space. Minikube invokes the hypervisor of choice to provision the infrastructure VMS which will host the Kuberenetes cluster nodes, or the runtime of choice to run infrastructure containrs that host the cluster nodes.
+
+- Regardless of the isolation method and expected cluster and node sizes, a local minikube Kubernetes cluster will ultimately be impacted and/or limited by the physical resource of the host workstation.
+
+- We have to be mindful of the needs of he host OS and any utilities it may be running, then the needs of the hypervisor or the container runtime, and finally the remaining resources that can be allocated to our Kubernetes cluster. for learning environmend reccomendations are - 2cpu cores, 2 gb ram- 8GB RAM recommended and 20+ GB disk storage space. IF there is a migration of big production based clusted this should be adjusted.
+
+- THe kubernetes nodes are expected to access the internet as wel for software update, container image downloads and for client accessibility.
+
+-After the nodes provisioning phase, Minikube invokes kubeadm to bootstrap the kubernetes cluster components inside the previously provisioned nodes. We need to ensure that we have the needed hardware and software to built our environment.
