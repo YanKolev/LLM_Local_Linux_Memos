@@ -660,3 +660,33 @@ $ minikube start --driver=docker
 7. Stop/Delete comands are the same as previous linux install
 
 ---
+
+**Minikube Windows Install**
+
+- Minikube installation windows 10 and 11 with VirtualBox v7.0, instalation assume no other isolation software is installed on Windows workstation.
+
+- Steps:
+
+1. Verify virtualization support for windows system.
+
+```
+PS C:\WINDOWS\system32> systeminfo
+```
+
+2. Install VirtualBox hypervisor for widosts hosts with the .exe package.
+3. install the minikube via the installer.exe package.
+4. Start Minikube
+
+```
+PS C:\WINDOWS\system32> minikube start --driver=virtualbox
+```
+
+5. Check Status
+
+```
+PS C:\WINDOWS\system32> minikube status
+```
+
+6.Stop/remove minikube.
+
+---
