@@ -544,3 +544,79 @@
 - Internet connection on the first Minikunbe run-> is needed for packages, dependencies updates and to pull images needed to initialize the Minikube Kubernetes cluster components. Subsequent Minikube runs will require an internet connection onlywhen a new container images needed to be pulled from a public container registry or when deployed containerized application need it for client accessibility. Once a container images has been pulled it can be reused from the local container runtime image cache without internet connection.
 
 ---
+
+**Minikube Linux Install**
+
+- Minikube on Ubuntu Linux LTS with VirtualBox v7.0.
+
+- no other isolation software is installed on the workstation.
+
+- Steps:
+
+1. Verify the virtualization support on the Linux OS:
+
+```
+$ grep -E --color 'vmx|svm' /proc/cpuinfo
+```
+
+2. Download and install VirtualBox.
+
+3. Download and install Minikube (offisial installation guide x86-64>Stable) Update tthat most up to date package repositiries are used in the process.
+
+- this is binary download option, distribution neutral installation approach:
+
+```
+$ curl -LO \
+https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64
+
+$ sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
+```
+
+- NB! we can replace /latest/ with a particular version, such as /v1.31.2/ will download that specified Minikube version.
+
+4. Start minikube. (it can be staretd with the minikube start command).
+
+- the command bootstraps a single-node cluster with the latest supported stable Kubernetes version release. for specific kubernetes version the **-kuberentes-version** option can be used as such: /v1.31.2/ will download that speified Minikube version.
+
+```
+minikube start
+```
+
+- for specific version we can make it like:
+
+```
+minikube start --kubernetes-version=v1.27.1
+```
+
+- In case there are other vitualization driver candidates for minikube on the workstation,it is good practice to supply the desired driver with ** --driver=virtualbox**
+
+```
+$ minikube start --driver=virtualbox
+```
+
+- **NB!** -if there is an error message that reads "Unable to pick a default driver" > Minikube was not able to locate an one of the supproted hypervisors or runtimes. The recommendation is to install or re-install a desired isolation tool and ensure its executable is found in the default **PATH** of your OS distribution.
+
+- **NB!** - if there is an error message that reads "The vboxdrv kernel module is not loaded" means tht the critical VirtualBox kernel module may not be available. Workarounds:
+
+  - re-install Virtualbox on workstation
+  - install C compiler that may be missing from workstation and then build the kernel modle. for ubutin 22.04 LTS OS - can be build with **sudo /sbin/vboxconfig**
+
+- after rebuild is finished- start minikube with vritualbox using the start command and then can be cheked with status command
+
+```
+$ minikube status
+```
+
+- to stop minikube
+
+```
+$ minikube stop
+```
+
+- to remove minikube
+
+```
+$ minikube delete
+```
+
+---
