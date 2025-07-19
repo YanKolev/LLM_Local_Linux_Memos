@@ -520,3 +520,27 @@
 - THe kubernetes nodes are expected to access the internet as wel for software update, container image downloads and for client accessibility.
 
 -After the nodes provisioning phase, Minikube invokes kubeadm to bootstrap the kubernetes cluster components inside the previously provisioned nodes. We need to ensure that we have the needed hardware and software to built our environment.
+
+---
+
+**Requirements for minikube**
+
+- use one of the most robust and stable isolation methods as a driver, the VirtualBox hypervisor, to provision the VM(s) which host the components of the Kubernetes cluster. While no longer the preferred driver due to slower startup times when compared with other methods, it is still one of the most stable drivers for Minikube on Linux and Windows. However, the VirtualBox hypervisor is no longer compatible with macOS on ARM chipset (M1, M2, and M3), therefore Docker will be used instead.
+
+- VT-x/AMD-v virtualization- may need to be enabled on the local workstation for certain hypervsiors.
+
+- kubectl- command line client (CLI) is a binary used to access and manage any Kubernetes cluster. It is installed through Minikube and accessed through the minikube kubectl command, or it can be installed separately and run as a standalone tool.
+
+- Type-2 hypervisor or container runtime: without a specified driver,Minikube will try to find an installed hypervisor or a runtime, in the following order of preference(On a linux host): docker, kvm2, podman, vmware and virtualbox. If multiple isolation software installations are found, such as docker and virtualbox Minikune will picker docker over virtualbox if no desired driver is specified by the user.
+
+- Hypeviros and cntainer runtimesuppored by various workstation OSes:
+
+      1. Linux- VirtualBox, KVM2 and QEMU hypervisors or docker and podman runtimes
+      2. MacOS- virtualbox, hyperkit, vmware fusion, parallels and quemu hypervisors or docker/podman runtimes.
+      3. Windows- virtualbox, hyperv, vmware workstation, qemu hypervisors or docker and podman runtimes.
+
+- NB! Minikube supports a **--driver=node** on Linux, an optionm that runsthe Kubernetes Components bare-metal directly on the host OS and not inside a VM. With this option a Docker installation is requiredand a Linux OS on the local workstation but no hypervisor installation (for advanced users)
+
+- Internet connection on the first Minikunbe run-> is needed for packages, dependencies updates and to pull images needed to initialize the Minikube Kubernetes cluster components. Subsequent Minikube runs will require an internet connection onlywhen a new container images needed to be pulled from a public container registry or when deployed containerized application need it for client accessibility. Once a container images has been pulled it can be reused from the local container runtime image cache without internet connection.
+
+---
