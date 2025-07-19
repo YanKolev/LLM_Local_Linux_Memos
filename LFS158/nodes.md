@@ -483,7 +483,7 @@
 
 ---
 
-### 7. Minikube: Installing local Kuberneets Clusters
+### 7. Minikube: Installing local Kubernetes Clusters
 
 ---
 
@@ -618,5 +618,45 @@ $ minikube stop
 ```
 $ minikube delete
 ```
+
+---
+
+**Minikube MacOS Install**
+
+- Use case: virtualbox v0.7 / Docker Desktop, NO other isolation software is installed on Mac. (There is no KyperKit, VMware Fusion, Paralles or QEMU)
+
+- If Mac is with Inter processor-> VirtualBox Hypervisor. M1,M2, M3 workstations> Docker Desktop
+
+- **NB!** - For other hypervisors or container runtimes and minikube versions steps may vary- READ THE MANUAL!
+
+- Steps:
+
+1. Docker Desktop for Mac from official page.
+2. Instal Minikube (official installation guide)
+3. Check known issues
+4. Binary download option with:
+
+```
+$ curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-darwin-amd64
+
+$ sudo install minikube-darwin-amd64 /usr/local/bin/minikube
+```
+
+- ARM64:
+
+```
+$ curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-darwin-arm64
+
+$ sudo install minikube-darwin-arm64 /usr/local/bin/minikube
+```
+
+5. Start Minikube:
+
+```
+$ minikube start --driver=docker
+```
+
+6. Check minikube status
+7. Stop/Delete comands are the same as previous linux install
 
 ---
