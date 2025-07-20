@@ -690,3 +690,67 @@ PS C:\WINDOWS\system32> minikube status
 6.Stop/remove minikube.
 
 ---
+
+**Command Breakdown Notes**
+
+- **minikube start**: by default selects a driver isolation software, such as a hypervisor or a container runtime, if one (VirtualBox) or multiple are installed on the host workstation. In addtion downloads latest Kubernetes version components. After download- provisions single VM named **minikube** (min 2 CPUs, Memory-6GB, Disk-20gb) or docker container to host the default single-node all in one kubernetes cluster.
+
+- once the node is provisionend, it bootstraps the Kuberenetes control plane (with kubeadm tool) and it installs the latest version of the default container runtime, Docker, that will serve as running environment for the containerized application we will deploy to the Kubernetes cluster.
+
+- the command generates a default minikube cluster withthe specifications described aboce and it will store these specs so that we can restart th default cluster whnever desired. The object that stores the specification of our cluster is called **profile**. Minikube allows users to create custome reusable clusterss that can be all managed from a single com,mand line client.
+
+- **minikube profile**: allows us to view the status of all our clusters in a table formatted output, if you have created only the default minikubeclister- we could list the properties that define with. Command looks like:
+
+```
+$ minikube profile list
+```
+
+- the rerun will look like:
+
+```
+|----------|------------|---------|----------------|------|---------|---------|-------|--------|
+| Profile  | VM Driver  | Runtime |       IP       | Port | Version | Status  | Nodes | Active |
+|----------|------------|---------|----------------|------|---------|---------|-------|--------|
+| minikube | virtualbox | docker  | 192.168.59.100 | 8443 | v1.28.3 | Running |     1 | *      |
+|----------|------------|---------|----------------|------|---------|---------|-------|--------|
+```
+
+- table presents the columns associated with the default properties such as the profile name: minikube, the isolation driver: VirtualBox, the container runtime: Docker, the Kubernetes version: v1.28.3, the status of the cluster - running or stopped. The table also displays the number of nodes: 1 by default, the private IP address of the minikube cluster's control plane VirtualBox VM, and the secure port that exposes the API Server to cluster control plane components, agents and clients: 8443.
+
+- **Creation of multiple reusable clisters** : we can use the command **minikube start**, with the custom profiles with **--profile or -p** flags. Several of the isolation drivers support craetion of node VMs or node containers of custome sizes as well.
+
+- Examples of complex start commands that allow custome clusters with minikube. TO be used with already **Installed** Docker/Podman drivers. NO need for **CNI**
+
+```
+$ minikube start --kubernetes-version=v1.27.10 \
+  --driver=podman --profile minipod
+
+$ minikube start --nodes=2 --kubernetes-version=v1.28.1 \
+  --driver=docker --profile doubledocker
+
+$ minikube start --driver=virtualbox --nodes=3 --disk-size=10g \
+  --cpus=2 --memory=6g --kubernetes-version=v1.27.12 --cni=calico \
+  --container-runtime=cri-o -p multivbox
+
+$ minikube start --driver=docker --cpus=6 --memory=8g \
+  --kubernetes-version="1.27.12" -p largedock
+
+$ minikube start --driver=virtualbox -n 3 --container-runtime=containerd \
+  --cni=calico -p minibox
+
+```
+
+- After cluster profiles are available the default minikube and custom the table in the profile list will look different (with more profiles).
+
+- Active marker will indicate the target cluster profile of the minikube command line tool, the target cluster can be set to minibox with the command
+
+```
+$ minikube profile minibox
+```
+
+- it can be also set to default with the:
+
+```
+$ minikube profile minikube
+$ minikube profile default
+```
