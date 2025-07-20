@@ -823,3 +823,62 @@ $ minikube dele -p minibox
 ```
 
 -Note to self- Minikube command line refrence pages.
+
+---
+
+---
+
+---
+
+### 8. Accessing Minikube
+
+---
+
+---
+
+---
+
+**Overview**
+
+- Healthy runninng K8s cluster can be accessed via any one of the following methods: CLI tools and scripts, web-bases UI, APIs from CLI.
+
+1. CLI- kubectl is the Kuberentes Command line interface (CLI) to manage resource and application. very flexible, can be used solo or part of scripts/tools. once required credentials and clster access points have been configured for kubeCTL, it can be use remotely from anywhere to access a cluster.
+
+2. Web based UI - Kubernetes dashboard.
+
+3. API- main component of the K8s control plane is the API server- responsbile for exposing the Kuberentes APIs. accessible via both CLI and dashboard Ui.
+
+- API server is accessible through its endpoints by agents and users possessing the requred credentials.
+
+- API directory Tree:
+
+![](images/apidirectory.png)
+
+- Api directory tree of kubernetes can be divided into three independed group types:
+
+- Core group (/api/v1): Pods, Services, Nodes, Namespaces, ConfigMaps, Secrets
+
+- Named group (/apis/$NAME/$VERSIOn)-
+  API version that have different level of stability:
+
+  - Alpha level: it may be dropped at any point in time without notice.
+
+  ```
+     /apis/batch/v2alpha1.
+  ```
+
+  - Beta level: it is well-tested, but the semanditcs of objects may change in incompativle ways in a subsequent beta or stable release.
+
+  ```
+  /apis/certificates.k8s.io/v1beta1.
+  ```
+
+  - Stable level- appears in releases software for many subsequest versions
+
+  ```
+     /apis/networking.k8s.io/v1.
+  ```
+
+- System-wide: consist of system-wide API endpoints (/healthz, /logs, /metrics, /ui, etc.)
+
+---
