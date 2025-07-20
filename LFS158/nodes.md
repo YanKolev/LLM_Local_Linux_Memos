@@ -896,3 +896,43 @@ $ minikube dele -p minibox
 -NB with diferent k8s cluster setups, we may need to manually configure the cluster access points and certificates required by kubectl to securely access the cluster.
 
 - Check k8s documentation for methods of kubectl.
+
+---
+
+**kubectl Linux install**
+
+- we need to install the kubectl binary
+
+```
+$ curl -LO "htt‌‌ps://dl.k8s.io/release/$(curl -L -s \
+htt‌‌ps://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+$ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+```
+
+- to install specific version of kubectl:
+
+```
+$ curl -LO ht‌‌tps://dl.k8s.io/release/v1.28.3/bin/linux/amd64/kubectl
+```
+
+- version verification can be made with:
+
+```
+$ kubectl version --client
+```
+
+- post installation shell autocompletion
+
+```
+$ sudo apt update && sudo apt install -y bash-completion
+
+$ source /usr/share/bash-completion/bash_completion
+
+$ source <(kubectl completion bash)
+
+$ echo 'source <(kubectl completion bash)' >> ~/.bashrc
+```
+
+---
