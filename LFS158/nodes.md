@@ -936,3 +936,43 @@ $ echo 'source <(kubectl completion bash)' >> ~/.bashrc
 ```
 
 ---
+
+**kubectl macOS install**
+
+- it can be installed with the homebrew package manager.
+
+- to install it , we need stable binary
+
+```
+$ curl -LO "htt‌ps://dl.k8s.io/release/$(curl -L -s \
+https://dl.k8s.io/release/stab...)/bin/darwin/amd64/kubectl"
+
+$ chmod +x ./kubectl
+
+$ sudo mv ./kubectl /usr/local/bin/kubectl
+
+$ sudo chown root: /usr/local/bin/kubectl
+```
+
+- to install specific kubectl version we need the following command:
+
+```
+$ curl -LO htt‌ps://dl.k8s.io/release/v1.28.3/bin/darwin/amd64/kubectl
+```
+
+- Homebrew installation goes like:
+
+```
+
+$ brew install kubectl
+
+or
+
+$ brew install kubernetes-cli
+
+The installed version can be verified with:
+
+$ kubectl version --client
+```
+
+- after those install we can add shell outcompletion.
