@@ -754,3 +754,72 @@ $ minikube profile minibox
 $ minikube profile minikube
 $ minikube profile default
 ```
+
+---
+
+**Command Breakdown Notes part 2**
+
+- for commands as **start, stop,node, etc** are profile aware, meaning that the user is required to explicitly specify the target cluster of the command, through its profile name.
+
+- the default minikube cluster, can be managed without specifying profile name. Stopping and re-starting clusters, minibox cluster (explicintly) and default minikube cluster (implicityly) like:
+
+```
+$ minikube stop -p minibox
+
+$ minikube start -p minibox
+
+$ minikube stop
+
+$ minikube start
+```
+
+- to display the version of the current Minikube
+
+```
+$ minikube version
+```
+
+- Completion is helpful post installation. For ubuntu is:
+
+```
+$ sudo apt install bash-completion
+
+$ source /etc/bash_completion
+
+$ source <(minikube completion bash)
+
+- and then run the command to confirm:
+
+$ minikube completion bash
+```
+
+- to allow users to list the nodes of a cluster, add new control plane/worker nodes, delete existing cluster nodes, start ot stop individual nodes of a cluster
+
+```
+$ minikube node list
+
+$ minikube node list -p minibox
+
+```
+
+- to display cluster control plane node's IP address or another nodes' IP with the --node or -n flags.
+
+```
+$ minikube ip
+
+$ minikube -p minibox ip
+
+$ minikube -p minibox ip -n minibox-m02
+
+```
+
+- when a cluster config is no longer of user, the cluster profile can be deleted. detele command is profile aware- **it deletes the default minikube cluster i fno profile is specified, or a custom cluster if its profile is specified**.
+
+```
+$ minikube delete
+
+$ minikube dele -p minibox
+
+```
+
+-Note to self- Minikube command line refrence pages.
