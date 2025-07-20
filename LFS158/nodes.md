@@ -976,3 +976,33 @@ $ kubectl version --client
 ```
 
 - after those install we can add shell outcompletion.
+
+---
+
+**kubectl Windows install**
+
+- we need the binary and to make use of the curl command. once downloaded the binary needs to be added to the PATH
+
+```
+example of path:
+
+https://dl.k8s.io/release/v1.28.3/bin/windows/amd64/kubectl.exe
+
+
+```
+
+- if curl is installed from the CLI:
+
+```
+curl -LO "htt‌ps://dl.k8s.io/release/v1.28.3/bin/windows/amd64/kubectl.exe"
+```
+
+- to check installation
+
+```
+$ kubectl version --client
+```
+
+- after installation shell autocompletion can be istalled with POWERSHELL.
+
+---
