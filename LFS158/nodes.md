@@ -1030,3 +1030,32 @@ $ kubectl cluster-info
 ```
 
 - **NB!** with the installed kubernetes cluster installed by Minikube in the directory ~/.kube/config automatically, this is not the case for kubernetes clusters installed by other tools. In other cases the config file has to be created manually with sometimes re-configured to suit various networking and client/sever setups.
+
+---
+
+**Kubernetes Dashboard**
+
+- provides web-based user interface for Kubernetes cluster management. Minikube installs the dashboard as an addon, but it is disabled by defalt. Priord to using the dashboard we are required to enable the dashboard addon, together with the usage metrics from the Kubernetes cluster.
+
+- to access the dashboard from Minikube, we can use the minikubedashboard command and also enable the required addons with:
+
+```
+$ minikube addons list
+
+$ minikube addons enable metrics-server
+
+$ minikube addons enable dashboard
+
+$ minikube addons list
+
+$ minikube dashboard
+
+```
+
+- if the browser is not opened we can troubleshoot with the following command:
+
+```
+$ minikube dashboard --url
+```
+
+- thn we need to copy paste the displayed URL in a new tab. logout/login or reboot may be needed.
