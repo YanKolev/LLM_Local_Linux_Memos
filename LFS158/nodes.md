@@ -1006,3 +1006,27 @@ $ kubectl version --client
 - after installation shell autocompletion can be istalled with POWERSHELL.
 
 ---
+
+**kubectl Configuration file**
+
+- to access th e k8s cluster, thee kubectl clined needs the control plane done endpoint and appropriate credentials to be able to securely interact with the API server running on the control plane node.
+
+- When starting Mnikube, the process creates by default a configuration file **config** in the **.kube** directory, residing in the user's **home** directory.
+
+- the configuration file has all the connection details required by kubectly. The kubectl binary parses this file to find the control plane node's connection endpoint, along with thre required credentials. Multiple kubeconfig files can be configured with a cingle kubectl client.
+
+- to look at the connection details we can either display the contend of the **~/.kube/confing** or run
+
+```
+$ kubectl config view
+/lists the config file's content to securely access the server
+```
+
+-Once kubectl is installed we can display information about the Minikube Kubernetes cluster with the **kubectl cluster -info**
+
+```
+$ kubectl cluster-info
+/shows control plane's Ip address and the endpoint of the coredns server
+```
+
+- **NB!** with the installed kubernetes cluster installed by Minikube in the directory ~/.kube/config automatically, this is not the case for kubernetes clusters installed by other tools. In other cases the config file has to be created manually with sometimes re-configured to suit various networking and client/sever setups.
