@@ -1156,3 +1156,60 @@ $ curl $APISERVER/metrics --header "Authorization: Bearer $TOKEN" --insecure
 ```
 $ curl $APISERVER --cert encoded-cert --key encoded-key --cacert encoded-ca
 ```
+
+---
+
+---
+
+---
+
+### 9. Kubernetes Building Blocks
+
+---
+
+---
+
+---
+
+#### Kubernetes Object Model
+
+**Overview**
+
+- Kubernetes become a industry leader due to its advanced application lifecycle management capabilities- via its rich object model. The model had few features that are represented as persistend entities in the k8s cluster:
+
+- what containerized applications are running.
+- the nodes where the containerized applications are deployed.
+- application resource consumption
+- policies attached to applications, like restart/upgrade, fault tolerance, ingress/egress.
+
+- with each oject we declare our intent, or the desired state of the object, in the **spec** section. k8s system manages the status section for objects, where it records the actual state of the object.
+
+- at any given moment, the K8s Contropl plane tries to match the object's actual state to the object desired state. Object definition manifest must include other fields that specify the version of the API we are referencing as the **apiVersion** , the object type as **kind**, and additional data helfupl to the cluster or user- **metadata**.
+
+- in certain object definitions, we find different sections that replace spec, they are **data** and **stringData**. Both sections facilitate the declaration of information that should be stored by their respecive objects.
+
+- in k8s object types are : Nodes, namespaces, Pods, ReplicaSets Deployments, DaemonSets.
+
+- when we create an object, the object's configuration data section from below the spec field as to be submitted to the Kubernetes API server. The API request to create an object must have the spec section, describing the desired state as well as other details. the API server accepts objec definitions in a JSON format, most ofthen we provide such definition manifests in YAML format >> converted by **kubectl** in a JSON payload and sent to the server.
+
+---
+
+**Nodes**
+
+- Nodes are virtual identities assigned by k8s to the systems part of the cluster- whether Virtual Machines, bare-metal, containers, etc. These identitites are unique to each system and are used by the cluster for resources accounting and monitoring purposes. Which helps with workload as management throught the cluster.
+
+- Each node is managed with the help of 2 k8s node agents- kubelet nad kube-proxy, while the node also hosts a container runtime. The runtime is needed to run all containerized workload on the node- control plane agents and user workloads.
+
+- kubelet and kube-proxy node agents are responsible for executing all local workload management related tasks- interact with the runtime to run containers, monitor containers and node health, report anby issues and node state to the API server, and manage network traffic to containers.
+
+- on thier functions there are two types of nodes: **control plane** and **worker**. Typical k8s cluster includes at least one control plane node, but it may include multiple control plane nodes for the HA(high availability) of the control plane. With that cluster also includes one or more worker nodes to provide resource redudndacy in th ecluster. There are cases for bootstrapping sincle-all-in-one cluster as a single node on single VM, bare-metal or container when high-availability and resource redundancy are not of importance.
+
+- minikube allows usto bootstrap multi-node clusters with dedicated control plane nodes, however if the host system has limited physical resources we can bootsrat single-all-in-one cluster as a single node on a single VM or container and explore from thre.
+
+- Node identities are created and assigned during the cluster bootstrapping process by the tool responsible to initialize the cluster agents. Minikube uses default kubeadm bootstrapping tool to initialize the control plane node during the init phase and grow the cluster by adding worker or control plane nodes with the join phase.
+
+- Control plane nodes run the contol plane agents, such as API server, Scheduler, Controller Manager and etcd in addition to the kubelet and kube-proxy node agents , the container runtime and the addo-ons fo container networking, monitoring logging DNS, etc.
+
+- worker nodes run the kubelet and kube-proxy node agents the container runtime and add-ons for container networking, monitoring, logging.
+
+- the Control plane node and worker node represent the k8s cluster. A cluster's nodes are system distributed either on the same private network, across different networks, even across different cloud networks.
