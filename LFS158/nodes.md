@@ -1370,3 +1370,82 @@ $ kubectl delete pod nginx-pod
 - in addition, ReplicationController operator, also supports application updates.
 
 - Default recommended controller is the deployment which configures a ReplicaSet controller to manage application Pod's lifecycle.
+
+---
+
+**ReplicaSets**
+
+- ReplicaSet is in part the next- generation ReplicationController as it implements the replication and self-healing aspects of the Replication Controller. ReplicaSets supports both equality- and set-based selectors, while ReplicationControllers only support equality-based selector.
+
+- When a single instance the risk of crashing is really high. To avoid such issues- we can run parallel multiple instances of the application > High Availability.
+
+- The lifecycle of the application defined by a POD will be overseen by a controller- The ReplicaSet. With its help we can scale ne number of PODS running a specific application container image. Scaling can be accomplished manually or with the use of autoscaller.
+
+- In the example: a ReplicaSet, with the replica count set to 3 for a specific Pod Template. Pod 1, Pod 2 and Pod 3 are identical, running the same application container image, being cloned from the same Pod template.
+
+- For now the current state matches the desired state, keep in mind however th 3 Pod replicas are identical-> running an instance of the same application, same configuration, they are distict through unique Pod name nad Ip address. The Pod object ensures that the application can be individually placed on any worker node of the cluster as a result of the scheduling process.
+
+![](images/replicasets.png)
+
+- example of ReplicaSet object's definition manifest in YAML. Uses declarative method and it can serve as a template to more complex ReplicaSet definition if needed:
+
+```
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+    tier: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: guestbook
+  template:
+    metadata:
+      labels:
+        app: guestbook
+    spec:
+      containers:
+      - name: php-redis
+        image: gcr.io/google_samples/gb-frontend:v3
+```
+
+- the definition manifest if stored by redis-rs.yaml file is loaded into the cluster to run a set of three identical Pod replicas and their associated container image. While create is in the example below, advanced k8s users may choose apply instead:
+
+```
+$ kubectl create -f redis-rd.yaml
+
+```
+
+- **NB!** practice and check commands as:
+
+```
+$ kubectl apply -f redis-rs.yaml
+$ kubectl get replicasets
+$ kubectl get rs
+$ kubectl scale rs frontend --replicas=4
+$ kubectl get rs frontend -o yaml
+$ kubectl get rs frontend -o json
+$ kubectl describe rs frontend
+$ kubectl delete rs frontend
+
+
+```
+
+- ReplicaSet : one of the Pods is forced to unexpectedly terminate (due to insufficient resources, timeout, hosting node crashed).
+
+- image displaying the replicaset:
+
+![](images/replicaset2.png)
+
+- the replicaSet detects that the current state is no longer matching the desired state and triggers a request for an additional Pod to be create, thus ensuring that the currrent state matches the desired state.
+
+![](images/replicaset3.png)
+
+- ReplicaSets can be used independently as Pod controllers byt they only offer a limited set of features. A set of complementary features are provided by Deploymnts (the recommended controllers for the orchestration of pods).
+
+- deployments manage the createtion, deletion and updates of Pods. a deployment automatically creates a ReplicaSet which then creates a Pod. there os no need to manage ReplicaSets and pods seprately, the deployment will manage them on our behalf.
+
+---
