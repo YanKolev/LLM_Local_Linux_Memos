@@ -1250,6 +1250,93 @@ $ kubectl create namespace new-namespace-name
 
 ---
 
+**Pods**
+
+- A pod is the smallest k8s workload object. IT is the unit of deployment in K8s, which represents a single instance of the application.
+
+- A pod is logical collection of one or more containers, enclosing and isolating them to ensure that they:
+
+- are scheduled together on the same host with the Pod.
+
+- share the same network namespac, meaning that they share a single IP address originally assigned to the pod.
+
+- Have access to mount the same external storage(volumes) and other common dependencies.
+
+![](images/kubernetespods.png)
+
+- Pods are ephemeral in nature, and **they do not have the capability to self-heal themselves**. That is the reason they are used with controllers or operators (controllers=operators), which handle Pods's replication, fault tolerance, self-healing etc. Examples of controllers: **Deployments, RepicaSets, DeaemonSets, Jobs**.
+
+- When an operator is used to manage an application, the Pod's specification is nested in the controller's definition using the pod template.
+
+- example of stand-alone pod object's definition in YAML format, wtihout an operator.
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    run: nginx-pod
+spec:
+  containers:
+  - name: nginx-pod
+    image: nginx:1.22.1
+    ports:
+    - containerPort: 80
+```
+
+- this is a declarative method to define an object, and can server as a template for a much more complex pod definition manifest if needed.
+
+- The **apiVersion field must specify** v1 for the POd object definition, the second required field is kind-> specifying the POD object type. The third required field is metadata, holds the object's name and optional labels and annotations. The fourth required field spec marks the beginning of the block defininng the desired state of the pod object- also named **PodSpec**.
+
+- In the example our pod creates a single container running on the nginx:1.22.1 - image pulled from a container image registry(dockerhub).
+
+- The containerport field specifies the contaier port to be exposed by k8s resources for inter-application access or external client access.
+- spec contents are evaluated for scheduling purposes, then the kubelet of the selected node becomes responsible for running the container image with the help of the container runtime of the node. The pods's name and labels are used for workload accounting purposes.
+
+- the definition manifest if stored by a **def-po.yaml** file is loaded into the clusterto run the desired POD and its associated container image.
+
+- example is with create/ but advanced k8s practioners may opt to use apply instead:
+
+```
+$ kubectl create -f def-pod.yaml
+```
+
+- writing up definition manifests, may prove to be time consuging because YAML is **extemely sensitive to indentation**. When edition such definition manifests keepin mind that each indent is two blank spaces wide and TAB should be omitted.
+
+- imperatively, we can sumply run the POD defined above without the definition manifest as:
+
+```
+$ kubectl run nginx-pod --image=nginx:1.22.1 --port=80
+```
+
+- the command generates a definition manifest in YAML, but we can generate a JSON definition file just as easily with :
+
+```
+$ kubectl run nginx-pod --image=nginx:1.22.1 --port=80 \
+--dry-run=client -o json > nginx-pod.json
+```
+
+Both the YAML and JSON definition files can serve as templates or can be loaded into the cluster respectively as such:
+
+```
+$ kubectl create -f nginx-pod.yaml
+$ kubectl create -f nginx-pod.json
+```
+
+- **NB!** practice Pod operations with additional commands such as:
+
+```
+$ kubectl apply -f nginx-pod.yaml
+$ kubectl get pods
+$ kubectl get pod nginx-pod -o yaml
+$ kubectl get pod nginx-pod -o json
+$ kubectl describe pod nginx-pod
+$ kubectl delete pod nginx-pod
+```
+
+---
+
 **Labels**
 
 - labels in k8s are key-value pairs attached to Kubernetes objects such as Pods, ReplicaSets, Nodes, Namespaces and Persistent Volumes.
@@ -1273,3 +1360,13 @@ $ kubectl create namespace new-namespace-name
 ![](images/labels2.png)
 
 ---
+
+**ReplicationControllers**
+
+- a complex operator that ensures a specified number of replicas of a POD are running at any given time the desired version of the application container, by contstantly comparing the actual state with the desired state of the managed application. If there are mode Pods than the desired count the replication controller randomly terminates the number of Podds exceeding the desired count and if there are fewer Pods than the desired count, then the replication controller requests addtional pods to be created until the actual count matches the desired count.
+
+- Generally we do not deploy a pod independently as it would not be able to restart itself if terminad in error because a pod misses the much desired self-healing feature that k8s otherwise promises. The recommendd method is to use some type of an operator to run and manage pods.
+
+- in addition, ReplicationController operator, also supports application updates.
+
+- Default recommended controller is the deployment which configures a ReplicaSet controller to manage application Pod's lifecycle.
