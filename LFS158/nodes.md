@@ -1213,3 +1213,63 @@ $ curl $APISERVER --cert encoded-cert --key encoded-key --cacert encoded-ca
 - worker nodes run the kubelet and kube-proxy node agents the container runtime and add-ons for container networking, monitoring, logging.
 
 - the Control plane node and worker node represent the k8s cluster. A cluster's nodes are system distributed either on the same private network, across different networks, even across different cloud networks.
+
+---
+
+**Namespaces**
+
+- If we are using the same K8s cluster for multiple users and teams, we can partition the cluster into virtual sub-clusters using namespaces. The names of the resources/objects created inside a Namespace are unique , **but not across namespaces in the cluster**
+
+- we can check a list of ann Namespaces with the command
+
+```
+kubectl get namespaces
+```
+
+- k8s crates 4 namespaces out of the box: 1. kube-system 2. kube-public 3. kube-node-lease 4. default
+
+- **kube-system** namespace contains the objects created by the Kubernetes system, mostly the control plane agents.
+
+- **kube-public** is special Namespace, which is unsecured and readable by anyone, used for special purposes such as exposing public (non-sensitive) information about the cluster.
+
+- **kube-node-lease** newest namespace, which holds node lease objects used for node heartbeat data.
+
+- **default** namespace containers the objects and resourecs created by administrators and developers, objects are assigned to it by default unless another Namespace name is provided by the user.
+
+- **NB**- Good practice is to create additional namespaces as desired to virtualize the cluster and isolate users, developer teams, application or tiers.
+
+- to create namespaces we would use the following command:
+
+```
+$ kubectl create namespace new-namespace-name
+```
+
+- Namespaces are one of the modest desired features of Kubernetes, securing its lead against competititos, as it provides solution to multi-tenancy requirement.
+
+- Resourec quotas help users limit the overall resources consumed within Namespaces while Limitedranges help limit the resources consumed by individual Containers and their enclosing objects inn a namespace.
+
+---
+
+**Labels**
+
+- labels in k8s are key-value pairs attached to Kubernetes objects such as Pods, ReplicaSets, Nodes, Namespaces and Persistent Volumes.
+
+- Labels are sed to organize and select subset of objects, based on the requirements in place. Many objects can have the same label/s. Labels do not provide uniqueness to objects. Controllers use labels to logically group together decoupled objects, rather than using objectss names or IDs.
+
+- In the diagram we have two label keys: **app** and **env**. Based on our requirements: we have given different values to our four Pods. The label **env=dev** logically selects and groups the top two Poads, while the label **app=frontend** logically selects and groups the left two Pods. We can select one of the forus pods- bottom left by selecting two labels: **app=frontend AND env=qa**.
+
+![](images/labels.png)
+
+---
+
+**Label Selectors**
+
+- Controllers or operators and Services, use label selectors to select a subset of objects. Kubernetes supports two types of Selectors:
+
+- **Equality-Based Selectors** : allow filtering of objects based on Label keys and values. Matching is achieved using the =, == (equals, used interchangeably), or != (not equals) operators. For example with **env==dev** or **env=dev** we are selecting the objects where the env label key is set to value dev.
+
+- **Set-Based Selectors** : allows filtering of objects based on a set of values. We can use **in,notin** operators for label values, and **exist/does not exist** operators for label keys. For example with **env in (dev,qa)** we are slecting objects where env label is se to either dev or qa with !app we select objects with no label key app.
+
+![](images/labels2.png)
+
+---
