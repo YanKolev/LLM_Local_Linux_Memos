@@ -1563,3 +1563,69 @@ $ kubectl get deploy,rs,po -l app=nginx
 ```
 
 ---
+
+**DaemonSets**
+
+- Daemonsets are operators designed to manage node agents. They resemble ReplicaSet and Deployment operators when managing multiple Pod Replicas and application updates. but the DaemonSets present a distinct fueature that enforces a single pod replicate to be placed per Node, on all the Nodes or on a select subset of nodes.
+
+- In contrast ReplicaSet and Deployment operators by default have no controle over the scheduling and placement of multiple Pod replicas on the same Node.
+
+- DaemonSet operatorrs are commonly used in cases when we need to collect monitoring data from all nodes or to run storage networking or proxy daemons on all nodes, to ensure that we have a specific type of Pod running on all nodes at all times. They are critical API resources in multi-node Kubernetes clusters.
+
+- The kube-proxy agent running as a pod on every single node in the cluster or the Calico or Cilium networking node agent implementing the Pod Networking across all nodes of the cluster are examples of applications managed by the DaemonSet operators.
+
+- When na Node is added to the cluster a Pod from a given DaemonSet is automatically placed on it. Although it ensures an automated process, the DaemonSet's Pods are placed on all cluster's Nodes by the controller itself, and not with the help of the default Scheduler. Wehen any one Node crashes or it is removed from the cluster, the respecive DaemonSet operated Pods are garbage collected. If a daemonSet is deleted all pod replicas it created are deleted as well.
+
+- The placement of DaemonSet Pods is still governed by scheduling properties which may limit its Pods to be placed only on a subset of the cluster's Nodes. This can be achieved with the help of Pod schduling properties such as nodeSelectors, node affinity rules, taints and tolerations. This ensures the Pods of a DaemonSet are placed only on specific Nodes, such as workers if desired. However the default Schduler can take over the schduling process if a corresponding feature is enabled accepting again node affinity rules.
+
+- example of a DaemonSet object's definion manifest in yaml:
+
+```
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd-agent
+  namespace: default
+  labels:
+    k8s-app: fluentd-agent
+spec:
+  selector:
+    matchLabels:
+      k8s-app: fluentd-agent
+  template:
+    metadata:
+      labels:
+        k8s-app: fluentd-agent
+    spec:
+      containers:
+      - name: fluentd
+        image: quay.io/fluentd_elasticsearch/fluentd:v4.5.2
+```
+
+- if stored by fluentd-ds.yaml file is loaded into the cluster to run a set of identical Pod replicas, with their associated container image, matching in count the number of cluster nodes.
+
+```
+$ kubectl create -f fluentd-ds.yaml
+```
+
+- **NB!** Reviews following topics:
+
+```
+$ kubectl apply -f fluentd-ds.yaml --record
+$ kubectl get daemonsets
+$ kubectl get ds -o wide
+$ kubectl get ds fluentd-agent -o yaml
+$ kubectl get ds fluentd-agent -o json
+$ kubectl describe ds fluentd-agent
+$ kubectl rollout status ds fluentd-agent
+$ kubectl rollout history ds fluentd-agent
+$ kubectl rollout history ds fluentd-agent --revision=1
+$ kubectl set image ds fluentd-agent fluentd=quay.io/fluentd_elasticsearch/fluentd:v4.6.2 --record
+$ kubectl rollout history ds fluentd-agent --revision=2
+$ kubectl rollout undo ds fluentd-agent --to-revision=1
+$ kubectl get all -l k8s-app=fluentd-agent -o wide
+$ kubectl delete ds fluentd-agent
+$ kubectl get ds,po -l k8s-app=fluentd-agent
+```
+
+---
