@@ -1629,3 +1629,66 @@ $ kubectl get ds,po -l k8s-app=fluentd-agent
 ```
 
 ---
+
+---
+
+---
+
+### 10. Authentication, Authorization, Admision control
+
+---
+
+---
+
+---
+
+#### Overview
+
+---
+
+- To access and manage Kubernetes resources or objects in the cluster, we need to access a specific API nedpoint on the API server. Each access request goes through the following access control stages:
+
+1. Authentication: authenticate a user based on credentials provided as part of API requests.
+
+2. Authorization: authorizes the API requests submitted by the authenticated user.
+
+3. Admission control: Software modules that validate and/or modify user requests.
+
+![](images/AAA.png)
+
+---
+
+**Authentication**
+
+- k8s does not have an object called user nor does it store usernames or other related details in its objective store. However even without that, kubernetes can use usernames for the authentication phase of the API access control, and to request logging as well.
+
+- types of users that k8s supports:
+
+1. Normal users- they are managed outside of the kubernetes cluster via intedependent services like User/Client certificates, a file listing usernames/passwords, google account.
+
+2. Service Accounts- allow in-cluster processes to communicate with the API server to perform various operations. Most of the Service Accounts are created automatically via the API server, but they can also be created manually. The Service Accounts are tied to a particular Namespace and mount the respective credentials to communicate with the API server as Secrets.
+
+---
+
+- if properly configured, k8s can also support annonymous requests, along with requrest from Normal Users and Service Accounts. User impersonation is also supported allowing a user to act as another user > helpful for administrators when troubleshooting authorization policies.
+
+- for authetntication k8s uses series of authentication modules:
+
+1. X509 Client Certificates
+   To enable client certificate authentication, we need to reference a file containing one or more certificate authorities by passing the --client-ca-file=SOMEFILE option to the API server. The certificate authorities mentioned in the file would validate the client certificates presented by users to the API server. A demonstration video covering this topic can be found at the end of this chapter.
+2. Static Token File
+   We can pass a file containing pre-defined bearer tokens with the --token-auth-file=SOMEFILE option to the API server. Currently, these tokens would last indefinitely, and they cannot be changed without restarting the API server.
+3. Bootstrap Tokens
+   Tokens used for bootstrapping new Kubernetes clusters.
+4. Service Account Tokens
+   Automatically enabled authenticators that use signed bearer tokens to verify requests. These tokens get attached to Pods using the Service Account Admission Controller, which allows in-cluster processes to talk to the API server.
+5. OpenID Connect Tokens
+   OpenID Connect helps us connect with OAuth2 providers, such as Microsoft Entra ID (previously known as Azure Active Directory), Salesforce, and Google, to offload the authentication to external services.
+6. Webhook Token Authentication
+   With Webhook-based authentication, verification of bearer tokens can be offloaded to a remote service.
+7. Authenticating Proxy
+   Allows for the programming of additional authentication logic.
+
+- it is possible to enable multiple autheticators, and the first module to successfully authenticate the request short-circuits the evaluation. To ensure successful user authentication, we should enable at least 2 methods: service account tokens auth and one of the user authenticationrs.
+
+---
