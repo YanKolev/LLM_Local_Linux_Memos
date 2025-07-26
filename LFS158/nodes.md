@@ -1449,3 +1449,117 @@ $ kubectl delete rs frontend
 - deployments manage the createtion, deletion and updates of Pods. a deployment automatically creates a ReplicaSet which then creates a Pod. there os no need to manage ReplicaSets and pods seprately, the deployment will manage them on our behalf.
 
 ---
+
+**Deployments**
+
+- Deployment object provide declarative updates to Pods and ReplicaSets. The DeploymentController is part of th control plane node's controller manager, and as a controller it also ensures that the current state always matches the desired state of our running containerized application. It allows for seamless application updates and rollbacks knows as -> RollingUpdate strategy through rollouts and rollbacks and it directly manages its ReplicaSets for application scaling. It also supports a disruptive, less popular update strategy called Recreate.
+
+- example of a Deployment objects's definition manifest in a YAML format. Represents the declarative method to define an object and can serve as a template for much more complex deployment definition manifest if desired:
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-deployment
+  template:
+    metadata:
+      labels:
+        app: nginx-deployment
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.20.2
+        ports:
+        - containerPort: 80
+```
+
+- File Breakdown:
+
+1. apriVersion field is the first required field and it specifies the API endpoint on the API server which we want to connect to.
+2. kind- specifying the object type > Deplyment, but it can be many different thins such as (Por, ReplicaSet, Namespace, Service).
+3. metadata- holds the object's basic information such as name, annotations, labels and namespaces.
+4. spec- marks the beginning of the block defining the desired state of the Deployment object. (3 replicas, that is 3 instances of th POD are running at any given time.). The Pods are created using the Pood Template defined in spec.template. A nested object such as the Pod being part of a Deployment, retains its metadata and spec and loses its own apiVersion and king- both being replaced by template. In spec.template.spec we defined the desired state of the Pod. Our Pod creates a single container running the nginx:1.20.2 from Docker hub.
+
+- The definition manifest if stored by a def-deploy.yaml file is loaded into the cluster to run a set of three identical por replicas and their associated container image, together with their managing ReplicaSet. While create is exemplified below, advanced users might choose- apply
+
+```
+$ kubectl create -f def-deploy.yaml
+```
+
+- Imperatively, we can simply run the Deployment defined above without the definition manifest as such. The following is a multi-line command that should be srelect in its entirety for copy/paste.
+
+```
+$ kubectl create deployment nginx-deployment \
+--image=nginx:1.20.2 --port=80 --replicas=3
+```
+
+- when we need a sterter definition manifest, knowing how to generate one can be a life-saver. The imeprative command with addtional flags such as dry-run and the yaml output can generate the definition template instead of running the Deployment, while the tempalte is then stored in the nginx-deploy.yaml file.
+
+```
+$ kubectl create deployment nginx-deployment \
+--image=nginx:1.20.2 --port=80 --replicas=3 \
+--dry-run=client -o yaml > nginx-deploy.yaml
+```
+
+- there is option so we can generate a deployment definition manifest in JSON:
+
+```
+$ kubectl create deployment nginx-deployment \
+--image=nginx:1.20.2 --port=80 --replicas=3 \
+--dry-run=client -o json > nginx-deploy.json
+```
+
+- to load both Yaml and Json definition files can server as templates or can be loaded into the cluster respectivelly as such:
+
+```
+$ kubectl create -f nginx-deploy.yaml
+$ kubectl create -f nginx-deploy.json
+```
+
+- Once the Deployment object is created the Kubernetes system attaches the status field to the object and populates it with all necessary status fields.
+
+- In the grapth below is a new Deployment which creates a ReplicaSet A which then creates 3 Pods, with each Pod Templlate configured to run one nginx:1.20.2 container image. In this case the replicaSet A is associated with the nginx representing a state of the Deployment, its recorded as Revision 1.
+
+![](images/Deployment1.png)
+
+- when we need to push updates to the application managed by the Deployment object. lets change the Pods tempatete and updated the container image from nginx:1.20.2 to nginx:1.21.5. The Deployment triggers a new ReplicaSet B for the new container image versioned 1.21.5 and this association represents a new recorded state of the Deployment, Revision 2. The seamless transition between the two ReplicaSets, from ReplicaSet A with three Pods versioned 1.20.2 to the new ReplicaSet B with three new Pods versioned 1.21.5, or from Revision 1 to Revision 2, is a Deployment rolling update.
+
+- **Rolling update** is triggered when we update specific properties of the Pod Template for a deployment. While planed canges such as updating the container image, container port, volumes, and mounts would trigger a new Revision, other operations taht are dynamic in nature like scaling or labeling the deployment do not trigger a rolling update, this do not change the Revision number.
+
+- Once the rolling pdate has completed, the Depoloyment will show both ReplicaSets A nd B where A is scaled to 0(zero) pods and B is scaled to 3 Pods. This is how the Deployment records its prior state configuration setting , known as Revisions.
+
+![](images/Deployment2.png)
+
+- Explanation: Once ReplicaSet B and its 3 pods versioned 1.21.5 are ready the Deployment starts actively managing them. However, the Deployment keeps its prior configuration states saved as Revision which play a key factor in the rollback capacity of the Deployment- returning to a prior known configuration state. In our example if the performance of the new nginx:1.21.5 is not satisfactory, the Deployment can be rolled back to a prior Revision, in this case from Revision 2 back to Revision 1 running nginx:1.20.2 once again.
+
+![](images/Deployment3.png)
+
+- **NB!** practice commands:
+
+```
+$ kubectl apply -f nginx-deploy.yaml --record
+$ kubectl get deployments
+$ kubectl get deploy -o wide
+$ kubectl scale deploy nginx-deployment --replicas=4
+$ kubectl get deploy nginx-deployment -o yaml
+$ kubectl get deploy nginx-deployment -o json
+$ kubectl describe deploy nginx-deployment
+$ kubectl rollout status deploy nginx-deployment
+$ kubectl rollout history deploy nginx-deployment
+$ kubectl rollout history deploy nginx-deployment --revision=1
+$ kubectl set image deploy nginx-deployment nginx=nginx:1.21.5 --record
+$ kubectl rollout history deploy nginx-deployment --revision=2
+$ kubectl rollout undo deploy nginx-deployment --to-revision=1
+$ kubectl get all -l app=nginx -o wide
+$ kubectl delete deploy nginx-deployment
+$ kubectl get deploy,rs,po -l app=nginx
+```
+
+---
