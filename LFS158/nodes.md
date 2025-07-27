@@ -1658,7 +1658,7 @@ $ kubectl get ds,po -l k8s-app=fluentd-agent
 
 ---
 
-**Authentication**
+#### Authentication
 
 - k8s does not have an object called user nor does it store usernames or other related details in its objective store. However even without that, kubernetes can use usernames for the authentication phase of the API access control, and to request logging as well.
 
@@ -1692,3 +1692,13 @@ $ kubectl get ds,po -l k8s-app=fluentd-agent
 - it is possible to enable multiple autheticators, and the first module to successfully authenticate the request short-circuits the evaluation. To ensure successful user authentication, we should enable at least 2 methods: service account tokens auth and one of the user authenticationrs.
 
 ---
+
+#### Authorization
+
+- After a successful authentication, user can send the API request to perform different operations. Here, these API requests get authorized by K8s using various authorization modules that allow or deny the requests.
+
+- Some of the API requests attributes that are reviewed by K8s include user, group, Resource, Namespace or API group. These attribtes are evaluated against policies, if the evaluation is successful then the request is allowed otherwide is denied. Similar to the Authentication step, Authorization has multiple modules or authorizers. More than one module can be configured for one k8s cluster, an each module is cheked in sequence. if any authorizer approves or denies a request, the that decision is returned immediately.
+
+- **Auhtorization Modes**
+
+- 1. **Node** : node authorization is a special-purpose authorization mode which specifically authorizes API requests made by kubelets. It authorizes the kubelet's read operations for services, endpoint or nodes, and writes operations for nodes, pods and events. for more info RTFM
