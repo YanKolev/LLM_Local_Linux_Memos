@@ -1702,3 +1702,99 @@ $ kubectl get ds,po -l k8s-app=fluentd-agent
 - **Auhtorization Modes**
 
 - 1. **Node** : node authorization is a special-purpose authorization mode which specifically authorizes API requests made by kubelets. It authorizes the kubelet's read operations for services, endpoint or nodes, and writes operations for nodes, pods and events. for more info RTFM
+
+- 2. **Attribute-Based Access Control(ABAC)** : with the ABAC authorized, Kuberenetes grands access to API requests, which combine policies with attributes. In the following example, user bob can only read Pods in the Namespace **lfs158**
+
+```
+{
+  "apiVersion": "abac.authorization.kubernetes.io/v1beta1",
+  "kind": "Policy",
+  "spec": {
+    "user": "bob",
+    "namespace": "lfs158",
+    "resource": "pods",
+    "readonly": true
+  }
+}
+```
+
+- to enable AABC mode, we start the API server with the --authorization-mode=ABAC option, while specifying the autorization policy with --autrorization-policy-file=PolicyFIle.json.
+
+- 3.**Webhook** : in webhook mode k8s can request authorization decision to be made by third-party services, which would return true for successful authorization, and false for failure. In order to enable the Webhook authorizer, we need to start the API server with the --authorization-webhook-config-file=SOME_FILENAME option, where some_filename is the configuration of the remote authorization service.
+
+- 4. **Role-Based Access Control** (RBAC): with RBAC we regulate the access to resources based on the Roles of individual users. In k8s, multiple Roles can be attached to subjects like users, service accounts, etc. While creating the Roles, we restrics resource access by specific operation such as **create, get, update,patch**. The se operations are referred to as verbs. In RBAC, we can two kinds of Roles:
+
+- Role: A role grants access to the resources within a specific Namespace.
+
+- ClusterRole: A ClusterRole grants the same permissions as Role does, but its scope is cluster-wide.
+
+- exmaple of Role:
+
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: lfs158
+  name: pod-reader
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+
+
+
+```
+
+- the Manifest defines a pod-reader role, which has access only to read the pods and **lfs158** Namespace.
+
+- Example of cluster ClusterRole:
+
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-admin
+rules:
+- apiGroups:
+  - '*' # All API groups
+  resources:
+  - '*' # All resources
+  verbs:
+  - '*' # All operations
+- nonResourceURLs:
+  - '*' # All non resource URLs, such as "/healthz"
+  verbs:
+  - '*' # All operations
+```
+
+- The manifest defines a cluster- admin cluster role that is fully permissive.
+
+- Once the role is created, we can bind itot users with a RoleBinding object. There are 2 kinds of RoleBindings:
+
+1. RoleBinding: IT allows us to bind users to the same namespace as a Role. We could also refer to a ClusterRole in RoleBidinding, which would grant permissions to Namespace resources defined in a the ClusterRole within the RoleBinding's Namespace.
+
+2. ClusterRoleBinding: it allows us to grant access to resourcesat at a cluster- level and to all Namespaces.
+
+- Example of RoleBinding:
+
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-read-access
+  namespace: lfs158
+subjects:
+- kind: User
+  name: bob
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+```
+
+- the manifest defines a bid between the cluster-admin ClusterRole and all usrs of the group system:admins.
+
+- To enable RBAC mode, we start the API server with the --authorization-mode=RBAC option, allowing us to dynamically configure policies.
+
+---
