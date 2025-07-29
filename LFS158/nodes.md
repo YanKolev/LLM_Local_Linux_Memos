@@ -1798,3 +1798,102 @@ roleRef:
 - To enable RBAC mode, we start the API server with the --authorization-mode=RBAC option, allowing us to dynamically configure policies.
 
 ---
+
+#### Authentication and Authorization Steps
+
+- guide is performed in the environment- **/var/lib/minikube/certs** and RBAC mode of authorization for : Minikube v1.32, Kubernetes v1.28, containerd 1.7.8.
+
+- Start minikube:
+
+```
+$ minikube start
+```
+
+- to preview the content of kubectl clients' configuration manifest, observing the only context minikube and the only user minikube, created by default (output)
+
+```
+$ kubectl config view
+```
+
+- create **lfs158** namespace
+
+```
+$ kubectl create namespace lfs158
+```
+
+- create rbac directory and cd into it:
+
+```
+$ mkdir rbac
+$ cd rbac/
+```
+
+- create new user bob on your workstation, set bob's passwords as well (system will prompt to enter password twice)
+
+```
+~/rbac$ sudo useradd -s /bin/bash bob
+~/rbac$ sudo passwd bob
+
+```
+
+- create private key for the new user bob with the openssl tool, create a certificate singing request for bob with the same openssl:
+
+```
+~/rbac$ openssl genrsa -out bob.key 2048
+
+----
+~/rbac$ openssl req -new -key bob.key \
+-out bob.csr -subj "/CN=bob/0=learner"
+
+
+```
+
+- create a YAML definition manifest for a certifica singing request object and save it with a blank value on the request field
+
+```
+~/rbac$ vim signing-request.yaml
+
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: bob-csr
+spec:
+  groups:
+  - system:authenticated
+  request: <assign encoded value from next cat command>
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+  - digital signature
+  - key encipherment
+  - client auth
+```
+
+- view certificate, encode it base64, and assign it to the reuqest field in the singing-request. yaml
+
+```
+~/rbac$ cat bob.csr | base64 | tr -d '\n','%'
+```
+
+```
+~/rbac$ vim singing-request.yaml
+```
+
+- create certificate singing request object, then list the certificate, signing request objects. it will show a pending state
+
+```
+~/rbac kubectl create -f signing-request.yaml
+```
+
+```
+~/rbac$ kubectl get csr
+```
+
+- approve certificate signing request object, then list the certificate signging request objects again. it will show both approved and issued states
+
+```
+~/rbac$ kubectl certificate approve bob-csr
+```
+
+```
+~/rbac$ kubectl get csr
+```
