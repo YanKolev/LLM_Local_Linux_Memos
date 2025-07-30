@@ -1897,3 +1897,113 @@ spec:
 ```
 ~/rbac$ kubectl get csr
 ```
+
+- extract the approved certificate from the certificate signing request, decode it with base64 and seve it as a certificate file.
+
+```
+~/rbac$ kubectl get csr bob-csr \
+-o jsonpath='{.status.certificate}' | \
+base64 -d > bob.crt
+
+~/rbac$ cat bob.crt
+```
+
+- configure kubectl client's configuration manifest with user bob's credentials by assigning his key and certificate:
+
+```
+~/rbac$ kubectl config set-credentials bob\ --client-certificate=bob.crt --client-key=bob.key
+```
+
+- create a new context entry in the kubectl client's configuration manifest for user bob, associated with lfs158 namespace in the minikube cluster:
+
+```
+~/rbac$ kubectl config set-context bob-context \
+--cluster=minikube --namespace=lfs158 --user=bob
+```
+
+- viewthe contents ofthe kubectl client's configuration manifest again, obeserving the new context entry bob-context, and the new user entry bob
+
+```
+~/rbac$ kubectl config view
+```
+
+- while the default minikube context, create a new deployment in the lfs158 namespace
+
+```
+~/rbac$ kubectly -n lfs158 create deployment nginx --image=nginx:alpine
+```
+
+- from the new contxt bob-context try to list pods. the attempt will fail becuase user bob has no permissions configured forthe bob-context:
+
+```
+~/rbac$ kubectly --context=bob-context get pods
+```
+
+- with the following steps will assign a limited set of permision to user bob in the bob-context
+
+- to create a yaml config manifest for a pod-reader role object , which allows only get, watch, list actions in the lfs158 namespace agains pod resources. Then create the role object and list in from the default minikube context, but from the lfs158 namespace.
+
+```
+~/rbac$ vim role.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: lfs158
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+
+~/rbac$ kubectl create -f role.yaml
+
+#returns
+role.rbac.authorization.k8s.io/pod-reader created
+
+~/rbac$ kubectl -n lfs158 get roles
+
+
+#returns
+NAME         CREATED AT
+pod-reader   2022-04-11T03:47:45Z
+```
+
+- create a yaml config manifest for a rolebinding object, which assigns the permissions of the pod-reade Role to usr bob. Then create the rolebinding object and list it from the default minikube context, but from lfs158 namespace:
+
+```
+~/rbac$ vim rolebinding.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-read-access
+  namespace: lfs158
+subjects:
+- kind: User
+  name: bob
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+
+~/rbac$ kubectl create -f rolebinding.yaml
+
+#returns
+rolebinding.rbac.authorization.k8s.io/pod-read-access created
+
+~/rbac$ kubectl -n lfs158 get rolebindings
+
+#returns
+NAME              ROLE              AGE
+pod-read-access   Role/pod-reader   28s
+
+# Now that we have assigned permissions to bob, we can successfully list pods from the new context bob-context.
+
+~/rbac$ kubectl --context=bob-context get pods
+
+#returns
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-565785f75c-kl25r   1/1     Running   0          7m41s
+```
