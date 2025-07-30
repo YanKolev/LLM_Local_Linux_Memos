@@ -2007,3 +2007,25 @@ pod-read-access   Role/pod-reader   28s
 NAME                     READY   STATUS    RESTARTS   AGE
 nginx-565785f75c-kl25r   1/1     Running   0          7m41s
 ```
+
+---
+
+#### Admission Control
+
+---
+
+- **Overview**: admission controllers are used to specify granular access control policies, which include allowing priviledge container, checking on resource quote, etc.
+
+- We can force these policies using different admission controllers like LimitRanger, ResourceQuote, Default Storage Class, AlwaysPullimage. They come into effect only after API request are authenticated and authorized. Admission controllers fall under 2 cagetories- validating or mutating- but there are controllers that are both validating and mutating. The mutating controllerss can modify the request objects.
+
+- to use admission controls, we must start the K8s API server with the --enable-admission-plugins, which takes a comma-delimited, ordered list of controller names such as:
+
+```
+--enable-admission-plugins=NamespaecLifecycle, ResourecQuota, PodSecurity, DefaultStorageClass
+```
+
+- k8s has some admission controllers enabled by default, for more info RTFM.
+
+- k8s admission control can also be implemented though custom plugins, for a dynamic admission control method. These plugins are develiped as extensions and run as admission webhooks.
+
+---
