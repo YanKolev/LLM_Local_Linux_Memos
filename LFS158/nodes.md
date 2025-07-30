@@ -2113,3 +2113,69 @@ spec:
 - Even a single-replica application, run by a single Pod, the Service is beneficial during self-healing (replacement of a failed Pod) as it immediately directs traffic to the newly deployed healthy pod.
 
 ---
+
+**Service Object Example**
+
+- declarative method to define an object, and can serve as a template for a much more complex Service definition manifest if desired. By omitting the Service type from the definition manifest, we create the default service type, the ClusterIP type.
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-svc
+spec:
+  selector:
+    app: frontend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
+```
+
+- The above definition manifest, if stored by a frontend-svc.yaml file is loaded into the cluster to set up the necessary routes and rules to send traffic to the Pod replicas of the earlier defined frontend Deployment. While create is shown, apply can be used also
+
+```
+$ kubectl create -f frontend-svc.yaml
+```
+
+- imperatively we can use direct method to expose the deployment's pods. The following is a multi-line command :
+
+```
+$ kubectl expose deploy frontend --name=frontend-svc\
+--port=80 --target-port=5000
+```
+
+- The expose command parses the refenced Depolyment object to extract valuable pairing details such as Name, Label, Selectro or containerPort to populate these values in the Service object.
+
+- In cases when the Service port and Service **targetPort** values are expected to be distinct (80 and 5000) it is best to explicitly supply these values with the expose command. Also, we want to change the name of the Service with the name option (default behaviour is for the Service object to inherit the exposed Deployment name's frontend)
+
+- Another imperative method is set up the same Service from aboceis through the **create service** command. The command below first sets up a **frontend** Service with **frontend** Label and **frontend** Selector in **dry-run** mode, it updates the service name to frontend-svc and then loads the definition in the cluster.
+
+```
+$ kubectl create service clusterip frontend \
+--tcp=80:5000 --dry-run=client -o yaml \
+| sed 's/name: frontend/name: frontend-svc/g' \
+| kubectl apply -f -
+
+```
+
+- we are creating a frontend-svc Service by selecting all the Pods that have the label key=app set to value=frontend. By default each Service receives an IP address routable only inside the cluster, known as ClusterIP. In our example we have 172.17.0.4 and 172.17.0.5 as clusterIps assined to our fronend-svc and db-svc Services
+
+![](images/serviceobjects.png)
+
+- The user/client now connects to a Service via ClusterIP, which forwards traffic to one of the Pods attached to it. A service provides load balancing by default while selecting the Pods for traffic forwarding.
+
+- Service forwards traffic to pods, we can select the **targetPort** on the Pod which receives the traffic. In image- fronend-svc Service receives request from the user/client on port: 80 and then forwards these requests to one of the attached Pods on the targetPort: 5000. If the **targetPort** is not defined explicitly, then traffic will be forwarded to Pods on the Port on which the service receives traffic-> in this case the **targetPort** implicitly is assigned the value of the port. It is very important to ensre that the value of the **targePort** which is 500 in this exmaple, matches the value of the **containerPort** of the Pod spec section.
+
+- A logical set of a Pods's Ip address, along with the **targetPort** is referred to a Service endpoint. in example , the fronend-svc Service has 3 endpoints: 10.0.1.3:5000, 10.0.1.4:5000, and 10.0.1.5:5000
+
+- endpoints are created and managed automatically by the Service, not by the Kuberenes cluster administrators or developers.
+
+- service associated endpoints can be listed with:
+
+```
+$ kubectl get service,endpoints frontend-svc
+$ kubectl get svc,ep frontend-svc
+```
+
+---
