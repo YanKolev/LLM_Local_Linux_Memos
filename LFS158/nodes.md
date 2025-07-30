@@ -2219,3 +2219,53 @@ spec:
   internalTrafficPolicy: Local
   externalTrafficPolicy: Local
 ```
+
+---
+
+**Service Discovery**
+
+- Services are the primary mode of communication between cntainerized applications managed by k8s, it is helpful to be able to discover them at runtime. k8s supports two methods for discovering Services.
+
+  1. **Environment variables**: As soon as the Pod Starts on any worker node, that kubelet daemon runnin on that node adds a set of environment variables in the Pod of all active Services. For example, if we have an active Service called redis-master, which exposes port 6379, and its ClusterIP is 172.17.0.6 then on a newly created pod, we can see the following enviroment variables:
+
+  ```
+  REDIS_MASTER_SERVICE_HOST=172.17.0.6
+  REDIS_MASTER_SERVICE_PORT=6379
+  REDIS_MASTER_PORT=tcp://172.17.0.6:6379
+  REDIS_MASTER_PORT_6379_TCP=tcp://172.17.0.6:6379
+  REDIS_MASTER_PORT_6379_TCP_PROTO=tcp
+  REDIS_MASTER_PORT_6379_TCP_PORT=6379
+  REDIS_MASTER_PORT_6379_TCP_ADDR=172.17.0.6
+
+  ```
+
+- with this solution we need to be careful while ordering our Service, as the Pods will not have the enviromnent variables set for Services which are created after the Pods are created.
+
+2. **DNS** : k8s has an add-on for DNS, which creates a DNS recoed for each Service and its format in my-svc.my-namespace.svc.cluster.local. Services within the same Namespace find other Services just by theri names. If we add a Service redis-master in ;my-ns Namespace, all Pods in the same my-ns Namespace lookup the Service just by its name, redis-master. Pods from other Namespaces, such as test-ns, lookup the same Service by adding the respective Namespace as a suffix, such as redis-master.my-ns or providing the FQDN of the service as redis-master.my-ns.svc.cluster.local.
+
+This is the most common and highly recommended solution. For example, in the previous section's image, we have seen that an internal DNS is configured, which maps our Services frontend-svc and db-svc to 172.17.0.4 and 172.17.0.5 IP addresses respectively.
+
+If we had a client application accessing the frontend application, the client would only need to “know” the frontend application’s Service name and port, which are frontend-svc and port 80 respectively. From a client application Pod we could possibly run the following command, allowing for the cluster internal name resolution and the kube-proxy to guide the client’s request to a frontend Pod:
+
+```
+$ kubectl exec client-app-pod-name -c client-container-name -- /bin/sh -c curl -s frontend-svc:80
+```
+
+---
+
+**ServiceType**
+
+- While defining a Service, we can also choose its access scope. We can decide whethe the Service: - only accessible within the cluster. - accessible from within the cluster and the external world. maps to an entity which resides either inside or outside the cluster.
+
+- Access scope is decided by **ServiceType** property, defined when creating the Service.
+
+---
+
+**ServiceType: ClusterIP and NodePort**
+
+- ClusterIP is the default ServiceType. A Service receives a Virtual IP address, known as its ClusterIP. This Virtual IP address is used for communicating with the Service and is accessible only from within the cluster. The frontend-svc Service definition manifest now includes an explicit type for ClusterIP. If omitted, the default ClusterIP service type is set up:
+
+```
+
+
+```
