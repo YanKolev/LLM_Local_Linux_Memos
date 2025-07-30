@@ -2179,3 +2179,43 @@ $ kubectl get svc,ep frontend-svc
 ```
 
 ---
+
+**Kube-proxy**
+
+- each cluster node runs a daemon called kube-proxy, a node agent that watches with the API server on the control plane node for the addition, updates and removal of Services and endpoints. Kube-proxy is responsible for implementing the Service configuration on behalf of an administrator or developer. In orded to enable traffic routing to an exposed application running in Pods.
+
+- In example: for each new Service, on each node, kube-proxy configures iptables rules to capture the traffic for its ClusterIp and forwards it to one of the Service's endpoints. Therefore any node can receive the external traffi and then route it internally in the cluster based on the iptables rules. When the Service is removed, kube-proxy removes the corresponding iptables rules on all nodes as well.
+
+![](images/kube-proxy.png)
+
+- Just as a kubep-proxy node agent runs reduntandttly on each cluster node, the Iptables are populate in a reduntadant fashion by their respecive node agents so that each iptables instance stores complete routing rules for the entire cluster. This helps with the Service objects implementation to reproduce a distributed load balancing mechanism.
+
+---
+
+**Traffic Policies**
+
+- The kube-proxy node agent together with the iptables implement the load-balancing emchanism of the Service when traffic is being routed to the application Endpoints. Due to restricting characteristics of the iptables this load-balancing is random by default. > Meaning the Endpoint Pod to receive the request forwarded by the Service will be randomly slected out of many replicas. The mechanism does not guarantee that the selected receiving Pod is the closest oreven on the same node as the requester, threfore not the most efficient mechanism. Since this is the iptables supported load-balancing mchanism, if we desire better outcome > we need to to take advantage of traffic policies.
+
+- Traffic Policies- allows users to instruct the kube-proxy on the context of the traffic routing. There are 2 options: Cluster and Local.
+
+  1. Cluster- allows kube-proxy to target all ready Endpoints of the Service in the load-balancing process. This is the default behaviour of the Service even when the traffic policy property is not explicitly declared.
+
+  2. Local- isolates the load- balancing process to only include the Endpoints of the Service located on the same node as the requester Pod, or perhaps the node that captured inboud external traffic on its NodePort. This might come with issues> if Service does not have a ready endpoint on the node where the requester pod is running the Srvice will not route the request to Endpoints on other nodes to satisfy the request because it will be dropped by kube-proxy.
+
+- both option ara available for requests generated internally from within the cluster, or externally from applications and clients running outside the cluster. The Service definition manifest blow defines both internal and external Local traffic policies. Both are optional settings, and can be used independent of each other, where one can be defined without the other
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-svc
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  internalTrafficPolicy: Local
+  externalTrafficPolicy: Local
+```
