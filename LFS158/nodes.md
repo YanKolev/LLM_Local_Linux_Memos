@@ -2029,3 +2029,87 @@ nginx-565785f75c-kl25r   1/1     Running   0          7m41s
 - k8s admission control can also be implemented though custom plugins, for a dynamic admission control method. These plugins are develiped as extensions and run as admission webhooks.
 
 ---
+
+---
+
+---
+
+### 11. Services
+
+---
+
+---
+
+---
+
+#### Overview
+
+---
+
+- Microservices driven acrhitecture aims to decouple the components of an application, microservices still need agents to logically tie or group them together for management purposes, or to load balance traffic to the ones that are part of such logical set.
+
+- Service objects used to abstract the communication between cluster internal microservicer with the external world.
+
+- Service offers a single DNS enry for a stateless containerized application managed by a common load balancing access point to set a pods logically grouped and managed by a controller such as Deployment, ReplicaSet or DaemonSet.
+
+---
+
+**Accessing Application Pods**
+
+- to access the application, a user or noather application needs to be connect to a Pod running the target application. As Pods are ephemeral in nature, resources like IP addresses allocated to them cannot be static. Pods could be terminated abruptly or be rescheduled absed on existing requirements.
+
+- Scenario: an operaor manages a set of Pods and a user/client is accessing the pods directly by using their individual IP addresses. This access method requires the cluent to retrieve the target Pods' IP addresses in advance, introducing an unnecessary overhead for the client.
+
+![](images/accesspods.png)
+
+- unexpectedly , on of the Pods athe user/client is accessing is terminated, and a new Pod is createdd by the controller. The new pod will be assigned a new IP address that will not be immediately known by the user/clienbt. If the client tries to watch the target Pods's IP addresses for any changes/updates, this will result in an inefficient approach that will only increase the client's overhead.
+
+![](images/accesspods2.png)
+
+- To overcome this situation, k8s provides a higher-level abstraction called Service- which logically groups Pods and defines a policy to access them. This grouping is achieved via Labels and Selectors.
+
+- This logical grouping strategy is used by Pod controllers such as ReplicaSets, Deployments and even Daemon Sets. Below is Deployment definition manifest for the frontend app, to aid with the correlation of Labels, Selectors and port values between the deployment controller, its Pod replicas and the service definition manifest.
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: frontend
+  name: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontend
+    template:
+      metadata:
+        labels:
+          app: frontend
+      spec:
+        containers:
+        - image: frontend-application
+        name: frontend-application
+        ports:
+        - containerPort: 5000
+```
+
+---
+
+#### Services
+
+---
+
+- Labels and Selectors use a key-value pair format. In the following graphical representation, app is the label key, **frontend** and **db** are label balues for different pods.
+
+![](images/servicesgrouping.png)
+
+- Using the selectors app==frontend and app=db, we group Pods into two logical sets: one set with 3 Pods, and one set with a single pod.
+
+- we assign a name to the logical grouping > known as Service. Ther Service name is also registered with the cluster's internal DNS service. In our example , we create two Service, **frontend-svc** and **db-svc**, and they have the app==frontend and the app==db Selectors, respectively.
+
+- Services can expose single Pods, ReplicaSets, Deployments, DaemonSets and StatefulSets. When exposing the Pods managed by an operator, the Service's selector may use the same label as the operator. A clear benefit of a service is that it watches application Pods for any changes in count and their respective IP addresses while automatically updating the list of corresponding endpoints.
+
+- Even a single-replica application, run by a single Pod, the Service is beneficial during self-healing (replacement of a failed Pod) as it immediately directs traffic to the newly deployed healthy pod.
+
+---
