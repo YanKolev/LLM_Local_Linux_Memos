@@ -2266,6 +2266,185 @@ $ kubectl exec client-app-pod-name -c client-container-name -- /bin/sh -c curl -
 - ClusterIP is the default ServiceType. A Service receives a Virtual IP address, known as its ClusterIP. This Virtual IP address is used for communicating with the Service and is accessible only from within the cluster. The frontend-svc Service definition manifest now includes an explicit type for ClusterIP. If omitted, the default ClusterIP service type is set up:
 
 ```
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-svc
+spec:
+  selector:
+    app: frontend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
+  type: ClusterIP
+
+```
+
+- NodePort ServiceType, in addition to a ClusterIP, a high-port, dynamically picked from the default range 30000-32767, is mapped to the respective Service, from all the worker nodes. For example, if the mapped NodePort is 32233 for the service frontend-svc, then, if we connect to any worker node on port 32233, the node would redirect all the traffic to the assigned ClusterIP - 172.17.0.4. If we prefer a specific high-port number instead, then we can assign that high-port number to the NodePort from the default range when creating the Service.
+
+![](images/nodeport.png)
+
+- The NodePort ServiceType is useful when we want to make our Services accessible from the external world. The end-user connects to any worker node on the specified high-port, which proxies the request internally to the ClusterIP of the Service, then the request is forwarded to the applications running inside the cluster. Let's not forget that the Service is load balancing such requests, and only forwards the request to one of the Pods running the desired application. To manage access to multiple application Services from the external world, administrators can configure a reverse proxy - an ingress, and define rules that target specific Services within the cluster.
+
+- The NodePort type has to be explicitly declared in the Service definition manifest or with the imperative methods explored in an earlier lesson - the expose and create service commands. Declaring the nodePort value 32233 is optional, ensuring there is no conflict. We are reusing the earlier definition and commands updated for the NodePort type and declaring the nodePort value where supported:
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-svc
+spec:
+  selector:
+    app: frontend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
+    nodePort: 32233
+  type: NodePort
 
 
 ```
+
+- kubectl commands
+
+```
+$ kubectl expose deploy frontend --name=frontend-svc \
+--port=80 --target-port=5000 --type=NodePort
+
+$ kubectl create service nodeport frontend-svc \
+--tcp=80:5000 --node-port=32233
+```
+
+---
+
+**ServiceType: LoadBalancer**
+
+- With the loadbalancer servicetype we can do the following:
+
+1. NodePort and ClusterIP are automatically created, and the external load balancer will route to them.
+
+2. The service is exposed at a static port on each workder node.
+
+3. The service is exposed externally using the underlying cloud provider's load balancer feature.
+
+![](images/loadbalancer.png)
+
+- **LoadBalancer** ServiceType will only work if the underlying infrastructure supports the automatic creation of Load balancers and have the respective support in Kubernetes, as is the case with the Google Cloud Platform and AWS. If no such feature is configured, the Loadbalancer IP address field is not populated, it remains in Pending State, but the Srvice will still work as a typical NodePOrt type Service.
+
+---
+
+**ServiceType: ExternalIP**
+
+- A Service can be mapped to an ExternalIP address if it can route to one or more of the worker nodes. Traffic that is ingressed into the cluster with the ExternalIP (as destination IP) on the Service port, gets routed to one of the Service endpoints. This type of service requires an external cloud provider such as GCP or AWS and a Load Balancer configured on the cloud provider's infrastructure.
+
+![](images/externalip.png)
+
+- **NB!** ExternalIps are not managed by Kubernetes. The cluster administrator needs to congure the routing which maps the ExternalIP address to one of the nodes.
+
+---
+
+**ServiceType: ExternalName**
+
+- ExternalName is special serviceType that has no Selectors and does not define any endpoints. When accessed within the cluster, it returns a **CNAME** necord of an externally configured Service.
+
+- The primary use of this ServiceType is to make externally configured Services, like **my-database.example.com** available to applications inside the cluster. If the externally defined Service resides within the Namespace, using just the name my-database would make it available to other applications and Services within that Namespace.
+
+---
+
+**Multi-Port Services**
+
+- A service resource can expose multiple ports at the same time if required. Its configuration is flexible enough to allow for multiple groupings of ports to be defined in the manifest. This is a helpful feature when exposing Pods with one container listening on more than one port, OR when exposing Pods with multiple containers listening on one or more ports.
+
+- Example of multi-port Service:
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: myapp
+  type: NodePort
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 80
+    nodePort: 31080
+  - name: https
+    protocol: TCP
+    port: 8443
+    targetPort: 443
+    nodePort: 31443
+```
+
+- Breakdown: the **my-service** Service resource exposes Pods labeled app=myapp with possibly one container listening on ports 80 and 443, as described by the two **targetPort** fields. The Service will be visible inside the cluster on its **ClusterIP** and ports **8080 and 8443** as described. It will be accessible to incoming request from outside the cluster on the two **nodePort** fields **31080 and 31443**. When manifests decribe multiple ports, they need to be named as well for clarity as described by the two **spec.port.name** fields with values **http nad https** respecively. This Service is configured to capture traffic on ports 8080 and 8443 from within the cluster and ports 31080 and 31443 from outside the cluster and forward that traffic to the ports 80 and 443 respecively of the Pods running the container.
+
+---
+
+**Port Forwarding**
+
+- Port Forwarding: exposure mechanism in Kubernetes, allows users to easily forward a local port to an application port. Thanks to its flexibility the application port can be a Pod container port, a Service port and Even a Deployment container port (from its Pod template).
+
+- This allows the users to test and debug their application running in a remote cluster by targeting a port on their local workstation (either http://localhost:port or http://127.0.0.1:port) , a solution for remote cloud clusters or virtualized premises clusters.
+
+- Port forwarding can be utilized as an alternative to the NodePort Service type because it does not require knowledge of the public IP address of the K8s Node. As long as there are no firewalls blocking access to the desired local workstation port, such as 8080 in examples, the port forwarding method can quickly allow access to the application runnin in the cluster.
+
+- Port forwarding can be achieved by using the following methods:
+
+```
+$ kubectl port-forward deploy/frontend 8080:5000
+
+$ kubectl port-forward frontend-77cbdf6f79-qsdts 8080:5000
+
+$ kubectl port-forward svc/frontend-svc 8080:80
+```
+
+- Breakdown: all commads forward to port 8080 of the local workstation to the container port 500 of the Deployment and Pod respecively, and to the Service port 80. While the Pod resource type is implicit, threfore optional and can be omitted, the depoloymed and service resource types are required to be explicitly supplied in the presented syntax.
+
+---
+
+---
+
+---
+
+### 12. Deploy Standalone application
+
+---
+
+---
+
+---
+
+#### Overview
+
+---
+
+- Breakdown of how to deploy an application using k8s webui and CLI. Exposure the application with a NodePort type service and access it from outside the Minikube cluster.
+
+---
+
+#### Deployment Steps
+
+- How to depoloy an nginx webserver using the nginx container image from Dockerhub.
+
+- Start Minicube and verify its running with commands:
+
+```
+$ minikube start
+
+$ minikube status
+```
+
+- Start the Minikube Dashboard. To access the k8s web Ui we need the command:
+
+```
+$ minikube dashboard
+```
+
+- will open up a browser with the k8s web ui to manage containerized applications. by default, the dashboard is connected to the default Namespace. All operation will be performed inside the default Namespace.
+
+- **NB!** if browser is not opening browser, need to verify output in terminal. Be mindful for the port number. Then logout/login + reboot might be needed.
