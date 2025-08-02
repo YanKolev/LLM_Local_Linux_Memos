@@ -2448,3 +2448,47 @@ $ minikube dashboard
 - will open up a browser with the k8s web ui to manage containerized applications. by default, the dashboard is connected to the default Namespace. All operation will be performed inside the default Namespace.
 
 - **NB!** if browser is not opening browser, need to verify output in terminal. Be mindful for the port number. Then logout/login + reboot might be needed.
+
+- To deploy a webserver using the nginx image, from the dashboard we need to follow the + symbol. From there we can create an application using valid Yaml/Json configuration data, from a definition manifest file or manually from the "Create from form tab."
+
+- If we pick the last option, we need to provide the following application details:
+
+  1. application name- set to web-dash
+  2. container image to nginx
+  3. replica count, or number of pods > 1
+  4. Service is External, Port 8080, target port 80, Protocol TCP
+  5. name default
+
+- For more advanced options we can pick Labels, Namespace, Resource Request.
+
+- By default Label is set to the application name. (ex- k8s-app: web-dash), set to all objects cread by this Deployment: Pods and Sercice exposed.
+
+- When hitting the Deploy button, we trigger the deployment. As expected the Deployment web-dash will create a ReplicaSet
+
+- after the deployment we can use resource navigation panel to check depoloyments, ReplicaSets and pods in the default Namespace.
+
+- resources displayed by the dashvoard match one-to-one resources displaed from the CLI via kubectly. We can list all the deployments in the default Namespace using the kubectl get deployments:
+
+```
+$ kubectl get deployments
+```
+
+- list ReplicaSets, we can list all the ReplicaSets in the default Namespace using the following command:
+
+```
+$ kubectl get replicasets
+```
+
+- list the pods, we can list all the pods in the default namespace using:
+
+```
+$ kubeclt get pods
+```
+
+- shorthad for all the Deployment, Replicaset and Pods:
+
+```
+$ kubectl get deploy, rs, po
+```
+
+---
