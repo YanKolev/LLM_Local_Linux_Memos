@@ -2704,3 +2704,46 @@ $ kubectl get services
 - double check that the External IP of the service maybe different.
 
 ---
+
+**Liveness, Readiness, and Startup Probes**
+
+- containerized applications are scheduled to run in pods on nodes across our cluster, at times the application may become unresponsive or maybe delayed during start up, implelemting liveness and Readiness Proves allows the kubelt to control the health of the application running inside a pod's container and force a container restart of a unresponsive application.
+
+---
+
+## Liveness
+
+- If a container in the Pods has been runnin successfully for a whilem but the application runnininside this container suddenly stopped responding to our requests, the container is no-longer useful to us. This can happed, due to application deadlock or memory pressure. In such case > restart the container to make the application available.
+
+- Instead of restarting manually, we can use a Liveness Probe. Liveness Probve checks on an application's health and if the health check fails, the kubelet restarts the affected container automatically.
+
+- Liveness probes can be set by defining: Liveness command, Liveness HTTP request, TCP Liveness prove, gRPC Liveness probe.
+
+- **Liveness Command** - checking the existence of a file /tmp/healthy. Example:
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: liveness
+  name: liveness-exec
+spec:
+  containers:
+  - name: liveness
+    image: k8s.gcr.io/busybox
+    args:
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600
+    livenessProbe:
+      exec:
+        command:
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 15
+      failureThreshold: 1
+      periodSeconds: 5
+```
+
+- The existence of the /tmp/healthy file is configured to be checked every 5 second using the periodSecond parameter. The initialDelaySeconds parameter requests the kubelet to wait for 15 seconds before the first probe. When running the command line argument to the container, we will first create the /tmp/healthy file, and then we will remove it after 30 seconds. The removal of the file would trigger a probe failure, while the failureThreshhold parameter set to 1 instructs kubelet to declare the contaer unhealthy after a single probe failure and trigger a container restart as a result.
