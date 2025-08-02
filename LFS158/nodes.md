@@ -2661,3 +2661,46 @@ $ kubectl get po,ep -l app=nginx -o wide
 ```
 
 ---
+
+**Accessing an Application**
+
+- Our app is runnin on Minikube VM node, to access it we need the ip, but we need to also use the port that we have set previously
+
+```
+$ minikube ip
+```
+
+- after getting Ip we can open it via browser, or use the command
+
+```
+$ minikube service web-service
+```
+
+- our requestst could be served by either one of the 3 endpoints logically grouped by the Service since Service acts as a Load balancer in front of its endpoints.
+
+- if the command is not working, and the browser does not display the Nginx welcome page, we can use the troubleshooting command:
+
+```
+$ minikube service web-service --url
+```
+
+- we can also try to take advantage of the port forwarding, if we assure port 8080 to the service port 80, we will able to use
+
+```
+kubectl port-forward svc/web-service 8080:80
+```
+
+- for Minikube clusters on the Docker Driver, the NodePort cannot be accessed from the host workstation due to limitation of the Docker networking model. When this happens we can use the **minikube tunnel**. This option allows the Service ClusterIP to be directly exposed on the host as External IP. First expose the webserver application through a Loadbalancer Service, and then we need to enable the tunnel:
+
+```
+$ kubectl  expose deployment webserver --name=web=lb ==type=LoadBalancer --port=8080
+
+$ minikube tunnel
+
+$ kubectl get services
+```
+
+- in the browser the following URL, loadbalancer service external ip + service port 8080 should display the Nginx welcome page.
+- double check that the External IP of the service maybe different.
+
+---
