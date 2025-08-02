@@ -2492,3 +2492,38 @@ $ kubectl get deploy, rs, po
 ```
 
 ---
+
+**Exploring Labels and Selectors**
+
+- Labels and selectors play important role in logically grouping a subset of objects to perform operations.
+
+- how to display Pod's details. We can look at an object details using the kubectly describe command , even specify which particular pod we want:
+
+```
+#example
+
+$ kubectl describe pod web-dash-74d8bd488f-dwbzz
+```
+
+- **kubectl describe** command always displays more details of a pod.
+
+- in order to list the pods with their attached labels we need (**-L**) option to be added. we can add extra columns in the output to list Pods with their attached Label Keys and their values> we can add-> k8s-app and label2.
+
+```
+
+$ kubecstl get pods -L k8s-app,label2
+```
+
+- with it all the pods are listed, with the value set to web-dash , we can see that in the column, as none of the pods have label2 label key, no values are listed under the column
+
+- to select the pods with a given label, we need to use a selector with the kubectl get pod command, we can use the **-l** option. in the following example we are selecting all the Pods that have the k8s-app label key set to value web-dash:
+
+```
+$ kubectl get pods -l k8s-app=web-dash
+```
+
+- we can use something like k8s-app=webserver (non existent) and it will return nothing
+
+```
+$ kubectl get pods -l k8s-app=webserver
+```
