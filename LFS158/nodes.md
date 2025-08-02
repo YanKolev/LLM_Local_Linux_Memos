@@ -2597,3 +2597,67 @@ kubectl get pods
 ```
 $ kubectl create deployment webserver --image=ngingx:alpine --replicas=3 --port=80
 ```
+
+---
+
+#### Exposing Application Steps
+
+---
+
+- With ServiceTypes we can define the access method for a Service, for a NodePort ServiceType, k8s opens up a static port on all worker nodes. If we connecto to that port from any node, w are proxied to the clusterIp of the Service. To ad NodePort ServiceType we need to create a yaml file with the following content:
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+  labels:
+    app: nginx
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: nginx
+```
+
+- **NB** we desired Service name: web-service is expected to be different from the label and selector app:nginx, therefore the more complex multi-line command should be like:
+
+```
+$ kubectl apply -f webserver -svc.yaml
+```
+
+- more direct method will be with expose command
+
+```
+$ kubectl expose deployment webserver --name=web-service --type=NodePort
+```
+
+- after that to check application list of services we use:
+
+```
+$ kubectl get services
+```
+
+- its not necessary to create the Deployment firs, and the Service after, if using the imperative method to generate both the Service and Deployments objects or their respective definition manifest. They can be created in any order. A Service will find and connect Pord based on the Selector. However, the deployment objects should be created before the Service if the expose command is expected to be use to generate the Service.
+
+- To get more details about Service:
+
+```
+$ kubectl describe service web-service
+```
+
+- For testing between pod IP and Service Endpoinds we can test with:
+
+```
+$ kubectl get po -l app=nginx -o wide
+
+$ kubectl get ep web-service
+
+# or a single more complex command
+
+$ kubectl get po,ep -l app=nginx -o wide
+```
+
+---
