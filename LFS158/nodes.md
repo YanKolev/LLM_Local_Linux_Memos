@@ -2527,3 +2527,73 @@ $ kubectl get pods -l k8s-app=web-dash
 ```
 $ kubectl get pods -l k8s-app=webserver
 ```
+
+---
+
+**CLI deployment steps**
+
+- in order do depoloy via the CLI we need to delete the first deployment. with the following command:
+
+```
+$ kubectl delete deployments web-dash
+```
+
+- When we delete a deployment it also deletes the ReplicaSet and pods it created.
+
+- afther that we need to create a YAML definition manifest, looking like the example:
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+```
+
+- We can also use the Imperative approach, to generate manifest for the proposed webserver deployment:
+
+```
+$ kubectl create deployment webserver \
+--image=nginx:alpine --replicas=3 --port=80 \
+--dry-run=client -o yaml > webserver.yaml
+```
+
+- the script will create the deployment from the yaml definition manifest. While kubectl create may seem , lets use kubectl apply. The -f option of kubectl apply command allows us to pass a YAML definition manifest as an object's specification or a URL to a configuration file from the web. To create a webserver deployment it will look like:
+
+```
+$ kubectl apply -f webserver yaml
+```
+
+- this will also create Replicasets and 3 pods as described in the YAML definition manifes. to check we need the command:
+
+```
+$ kubectl get replicasets
+```
+
+- to check pods:
+
+```
+kubectl get pods
+```
+
+- as an alternative we can deploy the webserver application with the following command:
+
+```
+$ kubectl create deployment webserver --image=ngingx:alpine --replicas=3 --port=80
+```
