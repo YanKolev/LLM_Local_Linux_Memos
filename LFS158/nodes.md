@@ -2747,3 +2747,98 @@ spec:
 ```
 
 - The existence of the /tmp/healthy file is configured to be checked every 5 second using the periodSecond parameter. The initialDelaySeconds parameter requests the kubelet to wait for 15 seconds before the first probe. When running the command line argument to the container, we will first create the /tmp/healthy file, and then we will remove it after 30 seconds. The removal of the file would trigger a probe failure, while the failureThreshhold parameter set to 1 instructs kubelet to declare the contaer unhealthy after a single probe failure and trigger a container restart as a result.
+
+- **NB!** - By default kubelet will wait to reach the default failure treshold of 3 conscutive failures before declaring the container unhealthy and restart again.
+
+- the flag **-w** means ''watch'', automatically refreshes the output with every container restart.
+
+```
+$ kubectly get pod liveness-exec -w
+```
+
+- Or we can use decribe command
+
+```
+$ kubectly describe pod liveness-exec
+```
+
+---
+
+**Liveness HTTP Request**
+
+- to understand the http request we are going to delve into the following: kubelet sends HTTP GET request to the **/healthz** endpoint of the application on port 8080, If that returns a failure, then the kubelet will restart the affected container, otherwise, it would consider the application to be alive.
+
+- example:
+
+```
+livenessProbe:
+       httpGet:
+         path: /healthz
+         port: 8080
+         httpHeaders:
+         - name: X-Custom-Header
+           value: Awesome
+       initialDelaySeconds: 15
+       periodSeconds: 5
+```
+
+---
+
+**Liveness TCP Probe**
+
+- with TCP liveness probe, the kubelet attempts to open the TCP Socket to the container running the application. If it succeeds, the application is considered healthy, otherwide the kubelet would mark it as unhealthy and restart the affected container.
+
+- example:
+
+```
+livenessProbe:
+      tcpSocket:
+        port: 8080
+      initialDelaySeconds: 15
+      periodSeconds: 5
+```
+
+---
+
+**Liveness gRPC Liveness Probe**
+
+- the gRPC liveness probe can be used for applications implementing the gRPC health checking protocol. It requires for a port to be defined and optionally a service field may help adapt the probe for liveness or deadiness by allowing the use of same port.
+
+- example:
+
+```
+livenessProbe:
+      grpc:
+        port: 2379
+      initialDelaySeconds: 10
+```
+
+---
+
+**Readiness Probes**
+
+- when intializing, applications have to meet certain conditions before they become ready to serve traffic. These conditions include ensuring that the dependent service is ready, or acknowledging that a large dataset needs to be loaded. In such cases, we use the Readiness Probes and wait for a certain condition to occur. Only then the appliaction can serve traffic.
+
+- A Pod with containers that do not report ready status will not receive traffic from Kubernetes Services.
+
+- example:
+
+```
+readinessProbe:
+          exec:
+            command:
+            - cat
+            - /tmp/healthy
+          initialDelaySeconds: 5
+          periodSeconds: 5
+```
+
+- Readiness probes are configured similarly to Liveness Probes. Their Configuration fields and options also remain the same. Readiness probes are also defined as Readiness command, Readiness HTTP request, TCP readiness probe and gRPC readiness probe. RTFM for more.
+
+---
+
+**Startup Probes**
+
+- Newest member of Probes family. Was designed for legacy applications that may need more time to fully initialize and its purpose is to delay the Liveness an dReadiness probes, a delay long enough to allow for the application to fully initialize.
+
+---
