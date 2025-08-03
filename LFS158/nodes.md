@@ -2926,3 +2926,54 @@ readinessProbe:
 ```
 
 ---
+
+**PersistentVolumes**
+
+- in it environment, storage is managed by the storage/system administrators. The end user will just receive instructions to use the storage but is not involved with the underlying storage management.
+
+-k8s addresses the issue of having many different Volume types with the PersistentVolum (PV) subsystem, which provides APIs for users and administrators to manage and consume persistent storage. To manage the Volume, it uses the PersistentVolme API resource type, and to consume it, uses the PersistentVolumeClaim API resource type.
+
+- A Persistent Volume is a storage abstraction backed by several storage technologies, which could be local to the host where the POD is deployed with its application containers, network attached storage, cloud storage or a distributed storage solution. It is statically provisioned by the cluster administrator.
+
+![](images/persistentvolume.png)
+
+- PersistentVolumes can be dynamically provisioned based on the StorageClass resource. A storageClass containes predefined provisioners and parameters to create a PersistentVolume. Using PersistentVOlumeClaims, a user sends the request for dynamic PV creation, which gets wired to the StorageClass resource.
+
+- Some of the Volume Types that support managing storage using PersistentVolumes are:
+
+  - GCEPersistentDisk
+  - AWSElasticBlockStore
+  - AzureFile
+  - AzureDisk
+  - CephFS
+  - NFS
+  - iSCSI.
+
+- The persistent Volume tyopes usethe same CSI driver implementations as ephemeral Volumes.
+
+---
+
+**PersistentVolumeClaims**
+
+- A PersistentVolumeClaim (PVC) is a request for storage by a user. Users request for persistentVolume resourcers based on storage class, access mode, csize and optionally volume mode.
+
+- There are 4 types of modes:
+
+  1. ReadWriteOnce (read-write by a single node)
+  2. ReadOnlyMany (read-only by many nodes)
+  3. ReadWriteMany (read-write by many nodes)
+  4. ReadWriteOncePod (read-write by a single pod)
+
+- The optional volume modes, filesystem or block block device, allow volumes to be mounted into a pod's directory or as a raw block device respectively. By design k8s does not support object storage, but it can be implemented with the help of custom resource types. Once a suitable PersistentVolume is found, it is bound a PersistentVolumeClaim.
+
+![](images/pvc1.png)
+
+- after a successful bound, the PersistentVolumeClaim resourec can be use by the containers of the Pod.
+
+![](images/pvc2.png)
+
+- once a user finishes its work, the attached PersistentVolumes can be released. The underlying PersistentVolumes then can be:
+  - reclaimed (for an admin to verify and/or aggregate data)
+  - deleted (both data and volume are deleted)
+  - recycled (for future usage- only data is deleted)
+- Based on the configured persistentVolumeReclaimPolicy property.
