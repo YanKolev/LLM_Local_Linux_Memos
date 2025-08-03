@@ -2977,3 +2977,53 @@ readinessProbe:
   - deleted (both data and volume are deleted)
   - recycled (for future usage- only data is deleted)
 - Based on the configured persistentVolumeReclaimPolicy property.
+
+---
+
+**Usage of a shared hostPath Volume Type**
+
+- in the example below is a Deployment definition manifes that can be used as a template to define other similar objects as needed. In addition to the ephemeral volume and th evolume mounts specified for each container, a command stanza allows us to define a series of desired commands expected to run in one of the containers. The debian container's shell command line interpreter (sh) is invoked to run the echo and sleep comamnds (-c).
+
+```
+$ vim app-blue-shared-vol.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: blue-app
+  name: blue-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blue-app
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: blue-app
+        type: canary
+    spec:
+      volumes:
+      - name: host-volume
+        hostPath:
+          path: /home/docker/blue-shared-volume
+      containers:
+      - image: nginx
+        name: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: host-volume
+      - image: debian
+        name: debian
+        volumeMounts:
+        - mountPath: /host-vol
+          name: host-volume
+        command: ["/bin/sh", "-c", "echo Welcome to BLUE App! > /host-vol/index.html ; sleep infinity"]
+status: {}
+```
