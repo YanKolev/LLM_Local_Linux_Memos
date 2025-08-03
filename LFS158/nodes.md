@@ -2842,3 +2842,87 @@ readinessProbe:
 - Newest member of Probes family. Was designed for legacy applications that may need more time to fully initialize and its purpose is to delay the Liveness an dReadiness probes, a delay long enough to allow for the application to fully initialize.
 
 ---
+
+---
+
+---
+
+### 13. Kubernetes Volume management
+
+---
+
+---
+
+---
+
+#### Overview
+
+---
+
+- In a k8s cluster containers in Pods can be either data producers, data consumers or both. While some container data is expected to eb transient and is not expected to outlive a Pod, other forms of data must outlive the Pod in order to be aggregated and possibly loaded into analytics engines.
+
+- K8s must provide storage resources in order to provide data to be consumed by container or to store data produced by containers, hence Volumes is used.
+
+---
+
+#### Volumes
+
+- Containers running pods have ephemeral nature. All data stored inside a container is deleted if the container crashes. However the **kubelet** will restart it with a clean slate > old data is wiped.
+
+- To solve this problem, K8s uses ephemeral Volumes, storage abstractions that allow various storage technologies to be used by Kubernets and offered to containers in Pods as storage media. An epehemeral Volume is essentially a mount point on the container's file system backed by a storage medium. The sotage medium, content and access mode are determined by the Volume type.
+
+- in K8s, an epehemeral Volume is linked to a Pod and can be shared among the containers of that Pod. Although the ephemeral Volume has the same life span as the Pod, meaning it is deleted togeher with the Pod, the ephemeral Volume outlives the container of the Pod- it allows data to be preserved across container restarts.
+
+---
+
+#### Container Storage Infrascturcture (CSI)
+
+- Container orchestrators like K8s, Mesos, Docker or Cloud Foundry used to have their own methods of managing external storage using Volumes. For storage vendos, it was challenging to manage different Volume plugins for different orchestrators. A mantainability challenge for k8s as well it involved in- tree storage plugins integrated in the orchestrator's source code. Sotrage vendors and community members from different orchestrators stared working together to standardize the Volume interface- a volume plugin build using a CSI designed to work on different container orchestrators with a variety of storage providers.
+
+---
+
+**Volume types**
+
+- A directory which is mounted inside a Pod is backed bythe underlying Volume Type. A Volume type decides the properties of the directory like- size, content, default access mode etc. Some examples of volume types tha support ephemeral Volumes are:
+
+```
+- emptyDir
+# An empty Volume is created for the Pod as soons as it is scheduled on the worker node.
+# The volume's life is tightly coupled with the Pod. If the Pod is terminated, the content of emptyDir is deleted forever.
+
+- hostPath
+# The hostpath volume type is a directory between the host and the Pod. If the Pod is terminated, the content of the Volume is still available on the host.
+
+- gcePersistentDisk
+# is volume type mounts a Google Compute Engine persistent disk into a pod.
+
+- awsElasticBlockStore
+# is a volume type that mounts AWS EBS volume into a pod.
+
+- azureDisk
+# i volume type that mounts a MS azure Data disk into a pod.
+
+- azureFile
+# mounts a MS Azure File volume into a pod.
+
+- cephfs
+# Allows existing CephFS volume to be mounted into a Pod. When a Pod terminates, the volume is unmounted and the contents of the volume are preserved.
+
+- nfs
+# mounts NFS share into a pod.
+
+- isci
+# mounts iSCSI share into a pod.
+
+- secret
+# volume type that facilitates the supply of sensitive information(passwords, certificates, keys or tokens) into a pod.
+
+- configMap
+# object that facilitate the supply of configuration data or shell command and arguments into a pod.
+
+- persistentVolumeClaim
+# a PersistentVolume is consumed by a Pod using a persistentVolumeClaim.
+
+```
+
+---
