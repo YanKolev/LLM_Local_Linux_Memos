@@ -3027,3 +3027,88 @@ spec:
         command: ["/bin/sh", "-c", "echo Welcome to BLUE App! > /host-vol/index.html ; sleep infinity"]
 status: {}
 ```
+
+---
+
+---
+
+---
+
+### 14. Configmaps And Secrets
+
+---
+
+---
+
+---
+
+#### Overview
+
+---
+
+- While deploying an application, we may need to pass such runtime parameters like configuration details, permissions, passwords, keys, certificates, or tokens.
+
+- Let's assume we need to deploy ten different applications for our customers, and for each customer, we need to display the name of the company in the UI. Then, instead of creating ten different container images for each customer, we may just use the same template image and pass customers' names as runtime parameters. In such cases, we can use the ConfigMap API resource.
+
+- Similarly, when we want to pass sensitive information, we can use the Secret API resource. In this chapter, we will explore ConfigMaps and Secrets.
+
+---
+
+#### ConfigMaps
+
+- Configmaps allows us to decouple the configuration details from the container image. Using ConfigMaps, we pass configuration data as key-value pairs, whichare consumed by Pods or any other system components and controllers in the form of environment variables, sets of commands and arguments, or volumes. We can create ConfigMaps from literal values, from configuration files, from one or more directories.
+
+- **ConfigMap Creation from Literal Values** : ConfigMap can be created withthe imperative **kubectl create configmap** command, and we can display its details using the **kubectl get or kubectl describe** commands.
+
+- creation:
+
+```
+$ kubectl create configmap my-config \
+ --from-literal=key=value1 \
+ --from-literal=key=value2
+
+```
+
+- how to display the ConfigMap details in YAML for **my-config**.
+
+```
+$ kubectl get configmaps my-config -o yaml
+```
+
+- with the -o yaml option, we are requesting the kubectl command to produce the output in the yaml format. The object has the ConfigMap kind, and it has the key-value pairs listed under the data field. The name of ConfigMap and other details are part of the metadata field.
+
+- declarative approach, first we need to create a definition manifest file with the following content:
+
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: customer1
+data:
+  TEXT1: Customer1_Company
+  TEXT2: Welcomes You
+  COMPANY: Customer1 Company Technology Pct. Ltd.
+```
+
+- where we specify the kind, metadata and data fields, targeting the v1 endpoint of the API server.
+
+- if we name the field with the definition aboce as **customer1-configmap.yaml** , we can create the ConfigMap with the following command:
+
+```
+$ kubectl create -f customer1-configmap.yaml
+```
+
+- after that creation a file **permission-reset.properties** with the following configuration data stored as key-value pairs:
+
+```
+permission= read-only
+allowed="true"
+resetCount=3
+```
+
+- we can then create the Configmap with the following command:
+
+```
+$ kubectl create configmap permission-config \
+--from-file=<path/to/>permission-reset.properties
+```
