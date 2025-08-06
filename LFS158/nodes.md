@@ -3396,3 +3396,118 @@ spec:
       secretName: my-password
 
 ```
+
+---
+
+---
+
+---
+
+### 15. Ingress
+
+---
+
+---
+
+---
+
+#### Overview
+
+---
+
+- We can access our deployed containerized application from the external world via Services, however, among the **ServiceTypes** > The **NodePort** and **LoadBalancer** are the most oftern used.
+
+- For LoadBalancer Service type, we need to have support from the underlying infrastructure. Even after having the support, we may not want to use it for every Service, as LoadBalancer resources are limited and they can increase costs significantly.
+
+- Managing the NodePort ServiceType can also be tricky at times , as we need to keep updating our proxy settings and keep track of the assigned ports.
+
+-Ingress API resource, comes to the rescue. It represents another layer of abstraction deployed infont of the Service API resoruces, offering a unified method of managing access to our applications from the external world.
+
+---
+
+**Ingress**
+
+- With Services, routing rules are associated with a given Service. They exist as long as the Service exists and there are many rules because there are namy Services in the cluster. If we can somehow decouple the routing rules from the applicaiton and centralize the rules management, we can then update our application without worrying about its external access. This can be be using the **Ingress** resource- a collection of rules that manage inbound connections to cluster Services.
+
+- to allow inbound connection to reach the cluster Servvices, Ingress configures a layer 7 HTTP/HTTPS load balancer for Services and provides: TLS (Transport Layer Security), Name-based virtual hosting, Fanout routing, Loadbalancing, Custom rules.
+
+![](images/ingress.png)
+
+- with Ingress, users do not connect directly to a Service. Users reach the Ingress endpoint, and from there the erquest is forwarded to the desired Service. Below is an example of Name-based virtual hosting ingress definition below:
+
+```
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/service-upstream: "true"
+  name: virtual-host-ingress
+  namespace: default
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: blue.example.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: webserver-blue-svc
+            port:
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
+  - host: green.example.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: webserver-green-svc
+            port:
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
+```
+
+- in the example aboce, user requests to both blue.exampple.com and green.example.com would go to the same Ingress endpoint and from there they would be forwarded to webserver-blue-svc and webserver-green-svc respecively.
+
+- diagram represents a Name-Based Virtual Hosting Ingress rule:
+
+![](images/virtualhostingingress.png)
+
+- we can also define Fanout Ingress rules, presented in the example definition and the diagram below, when requests to example.com/blue and example.com/green would be forwarded to webserver-blue-svc and webserver-green-svc with this:
+
+```
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/service-upstream: "true"
+  name: fan-out-ingress
+  namespace: default
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: example.com
+    http:
+      paths:
+      - path: /blue
+        backend:
+          service:
+            name: webserver-blue-svc
+            port:
+              number: 80
+        pathType: ImplementationSpecific
+      - path: /green
+        backend:
+          service:
+            name: webserver-green-svc
+            port:
+              number: 80
+        pathType: ImplementationSpecific
+```
+
+![](images/fanoutingress.png)
+
+- the Ingress resource does not do any request forwarding by itself, it merely accepts the definions of traffic routing rules. The ingress is fulfilled by an Ingress Controller, which is a reverse proxy responsible for traffic routing based on rules defined in the Ingress resource.
+
+---
