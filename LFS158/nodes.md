@@ -3112,3 +3112,135 @@ resetCount=3
 $ kubectl create configmap permission-config \
 --from-file=<path/to/>permission-reset.properties
 ```
+
+---
+
+**ConfigMaps inside Pods: As Environment Variables**
+
+- inside a container, we can retrieve the key-value data of an entire ConfigMap or the values of specific ConfigMap keys as environment variables.
+
+- example below: all the the myapp-full-container Container's environment variables receive the values of the full-config-map ConfigMap keys:
+
+```
+containers:
+  - name: myapp-full-container
+    image: myapp
+    envFrom:
+    - configMapRef:
+      name: full-config-map
+```
+
+- example below: myapp-specific-container, Container's environment variables receive their values from specific key-value pairs from two separate ConfigMaps (config-map-1 and config-map-2)
+
+```
+containers:
+  - name: myapp-specific-container
+    image: myapp
+    env:
+    - name: SPECIFIC_ENV_VAR1
+      valueFrom:
+        configMapKeyRef:
+          name: config-map-1
+          key: SPECIFIC_DATA
+    - name: SPECIFIC_ENV_VAR2
+      valueFrom:
+        configMapKeyRef:
+          name: config-map-2
+          key: SPECIFIC_INFO
+```
+
+- with this configuration we will get the SPECIFIC_ENV_VAR1 environment variable set to the value of SPECIFIC_DATA key from config-map-1 ConfigMap, and SPECIFIC_ENV_VAR2 environment variable set to the value of SPECIFIC_INFO key from config-map-2 ConfigMap.
+
+---
+
+**Using ConfigMaps Inside Pods: As Volumes**
+
+We can mount a **vol-config-map** ConfigMap as a Volume Inside a Pod. The configMap Volume plugin convers the Configmap object into a mountable resource. For each key in the ConfigMap, a file gets created in the mount path (where the file is named with the key-name) and the respective key's value becomes the content of the file:
+
+```
+containers:
+  - name: myapp-vol-container
+    image: myapp
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/config
+  volumes:
+  - name: config-volume
+    configMap:
+      name: vol-config-map
+```
+
+- for more info: RTFM
+
+---
+
+**Using ConfigMaps as Volumes Guide**
+
+- below is index.html file and deployment definition manifest that can be used as templates to define other similar objects as needed.
+
+- **The goal > to store the custome webserver index.html in a ConfigMap object, which is mounted by the nginx container specified by the Pod template nested in the Deployment definition manifest.**
+
+- contents of the index webserver file:
+
+```
+$ vim index.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to GREEN App!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+        background-color: GREEN;
+    }
+</style>
+</head>
+<body>
+<h1 style=\"text-align: center;\">Welcome to GREEN App!</h1>
+</body>
+</html>
+```
+
+- deployment definion manifest:
+
+```
+$ vim web-green-with-cm.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: green-web
+  name: green-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: green-web
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: green-web
+    spec:
+      volumes:
+      - name: web-config
+        configMap:
+          name: green-web-cm
+      containers:
+      - image: nginx
+        name: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: web-config
+status: {}
+```
+
+---
