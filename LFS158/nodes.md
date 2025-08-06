@@ -3244,3 +3244,155 @@ status: {}
 ```
 
 ---
+
+#### Secrets
+
+- Use Case: we have a Wordpress blog application, in which our wordpress frontend connects to the MySQL database backend using a password. While creating the deployment for wordpress, we can include the MySQL password in the Deployment's YAML definition manifest, but the password would not be protected. The password would be available to anyone who has the definition manifest.
+
+- To address this, we will need a **Secret** object that can help us with encoding in base 64 the sensitive information before sharing it. We can share sensitive info like passwords, tokens or keys in the form of key-value pairs, similar to ConfigMaps, this w can control how the information in a Secret is used, reducing the risk of accidental exposures. In deployments or other resources, the secret object is referenced, without exposing its content.
+
+- **NB!** Secret data is sored as plain text inside **etcd** therefore administrators, MUST limit access to the API server and **etcd**. However, Secret data can be encrypted at rest while it is stored in **etcd** , but this feature needs to be enabled at the API server level by the k8s cluster admin.
+
+---
+
+**Create a Secret from Literal Values**
+
+- to create a Secret, we ca use the imperative command:
+
+```
+$ kubectl create secret generic my-password \
+-- from-literal=passowrd=mysqlpassword
+```
+
+- the command would create a secret called **my-password**, which has the value of the passowrd key set to **mysqlpassword**.
+
+- after creating we can analyzie it with the get and describe commands. They do not reveal content of the Secret. The type is listed as Opaque.
+
+```
+$ kubectl get secret my-password
+
+$ kubectl describe secret my-password
+```
+
+---
+
+**Create a Secret from Definition Manifest**
+
+- we can create a Secret manually from a yaml definition manifest. The example manifest below is named **mypass.yaml** There are two types of maps for sensitive information inside a Secret: data and stringData.
+
+- with data maps, each value of a sensitive information field must be encoded using base64, if we want to have definition manifes for our Secret, we must first create the base64 encoding of our password:
+
+```
+$ echo mysqlpassword | base64
+```
+
+and then using in the definition manifest :
+
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-password
+type: Opaque
+data:
+  password: bXlzcWxwYXNzd29yZAo=
+```
+
+- **NB!** base64 encoding does not beam encryption, and anyone can easily decode our encoded data like:
+
+```
+$ echo "bXlzcWxwYXNzd29yZAo=" | base64 --decode
+```
+
+- In order to make sure we do not commit a Secret's definion file in the source code.
+
+- With stringData maps, there is no need to encode the value of each sensitive information field. The value of the sensitive field will be encoded when the my-paasord Secret is created:
+
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-password
+type: Opaque
+stringData:
+  password: mysqlpassword
+```
+
+- Using the mypass.yaml definition file we can now create a secret with kubectl create command
+
+```
+$ kubectl create -f mypass.yaml
+```
+
+**Create a Secret from a file**
+
+- to create a secret from a File, we can use the kubectl create secret command.
+
+- first step will be to encode the sensitive data and then to write the encoded data to a text file:
+
+```
+$ echo mysqlpassword | base64
+
+# then to continue with
+
+$ echo -n 'bXlzcWxwYXNzd29yZAo=' > password.txt
+```
+
+- after that we can create the secret from the passowrd.txt file:
+
+```
+$ kubectl create secret generic my-file-password \
+--from-file=password.txt
+```
+
+- After successfully creating a secret we can analyze it with the get and decribe commands. They do not reveal the content of the Secret, the type will be listed as Opaque.
+
+```
+$ kubectl get secret my-file-password
+
+$ kubectl describe secret my-file-passowrd
+
+```
+
+---
+
+**How to use Secrets Inside Pods: as environment variables**
+
+- secrets are consumed by Containers in Pods as mounted data volumes, or as environment variables, and are referenced in their entirety (using the envFrom heading) or specific key-value (using the env heading).
+
+- below is a reference only the password key of the **my-password** Secret and assign its value to the **WORDPRESS_DB_PASSWORD** environment variable.
+
+```
+spec:
+  containers:
+  - image: wordpress:4.7.3-apache
+    name: wordpress
+    env:
+    - name: WORDPRESS_DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: my-password
+          key: password
+```
+
+---
+
+**How to use secrets Inside Pods: as volumes**
+
+- we can also mount a secret as Volume inside a Pod. The secret Volume plugin convers the secret object into a mountable resource. The example below create a file for each **my-password** Secret key (where the files are named after the names of the keys), the files containining values of the respective Secret keys:
+
+```
+spec:
+  containers:
+  - image: wordpress:4.7.3-apache
+    name: wordpress
+    volumeMounts:
+    - name: secret-volume
+      mountPath: "/etc/secret-data"
+      readOnly: true
+  volumes:
+  - name: secret-volume
+    secret:
+      secretName: my-password
+
+```
