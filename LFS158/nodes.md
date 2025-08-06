@@ -3511,3 +3511,49 @@ spec:
 - the Ingress resource does not do any request forwarding by itself, it merely accepts the definions of traffic routing rules. The ingress is fulfilled by an Ingress Controller, which is a reverse proxy responsible for traffic routing based on rules defined in the Ingress resource.
 
 ---
+
+#### Ingress Controller
+
+---
+
+- Ingress Controller is an application watching the Control Plane Node's API server for changes in the Ingress resources and updates the Layer 7 Load balancer accordingly. An ingress controller is also known as Controllers, Ingress Proxy, Service Proxy, Reverse Proxy, etc. Kubernetes supports an array of Ingress Controllers, and, if needed, we can also build our own.
+
+- GCE L7 Load Balancer Controller, AWS Load Balancer Controller, and Nginx Ingress Controller are commonly used Ingress Controllers. Other controllers are Contour, HAProxy Ingress, Istio Ingress, Kong, Traefik, etc.
+
+- In order to ensure that the ingress controller is watching its corresponding ingress resource, the ingress resource definition manifest needs to include an ingress class name, such as spec.ingressClassName: nginx and optionally one or several annotations specific to the desired controller, such as nginx.ingress.kubernetes.io/service-upstream: "true" (for an nginx ingress controller).
+
+- Starting the Ingerss controller in Minikube is extremely simple, Minikube ships with Nginx Ingress Controller set up as add-on, disabled by default. It can be easily enabled by running the following command:
+
+```
+$ minikube addons enable ingress
+```
+
+---
+
+**How to deploy Ingress Resource**
+
+- Once the Ingress Controller is deployed, we can create an Ingress resource using kubectl create command. For example, if we create a virtual-host-ingress.yaml file with the Name-Based virtual hosting ingress rule definition, we can use the following command to create it:
+
+```
+$ kubectl create -f virtual-host-ingress.yaml
+```
+
+**Access Services Using Ingress**
+
+- With the Ingress resource we just created, we should now be able to access the webserver-blue-svc or webserver-green-svc services using the blue.example.com and green.example.com URLs.
+
+- set up is on Minikunbe, we need to update the host configuration file (/etc/hosts) on our workstation to the Minikube IP for those URLs.
+
+- **DO NOT REMOVE ANY FILES** from **/etc/hosts**, only add Minikube IP and two host entries for blue and green services respectively. After the update command should look like:
+
+```
+$ sudo vim /etc/hosts
+
+127.0.0.1        localhost
+::1              localhost
+192.168.99.100   blue.example.com green.example.com
+```
+
+- after that we can open the example on the browser and access each app.
+
+---
