@@ -3557,3 +3557,158 @@ $ sudo vim /etc/hosts
 - after that we can open the example on the browser and access each app.
 
 ---
+
+---
+
+---
+
+### 16. Advanced Topics
+
+---
+
+---
+
+---
+
+#### Overview
+
+---
+
+- Brief overview of Advanced Topics.
+
+---
+
+**Annotations**
+
+- allows us to attack arbitrary non-identifying metadata to any objects, in a key-value format:
+
+```
+"annotations": {
+  "key1": "value1",
+  "key2": "value2"
+}
+```
+
+- we can easily annotate an existing object, a pod for example, as such as:
+
+```
+$ kubectly annotate pod mypod key1=value1 key2=value2
+```
+
+- Unlike Labels, annotations are not used to identify and select objects. They are used for:
+
+1. Store build/release IDs, PR numbers, git branch.
+2. Phone/pager numebrs of people responsible, or directory entries specifying where such information can be found.
+3. Pointers to logging, monitoring, analytics, audit repositories and debugging tools
+4. Ingress controller information.
+5. Deployment state and revision information.
+
+- while creating a Deployment, we can add a description as:
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver
+  annotations:
+    description: Deployment based PoC dates 2nd Mar'2022
+```
+
+- imperatively, an object can be annodataed with its latest configuration using the same --save-config=true option. test the commands
+
+```
+$ kubectl run saved --image=nginx:alpine --save-config=true
+
+$ kubectl get pod saved -o yaml
+```
+
+---
+
+**Quota and Limits Management**
+
+- when many users share a given Kubernetes cluster, there is a concern of fair usage. A user should not take undue advantage to address this concern, administrators can use the Resource Quota API resource, which provide constraints that limit aggerate resource consumption per Namespace.
+
+- Can set following types of quotes per Namespace:
+
+```
+- Compute Resource Quota
+We can limit the total sum of compute resources (CPU, memory, etc.) that can be requested in a given Namespace.
+
+- Storage Resource Quota
+We can limit the total sum of storage resources (PersistentVolumeClaims, requests.storage, etc.) that can be requested.
+
+- Object Count Quota
+We can restrict the number of objects of a given type (Pods, ConfigMaps, PersistentVolumeClaims, ReplicationControllers, Services, Secrets, etc.).
+```
+
+- Example of two ResourceQuota manifests below, exemplifying compute resources quotas (requests and limits):
+
+```
+
+myspace:
+
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-resources
+  namespace: myspace
+spec:
+  hard:
+    requests.cpu: "1"
+    requests.memory: 1Gi
+    limits.cpu: "2"
+    limits.memory: 2Gi
+    requests.nvidia.com/gpu: 4:
+```
+
+- various k8s object counts quotas (ConfigMaps, PVCs, Pods, Services in general, Load Balancer Service types, etc.) in a given namespace
+
+```
+myspace:
+
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: object-counts
+  namespace: myspace
+spec:
+  hard:
+    configmaps: "10"
+    persistentvolumeclaims: "4"
+    pods: "4"
+    secrets: "10"
+    services: "10"
+    services.loadbalancers: "2"
+```
+
+- An additional resource that helps limit resource allocation to pods and containers in a namesopace is the LimitRange, used in conjuction with the ResourecQuota API resource. A Limit Range can :
+
+```
+1.Set compute resources usage limits per Pod or Container in a namespace.
+2.Set storage request limits per PersistentVolumeClaim in a namespace.
+3.Set a request to limit ratio for a resource in a namespace.
+4.Set default requests and limits and automatically inject them into Containers' environments at runtime.
+```
+
+- in example below: Limitrange manifest, exemplifies how CPU contstaints are enforced for individual Containers of Pods running in the myspace namespace:
+
+```
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-constraint-per-container
+  namespace: myspace
+spec:
+  limits:
+  - default:            # default limits
+      cpu: 500m
+    defaultRequest:     # default requests
+      cpu: 500m
+    max:                # max defines the highest value of the range
+      cpu: "1"
+    min:                # min defines the lowest value of the range
+      cpu: 100m
+    type: Container
+```
+
+---
