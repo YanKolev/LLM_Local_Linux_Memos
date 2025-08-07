@@ -3769,3 +3769,161 @@ This HPA dynamically triggers the scaling of a myapp Deployment when CPU reaches
 -**API Aggregation**- for fine-grained control we can write API Aggregators. they are subordinate API services, which sit behind the primary API server. The primary API server Acts as a proxy for all incoming API requests - it handles the ones based on its capabilities and proxies over the other requests meant for the subortidanate API services.
 
 ---
+
+**Security Context and Pod Security**
+
+- at times we need to define specific privileges and access control settings for Pods and Containers. Security Contexts allow us to sed Discretionary Access Control for object access permissions, privileged running, capabilities, security labels etc. However their effect is limited to the individual Pods and Containers where such context configuration settings are incorporated in the **spec** section.
+
+- Pod manifest below, defines three generic context at the POD level that will be inherited by all Containers of the Pod. in addition it defines a context taht will specifically apply to the busy Container of the Pod.
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: demo
+spec:
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 3000
+    fsGroup: 2000
+  volumes:
+  - name: vol
+    emptyDir: {}
+  containers:
+  - name: busy
+    image: busybox:1.28
+    command: [ "sh", "-c", "sleep infinity" ]
+    volumeMounts:
+    - name: vol
+      mountPath: /data/demo
+    securityContext:
+      allowPrivilegeEscalation: false
+```
+
+- Summary: it sets the user ID to 1000 and group ID to 3000 for all processes running in all Containers of the Pod, and it sets the group ID 2000 for the owner of the vol volume mounted at /data/demo on the Container’s filesystem. In addition, the busy Container’s children process are not allowed to gain privileges that exceed the parent process privileges.
+
+- In order to apply security settings to multiple Pods and Containers cluster-wide, we can use the Pod Security Admission, a built-in admission controller for Pod Security that is enabled by default in the API Server. It can enforce the three Pod Security Standards at namespace level, by automating the security context restriction to Pods when they are deployed. Each Pod Security Standard profile, privileged, baseline, and restricted, defines a level of security that ranges from entirely unrestricted (for privileged workload), to enforcing Pod hardening best practices (for security critical applications and less trusted users). The security levels are defined by sets of Pod security context controls that are pre-determined for each standard.
+
+---
+
+**Network Policies**
+
+- Kubernetes was designed to allow all Pods to communicate freely, without restrictions, with all other Pods in cluster Namespaces. In time it became clear that it was not an ideal design, and mechanisms needed to be put in place in order to restrict communication between certain Pods and applications in the cluster Namespace. Network Policies are sets of rules which define how Pods are allowed to talk to other Pods and resources inside and outside the cluster. Pods not covered by any Network Policy will continue to receive unrestricted traffic from any endpoint.
+
+- Network Policies are very similar to typical Firewalls. They are designed to protect mostly assets located inside the Firewall from incoming traffic, but can restrict outgoing traffic as well based on sets of rules and policies.
+
+- The Network Policy API resource specifies podSelectors, Ingress and/or Egress policyTypes, and rules based on source and destination ipBlocks and ports. Very simplistic default allow or default deny policies can be defined as well. As a good practice, it is recommended to define a default deny policy to block all traffic to and from the Namespace, and then define sets of rules for specific traffic to be allowed in and out of the Namespace.
+
+- Examine the Network Policy manifest below. The demo-netpol policy protects Pods labeled role=db, it allows ingress (inbound) traffic to TCP port 6379 of the protected Pods from a namespace labeled project=myproject or from Pods labeled role=frontend. It also allows egress (outbound) traffic from the protected Pods to TCP port 5978 of applications or services with IP addresses in the CIDR range 10.0.0.0/24:
+
+```
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: demo-netpol
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      role: db
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          project: myproject
+    - podSelector:
+        matchLabels:
+          role: frontend
+    ports:
+    - protocol: TCP
+      port: 6379
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 10.0.0.0/24
+    ports:
+    - protocol: TCP
+      port: 5978
+```
+
+- **NB!** keep in mind that not all the networking solutions available for Kubernetes support Network Policies. Review the Pod-to-Pod Communication section from the Kubernetes Architecture chapter if needed. By default, Network Policies are namespaced API resources, but certain network plugins provide additional features so that Network Policies can be applied cluster-wide.
+
+---
+
+**Monitoring, Logging and Troubleshooting**
+
+- In Kubernetes, we have to collect resource usage data by Pods, Services, nodes, etc., to understand the overall resource consumption and to make decisions for scaling a given application. Two popular Kubernetes monitoring solutions are the Kubernetes Metrics Server and Prometheus.
+
+- **Metrics Server** : Metrics Server is a cluster-wide aggregator of resource usage data - a relatively new feature in Kubernetes, available as a plugin. With the metrics-server installed, we can easily extract resource utilization data from the cluster with the help of the kubectl top nodes and kubectl top pods commands. Both commands are namespace specific and support sorting with the help of the --sort-by=cpu or memory options.
+
+- **Prometheus**:
+
+Prometheus, now a graduated project of CNCF (Cloud Native Computing Foundation), can also be used to scrape the resource usage from different Kubernetes components and objects. Using its client libraries, we can also instrument the code of our application.
+Another important aspect for troubleshooting and debugging is logging, in which we collect the logs from different components of a given system. In Kubernetes, we can collect logs from different cluster components, objects, nodes, etc. Unfortunately, however, Kubernetes does not provide cluster-wide logging by default, therefore third party tools are required to centralize and aggregate cluster logs. A popular method to collect logs is using Elasticsearch together with Fluentd with custom configuration as an agent on the nodes. Fluentd is an open source data collector, which is also a graduated project of CNCF.
+
+- The third-party troubleshooting tools are addressing a shortcoming of Kubernetes with regards to its logging capability. Although we can extract container logs from the cluster, we are limited only to logs of currently running containers, and in the case of several consecutive container restarts due to failures - the logs of the very last failed container (using the -p or --previous flags). The logs can be displayed for a single container pod or a specific container of a multi-container pod (supply the pod-name and hit the TAB key for a listing of its available containers):
+
+```
+$ kubectl logs pod-name
+
+$ kubectl logs pod-name container-name
+
+$ kubectl logs pod-name container-name -p
+```
+
+- In addition, a user can run a custom command in a running container of a pod, or interact with the running container from the terminal (using the -it flag and invoking the shell command line interpreter of the container):
+
+```
+$ kubectl exec pod-name -- ls -la /
+
+$ kubectl exec pod-name -c container-name -- env
+
+$ kubectl exec pod-name -c container-name -it -- /bin/sh
+```
+
+- When the pod-name is followed by the -c flag, hit the TAB key for a listing of its available containers. There are scenarios when the pods of an application do not reach the expected running state, visible in the output of the kubectl get pods command. In order to discover what prevents the pod from running - whether a missing dependency, container image or runtime issue, we can view the events for the entire cluster or for a specific pod in the output of the describe command. Currently there are two distinct commands that list cluster events:
+
+```
+$ kubectl get events
+
+$ kubectl events
+
+$ kubectl describe pod pod-name
+```
+
+---
+
+**Helm**
+
+- to deploy a complex application we use a large numberof k8s manifests to define API resources such as Deployments, Services, persistent Volumes, PersistentVolumeClaims, Ingress, or ServiceAccounts. We can bundle all of those manifests after templatizing them in to a well-defined formant along with other metadata- so called as Chart. These chardts can be served via reporsitories, such as one from rpm and deb packages or the container image regiesties.
+
+- \*\*Helm is a package manager (like yum and apt) for k8s, which can instal/update/delete those charts in the k8s cluster. helm is a CLI client that may run side-by-side with kubectl on our workstation, that also uses kubeconfig to securely communicate with the k8s API server.
+
+- The helm client queries the Chart Repositories, for Charts based on search aparameters, downloads a desired Chart, and then it requests the API server to deploy in the cluster the resources defined in the chart. more info? RTFM
+
+---
+
+**Service Mesh**
+
+- 3rd party solution alternative to the k8s native app connectivity and exposure achieved with Services paired with Ingress Controllers. Service mesh tools are popular for dynamic k8s clusters.
+
+- A Service Mesh is an implementation that relies on a proxy component part of the Data Plane, which is then managed through a Control Plane. The Control Plane runs agents responsible for the service discovery, telemetry, load balancing, network policy, and optionally ingress and/or egress gateway. The Data Plane proxy component is typically injected into Pods, and it is responsible for handling all Pod-to-Pod communication, while maintaining a constant communication with the Control Plane of the Service Mesh. A less frequent Data Plane implementation deploys a single proxy component on each Kubernetes Node, an approach that is less invasive than the proxy injected in each Pod.
+
+- As most Service Mesh implementations pack a variety of features, they gradually become critical observability and security tools, providing real-time visibility into intra-cluster traffic patterns while offering Kubernetes operators with alternative means to restrict and encrypt Pod-to-Pod communication.
+
+- Types of ServiceMesh: Consul, Istio, Kuma, Linkerd, Cilium, Traefuk Mesh, Tanzu.
+
+---
+
+**Application Deployment Stategies**
+
+- method presented earlier for new application release rollouts was the Rolling Update mechanism supported by the Deployment operator. The Rolling Update mechanism, and its reverse - the Rollback, are practical methods to manage application updates by allowing one single controller, the Deployment, to handle all the work it involves. However, while transitioning between the old and the new versions of the application replicas, the Service exposing the Deployment eventually forwards traffic to all replicas, old and new, without any possibility for the default Service to isolate a subset of the Deployment's replicas. Because of the traffic routing challenges these update mechanisms introduce, many users may steer away from the one Deployment and one Service model, and embrace more complex deployment mechanism alternatives.
+
+- The Canary strategy runs two application releases simultaneously managed by two independent Deployment controllers, both exposed by the same Service. The users can manage the amount of traffic each Deployment is exposed to by separately scaling up or down the two Deployment controllers, thus increasing or decreasing the number of their replicas receiving traffic.
+
+- The Blue/Green strategy runs the same application release or two releases of the application on two isolated environments, but only one of the two environments is actively receiving traffic, while the second environment is idle, or may undergo rigorous testing prior to shifting traffic to it. This strategy would also require two independent Deployment controllers, each exposed by their dedicated Services, however, a traffic shifting mechanism is also required. Typically, the traffic shifting can be implemented with the use of an Ingress or another Service.
+
+---
