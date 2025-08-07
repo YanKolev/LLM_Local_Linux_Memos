@@ -3712,3 +3712,60 @@ spec:
 ```
 
 ---
+
+**Autoscaling**
+
+- its not easy to manually scale a few kubernetes objects, when hundreds objects are deployed. Autoscaling can be implemented in k8s cluster via controllers which periodically adjust the number of runnin objects based on a single, multiple or custom metrics. There are various types of autoscalaters available in the k8s which can be implementented individually or combined for more robust autoscaling solution.
+
+- **HPA** - Horizontal Pod autoscaler (HPA): HPA is algorithm-based controller API resource which automatically adjusts the number of replicas in a ReplicaSet, Deployment or Replication Controller based on CPU itilization. An easy method to deploy an HPA objecs is through the follwing imperative command.
+
+```
+This HPA dynamically triggers the scaling of a myapp Deployment when CPU reaches 80% utilization, between 2 and 10 replicas: kubectl autoscale deploy myapp --min=2 --max=10 --cpu-percent=80
+```
+
+- **VPA** - Vertical Pod Autoscaler: VPA automatically sets Container resource requirements (CPU and memory) in a POD and dynamically adjusts them at runtime, based on historical utilization data, current resoure availablity and real-time events. It is installed as a Custom Reource.
+
+- **Cluster Autoscaler** : Cluster autoscaler automatically re-sized the K8s cluster whenthere are insufficient resources available for new Pods expecting to be scheduled or when there are underutilized nodes in the cluster.
+
+---
+
+**Jobs an CronJobs**
+
+- A job creates one or more Pods to perform a given task, The Job object takes the responsibility of POD failures. It makes sure that the given task is completed successfully. Once the task is complete all pods are terminated automatically. Job configuration options include:
+
+1. **parallelism**- to se the number of pods allowed to run in parallel
+2. **completions** - to set the number of expected completions
+3. **activeDeadlineSeconds** - to set the duration of the Job
+4. **backoffLimit**- to set the number of retries before Job is marked as failed.
+5. **ttlSecondsAfterFinished** - to delay the cleanup of the finieshed Jobs.
+
+- with K8s 1.4 we can perform also perform jobs as scheduled times/dates with CronJobs, where new Job object is created about once per each execution cycle. Configurations options are:
+
+1. **startingDeadlineSeconds**- to set the deadline to start a Job if scheduled time was missed.
+2. **concurrencyPolicy**- to allow or forbid concurrent Jobs or to replace old Jobs with new ones.
+
+---
+
+**StatefulSets**
+
+- StatefulSet contoller is used for stateful applications which require a unique identity, such as name, networork identification, or strict ordering such as MySQL cluster.
+
+- StatefulSet controller provides identity and guaranteed ordering of deployment and scaling to Pods. However the statefulSet controller has very strict Service and Storage Volume dependencies that make it chalenging to congigure and deploy. It supports- scaling, rolling updates and rollbacks.
+
+---
+
+**Custom Reources**
+
+- k8s a resource is an API endpoint which stores a collection of API objects. A pod resource contains all the Pod objects.
+
+- in some cases the specialized resources are needed. with custom resources we dont have to modify k8s source.
+
+- CRs are dynamic in nature and they can appear and disappear in an already running cluster at any time.
+
+- to make a resourc declarative, we must create and install a custom controller, which can interpret the resource structure and perform the required actions. Custom Controllers can be deployed and managed in an already running cluster.
+
+- **CRDs** Custom Resource Definitions- easiest way to add custom resources and it does not require any programming knowledge, howeever building the custom controller would require some programming.
+
+-**API Aggregation**- for fine-grained control we can write API Aggregators. they are subordinate API services, which sit behind the primary API server. The primary API server Acts as a proxy for all incoming API requests - it handles the ones based on its capabilities and proxies over the other requests meant for the subortidanate API services.
+
+---
