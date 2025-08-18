@@ -1,49 +1,57 @@
-# 📘 Linux's Foundation's Introduction to Linux (LFS101)
+# 📚 LLM => Local Linux Memos
 
-Notes of the LFS101 course for revision and test-taking.
-
-## 📚 Structure
-
-1. [Week 1](LFS101/Week1/notes.md)
-2. [Week 2](LFS101/Week2/notes.md)
-3. [Week 3](LFS101/Week3/notes.md)
+Welcome to the **my personal LLM**.  
+This README acts as a hub for the notes of all the courses that I am doing and are related to Linux. Either from the Linux's Foundation or Cisco NetAcad/Cisco U.
 
 ---
 
-## Table of Contents
+## 🗂 Table of Contents
 
-1. The Linux Foundation
+<!-- To be edited and linked to the internal notes/ Current in stage of template buildig -->
 
-2. Linux Philosophy and Concepts
+- [Introduction](docs/introduction.md)
+- [Getting Started](docs/getting-started.md)
+- [Architecture](docs/architecture.md)
+  - [Backend](docs/backend.md)
+  - [Frontend](docs/frontend.md)
+  - [Database](docs/database.md)
+- [Guides](docs/guides/README.md)
+  - [Deployment](docs/guides/deployment.md)
+  - [Testing](docs/guides/testing.md)
+  - [Troubleshooting](docs/guides/troubleshooting.md)
+- [Reference](docs/reference/README.md)
+  - [API Reference](docs/reference/api.md)
+  - [Glossary](docs/reference/glossary.md)
+- [Changelog](docs/changelog.md)
 
-3. Linux Basics and System Startup
+---
 
-4. Graphical Interface
+## 🔗 Backlinks & Navigation
 
-5. System Configuration from the Graphical Interface
+- [⬆️ Back to Top](#-project-knowledge-base)
+- [📖 Full Documentation](docs/README.md)
+- [📝 Issues & Discussions](../../issues)
 
-6. Common Applications
+---
 
-7. Command-Line Operations
+## 🧭 How to Use
 
-8. Finding Linux Documentation
+1. Start at **[Introduction](docs/introduction.md)** to get the big picture.
+2. Use the **Table of Contents** to dive deeper.
+3. Follow **Backlinks** inside each page to jump between related notes.
 
-9. Processes
+---
 
-10. File Operations
+> ✨ Pro tip: Use GitHub’s file finder (`t` key) to quickly search across all notes.
 
-11. Text Editors
+---
 
-12. User Environment
+<!--  re-usable backling footer template -->
 
-13. Manipulating Text
+## 🔗 Navigation
 
-14. Network Operations
+- [⬆️ Back to Index](../README.md)
+- [🏠 Project Home](../../README.md)
+- [📂 Browse Docs](./)
 
-15. The Bash Shell and Basic Scripting
-
-16. More on Bash Shell Scripting
-
-17. Printing
-
-18. Local Security Principles
+---
