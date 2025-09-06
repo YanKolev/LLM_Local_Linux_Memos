@@ -213,3 +213,32 @@ systemctl start|stop|status jenkins
 ![](images/jenkinsjobhealth.png)
 
 ---
+
+##### 5. Jenkins Plugins
+
+---
+
+- **Overview**- Plugins add user-needed functionality. All Jenkins Plugins are Java Archive (JAR) files with either an .hpi or jpi extension. Git plugin is marked like  **git.hpi**. 
+- *Recommendation**: Use suggested plugins and build on top of them. 
+
+
+---
+
+- **Plugin Updates**: Via the plugin manager or with the advanced  Update site. -If your Jenkins is behinf a firewall + no direct access to Internet-> we need to configure an HTTP proxy server. 
+
+- Enter the HTTP proxy server name, proxy port, and username used to authenticate with the proxy, and the password to configure your proxy settings. Click the Advanced button on the bottom right to enable the Test URL to validate proxy configuration fields. Finally, click the Submit button to submit the configuration.
+
+---
+
+- **Plugin Install**: Via the Webportal. Verify before installing. OR via Manual upload: we need to upload a .hpi or jpi file using the upload plugin option on advanced settings. (Useful for using older version of a plugin not currently available on the Jenkins update site/ custom plugin)
+- On the webpage you can install / uninstall plugins quickly. 
+- uninstalling a plugin may leave behind some plugin configuration data. Navigate to Jenkins > Manage Jenkins > Manage Old Data. You can view and purge all the unwanted data here.
+
+--- 
+
+- **Plugin Disable/Update**: Via the webportal. It can be re-enabled via the Enabled column and restart Jenkins server to make plugin operational. 
+
+  - Updates via the webportal:  update plugins frequently on the option Download now and install after restart button. 
+  
+
+---
