@@ -242,3 +242,66 @@ systemctl start|stop|status jenkins
   
 
 ---
+##### 6. Jenkins Security
+
+---
+
+- Intellectual Property is valuable data nad its important to protect it. 
+- CIA Tria- Confidentiality, availability and itegrity are the fundamental principles of information security. 
+
+    Confidentiality determines the secrecy of your IP and prevents unauthorized access to restricted data.
+    Integrity ensures that your IP is accurate and reliable, and it has not been modified from its original state while in transit or at rest.
+    Availability is the ability of the users to access your IP. Information is of no use if it cannot be accessed.
+
+![](images/ciatriad.png)
+
+- Your Jenkins server hosts your organizational intellectual property (IP) such as your source code, build artifacts, etc. Your Jenkins environment is also a fully distributed build system with Jenkins server and agents (more on this in a later section of this course) and each network connection is a potential point of entry. A malicious user could access your Jenkins environment to launch a Distributed Denial of Service (DDoS) attack or a bot or do any other mischief.
+
+---
+
+- **Securing Jenkins**: from v2.0 version security is enabled by default and are required to create an administrator user account in order to be able to login to Jenkins. (Post install Setup Wizard)
+
+- CSRF Protection- Cross-Site Request Forgery- is an attack that forces an end user to execute unwanted action on web application in which they are currently authenticated. (Enabling it will protect your Jenskins environment from malicious attacks)
+
+- TCP Port- in distributed set up, Jenkins can use a TCP port to communicate with the Agents. This post is disabled by default. If needed you can enable it by selecting either a fixed port or a Random Port. Choosing a fixed port is recommendeed as it makes it easier to manage the firewall rules and avoid port collision. 
+
+- Markup Formatter: Jenkins allows user input in many configuration areas. Setting the Markup Formatter to plain text by default will elimiate any unsafe html or JS. 
+
+---
+
+- **Git Host Key Verification** : option available via the GIT Client plugin and it allows you to select how you would like to verify the SSH keys presented by the Git Repository servers (Github, Bitbucket, Gitlab). If you do not select an option (Known hosts file) strategy is used as default to verify all host keys using the **known_hosts** fule. 
+
+---
+
+- **Authentication** : Act of validating taht users are who they claim to be. There are 4 security realms that are supported out of the box: 
+
+1. Delegate to Servlet Container: This realm delegates authentication to the servlet engine running Jenkins. For Instance > Tomcat Jboss, websphere have their own auth mechanisms. if using this realm you need to look into the servlet containr's authentication documentation. (Apache Tomcat 9).
+2. Jenkins's own user database: uses Jenkins local Database and is enabled by default when you initially install jenkins> you have the option of letting your users sign up. However, be minful of the privileges.
+3. LDAP - delatetes authentication to an external LDAP Service. Most companies already have Directory service for authentication. This option is more common for larger installations in organization that already have configured an external identitiy provider such as LDAP. This supports Activee Directory, OpenLDAP installations. It is highly tunable/ its biding can be sub-authenticated. You can take advantage of the caching mechanism to leverage load on LDAP servers/ Support for LDAP replicas.  
+4. Unix User/Group Database: delegates auth to underlying Unix/Linux machine and it only works if you are running Jenkins on a Unix Server.  
+
+---
+
+- **Authorization** : Once a user/Grou is authenticated, you need to determine the actions of this user /group should be able to perform. Authorization always occurs in the context of authentication. 
+
+1. Lightweight Authorization: 
+    - Anyone can do anything: both authenticated and anonymous users to do anything. 
+    - Legacy mode: this allows administrators to perform any action. All other users are restricted to read-only mode.
+    - Logged-in users can do anything. The default strategy it allows all authenticated users to perform any action. 
+
+2. Matrix- based Security: strategy allows you to define actions allowed for each user or group globally by using a matrix. On the vertical axis are the usrs or groups and on the horizontal axis you can configure the actions for the corresponding users/groups. 
+
+![](images/matrixsecurity.png)
+
+3. Project- based Matrix Authorization Strategy: In addition to assigning permissions globally, Project based matrix authorization lets you define permissions for the individual Jenskins jobs. 
+
+![](images/projectsecurity.png)
+
+4. Credentials: Jenkins needs to authenticate itself agains other services: 
+   -SCM repositories for retrieving source code (or pushing it)
+   - Binary repositories for storing artifacts or fetching dependencies. 
+   - Remote secured services for authentication such as LDAP
+   - Deploy to secured environments. 
+- Credentials creation: 1. you need to have Credentials-create permissions > Username > Credentials > Create Credentials > Add Credentials > RTFM. 
+
+---
