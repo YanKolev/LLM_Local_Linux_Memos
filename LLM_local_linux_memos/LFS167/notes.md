@@ -305,3 +305,49 @@ systemctl start|stop|status jenkins
 - Credentials creation: 1. you need to have Credentials-create permissions > Username > Credentials > Create Credentials > Add Credentials > RTFM. 
 
 ---
+
+##### 7. Jenkins Jobs
+
+---
+
+- **Overview**: A Jenkins job is a sequential set of tasks that are defined by a user. Typical steps include retrieving the latest source code, from version control, compiling it, running unit tests, building and storing the artifacts and notifying the end users of the outcome of the build.  JOb = project in the UI. 
+
+- **Jenkings Job Types**: 
+  1. Freestyle Project: Default type, most flexible to configureand is included as part of the core Jenkins. 
+  2. Pipeline and Multibranch Pipeline: There are useful for creating end-end CI/CD pipelines. These pipelines require pipeline and Multibranch plugins to be installed. 
+  3. This is useful for jobs with a large number of configurations. Its requires the matcix Project plugin to be installed. 
+   
+- **Jenkins Job Creation** : Jenkins dashboard > New Item > Enter type of job > Select approptiate ojb type > OK. 
+
+- **Anatomy of a Jenkins Job**: 
+   1. General Options: 
+    1.1. Meta-information: basically information about the job. Job name and description are meta-information. (DO NOT PUT ANY JavaScript in the deccription field as it can pose a security risk).
+    1.2. Disable Job: Option to stop it if you no longer need a job. 
+    1.3. Build history Management: for every ran job, there is a buld log, artifacts metadata on the disk. To cap disk space consumption, you can set a build log retention by enabling it. 
+    1.4. Build Management: common configurations are listed below.
+
+    Quiet period
+    Setting a wait time between builds.
+    Retry count
+    Setting a count for the number of times Jenkins will try to checkout from the configured SCM system until it succeeds.
+    Block build when downstream job is building
+    When this option is checked, Jenkins will prevent the current job from building when a child of this job is in the queue, or building.
+    Display name
+    Setting an optional name for the job which will be displayed throughout the Jenkins UI.
+
+  2. Source Code management: Specify the details of the version control repository for building your source code. You have the flexibility to select the SCM tool + plugin.
+   
+  3. Build Triggers: 
+   3.1. Build periodically: With cron-like syntax you can schedule periodic builds: scheduling every 15min. 
+   3.2. Build after other projects are built.
+   3.3. Poss SCM- you can poll SCM at a certain frequency using cron-like syntax. Jenkins will try to detect new commits and if there are any Jenkins will go ahead and run the build.
+   3.4. Webhooks- you would want to trigger a new build as soon as source code change is detected so as to align with CI/CD goals. At the same time, you do not want to add polling overhead. The best way to navigate this is to let your SCM system handle it by webhooks. 
+
+  4. Build Steps: 
+   4.1. Build Environment- allows you to specify additional options for your builds- cleaning up the workspace prior to starting a build, setting up the required environment variables used in the build aborting builds that are stuck. These options are provided by various plugins - Workspace Cleanup, Credentials Binding, Build Timeout, and Timestamper to name a few. The more plugins you install, the more options you will see under this section.
+
+   4.2 Build- The Build section comprises the actual steps to build your source code, run various tests (unit, integration, etc.), code quality, code coverage, and many more.
+   4.2.3 Build Section: You can add one or more build steps, and re-order them however you like simply by dragging and dropping them.
+
+    You may also choose to install plugins that suit your specific needs. Such plugins can contribute to additional build steps.
+    4.3. Post-build Actions: Post-build actions are performed based on the result of the build status. Examples include notifying developers, publishing test reports, archiving build artifacts, triggering other build jobs, automated deployment, etc.
