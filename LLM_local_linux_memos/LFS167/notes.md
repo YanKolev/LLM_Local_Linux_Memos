@@ -214,7 +214,7 @@ systemctl start|stop|status jenkins
 
 ---
 
-##### 5. Jenkins Plugins
+### 5. Jenkins Plugins
 
 ---
 
@@ -242,7 +242,7 @@ systemctl start|stop|status jenkins
   
 
 ---
-##### 6. Jenkins Security
+### 6. Jenkins Security
 
 ---
 
@@ -306,7 +306,7 @@ systemctl start|stop|status jenkins
 
 ---
 
-##### 7. Jenkins Jobs
+### 7. Jenkins Jobs
 
 ---
 
@@ -351,3 +351,106 @@ systemctl start|stop|status jenkins
 
     You may also choose to install plugins that suit your specific needs. Such plugins can contribute to additional build steps.
     4.3. Post-build Actions: Post-build actions are performed based on the result of the build status. Examples include notifying developers, publishing test reports, archiving build artifacts, triggering other build jobs, automated deployment, etc.
+
+---
+
+### 8. Freestyle Jobs
+
+---
+
+- **Overview**: Freestyle job- most versatile job type. allows us to build any type of project and its included by default > No need to install additional plugins. 
+
+---
+
+- **New Freestyle Job Creation**: example: alraedy have a small Java application, we will configure all the necessary tasks for this job such as retrieving the Java source code from version control, compiling and building it, runningtests, publishing the code coverage and statyc analysis reports and notification of the team os build status. 
+
+- Dashboard > New Item > Freestyle Project (Using maven in the example). 
+- Since the example app requires Java version 11 we can specify via the tools page: 
+- Dashboard > Manage Jenkins > Global Tool Configuration page > ADD JDK.
+- When we have a JDK we need to do the following steps: 
+  - 1. Add a Name for the Java version you are trying to install. 
+  - 2. Enter the path for **JAVA_HOME**. 
+  - 3. Choose the JDK version from dropdown.
+  - 4. Enter the credentials for your Oracle account. 
+  - 5. Check the License Agreement 
+  - 6. Save. 
+  
+- **NB!**: The option to choose a specific JDK version will only be activated if you have at least two JDKs configured on the Global Tool Configuration page (YOUR_JENKINS_HOME:8080/manage/configureTools). If you only have one JDK version configured, this version will be implicitly used by Jenkins. If you have no JDKs configured, Jenkins will use the system default path.
+
+---
+
+- **Source Code Management**: 
+
+1. Make a repository. 
+2. Configure the git repository under the SCM section of the demoapp-freestyle job: 
+    - Scroll down to the Source Code Management section.
+    - Select "Git".
+    - Enter Repository URL (enter your GitHub repository URL).
+    - Select Credentials to authenticate to the SCM repository.
+    - Click Add > Jenkins to add the SCM credentials.
+3. For credetianls we will gowith SSH Username with private key. 
+   -  You will need to create an SSH key locally on your machine if you don't already have one, and then add the SSH key to your GitHub account.
+   -  Be sure to select a Git Host Key Verification Strategy on the Global Tool Configuration page. For example, you can choose the "Accept first connection" strategy if you have Jenkins running on a newer operating system. It is easy to set up while still providing ssh key verification.
+   -   Make sure to select SSH Username with private key for the credentials kind. Enter the private portion of your key (id_rsa file content) under the Private Key section. 
+
+   - Once the credentials are added, you can view and select them from the credentials dropdown list.
+4. For our java-app job, we will select the master branch.
+---
+
+- **Build Triggers**: we will use Poll SCM build trigger and set the polling to every 15min. 
+
+- in the schedule bar as following: 
+  ```
+  H/15****
+  ```
+
+---
+
+- **Build Environment**: we need to add a timestapm to the build console output. To enable > Build environment > Add timestamps to the Console Output. 
+
+---
+
+- **Build**: Add build step > Invode top-level Maven targets.
+- Invoking Top-Level maven Targets will add a new build step and configuration. 
+- Maven Version: maven3. To use this version you need to install maven 3: Dashboard > Manage jenkins > Global ool Configuration.
+- Goals: clean verify site. 
+- Options are as follows: 
+  - clean: will wipe out any existing compiled sources in the target directory and start the build from a clean state
+  - verify: will run any checks to verify the package is valid and meets quality criteria
+  - site: will generate Java app project code coverage and static analysis reports
+
+  - After that we go to advanced maven options. We need to specify the location of the POM file 
+    ```
+    POM: java-demo-app/pom.xml
+    ```
+  - Leave all other fields set to their default values. 
+  - Save configuration. 
+
+---
+
+- **Post-Build Actions**: in our example app we will do the following post-build actions: 
+    - Archive the build artifacts so we can use them later.
+    - View code coverage trends so we can see the percentage of code that is executed as part of the tests.
+    - View static analysis trends so we can measure the code defects.
+    - Notify the team on the build status so that developers and team members can get quick feedback on the build, and take any necessary actions.
+  
+- Archive Build Artifacts: build stage generates a Java Archive (JAR).To archive the file for later use, choose add post-build action > Archive the artifacts and specify the location of the JAR file. 
+
+  ```
+  Files to archive: **/target/*.jar
+  ```
+  - this will look for all files with .jar extenstion recursively under all targe directories from the workspace's root. 
+
+- Publish Code Coverage Report: coverage tool for java: JaCoCo ( to enable publishing JaCoCo reports, you first need to install the plugin.)
+  - Add Post-build action > Record JaCoCo coverage report. 
+  ![](images/jacococonfig.png)
+
+- Static Analysis Reports: java app project uses the 2 tools: SpotBugs and PMD. Both of which help detect defects in Java code. 
+    - we need the plugin Warning Next Generation: Add post-build action > Record compiler warning and static analysis results. 
+    - From tool many select SpotBugs > Reporting Encoding to UTF-8. all other fields to their default values. 
+    - 2nd tool PMD: Static Analysis Tools > Add Tool > Report encoding UTF- 8. 
+
+- Email Notifications: Jenkings provides out of the box email support: Add Post-build action > Email Notification > specify target recipients for the emails. 
+---
+
+- **Build History** : Build now of the example java-app to trigger new build. 
