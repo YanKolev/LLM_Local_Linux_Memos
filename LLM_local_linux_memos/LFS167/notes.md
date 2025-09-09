@@ -454,3 +454,82 @@ systemctl start|stop|status jenkins
 ---
 
 - **Build History** : Build now of the example java-app to trigger new build. 
+
+
+---
+
+### 9. Pipeline Jobs
+
+---
+
+- **Freestyle vs Pipeline Jobs/Projects**: With Jenkins setting up a Freestyle job is quite UI heavy. They provide flexibility to configure project they are not quite suitable to orchestrate complex CD scenarios. 
+
+- **Pipeline Jobs**: can be accomplishes with:
+1. Create a set of instructions written as a code to model complex workflows.
+2. Provide a single-place visualization of different stages of workflow. 
+3. Resume at certain poit of failure.
+4. Store all Pipeline Code in SCM, so you can apply SCM best practices > versioning, tracking and auditing to the project configuration itself. 
+  
+---
+
+- **Declarative vs Scripted Pipelines**: Pipeline is a Jenkins Job type to provide an enhanced way to model and visualize CI/CD workflow for a softwate delivery project. It is created by writing a bunch of instrucstions in a file called ** Jenkinsfile** which can be checked into an SCM repository.
+
+- Jenkins Pipeline uses domain-specific languaged based on Apache Groovy to create, edit and view and run the CD pipelines. It can follow 2 syntactic rules: 
+  1. Declarative Pipelines: Recent feature of Jenkins with richer set of functionality. They are expressed using a Domain Specific Language (DSL). Hence, thre is a lower learning curve and no prior knowledge of Apache Groovy is required. 
+  2. Scripted Pipelines: Scripted Pipelines are not contrained by Jenkins pipeline DSL. Whihe such pipelines offer a lot of flexibility, they also require you to have knowledge of Apache Groovy. 
+  
+- NB! First focus on declarative then move to scripted pipelines. 
+---
+
+- **Pipeline Building Blocks**: A jenkins pipeline is made of sections, these sections can be defined in a Jenkinsfile.
+
+1. **Agent**: Agent section specifies where the pipeline will run. The agent in this case means the build agent. You can specify a single agent for the entire pipeline or you can specify different agents for each stage of a pipeline. An agent can be stand-alone machine or a Docker-based container. Pipeline agents also support integration with k8s. You can configure a pipeline to directly launch a build agent inside a K8s pod. For more info RTFM. 
+
+2. **Stages**: A pipeline is made of one or more stage directives. At a minimum, the stages section will contain at least one stage directive to do the actual work of a CI/CD pipepine. Stages can run sequentially orin a parallel. 
+
+3. **Steps**: Each pipeline stage includes steps. A step is the smallest unit of execution. Actual work of the pipeline is done by the steps. Example: running a script or executing a comand. All such tasks are implemented as steps. 
+
+4. **Post**: The post section defines additional steps that run upon the completion of a stage or a pipeline. IT is similar to the "Post build section" for a Jenkins Freestyle job. Typically cleanup tasks or notification steps are run as aport of the post section. 
+
+- Exampe of Pipeline Jenkinsfile: 
+
+```
+pipeline {
+  agent any
+  stages {
+    stage('Build') {
+      steps {
+        echo “Run build”
+      }
+    }
+    stage('Test') {
+      steps {
+        echo “Run tests”
+      }
+    }
+  }
+}
+```
+- Declarative pipeline is enclosed within a pipeline {} block. 
+- The pipeline has 2 stage: Buld and Test: each stage has only one step. Each step executes the **echo** command. You can have multiple steps inside a stage and all the steps will be executed serially. The agent any- statement at the start of the pipeline will make sure that any predefined build agent can run these stages. We can execute different stages on different agets. 
+
+---
+
+- **Creating a Declarative Pipeline**: there are 2 ways of creation: 1- Blue Ocean Editor, 2- Jenkins Pipeline Job type. 
+
+1. **Blue Ocean Editor**: requires Blue Ocean Plugin. Jenkins project will not release any new functionality. 
+2. **Jenkins Pipeline Job Type**: 
+   a. Create a Pipeline Job type via the Jenkins UI. 
+   b. Enter pipeline code directly / OR
+   c. Use pre-committed pipeline code (Jenkinsfile) into an SCM repository.
+
+- Pipeline job to simulate a typical CI/CD workflow with following set of stages: 
+  1. Build- In this stage, source code is compiled and built, and an artifact is generated. 
+  2. Test- In this stage, tests will be run in parallel on two different OS paltforms, Linux and Windows. 
+  3. Deploy to staging environment (essentially a pre-productuon server), we will request for human approval. If approved, the artifacts will be deployed to staging.
+  4. Deploy to Production- We will request for a human approval to deploy to production. If approved, artifacts will be deployed to the production environment. 
+   
+![](images/declarativepipeline.png)
+
+---
+
