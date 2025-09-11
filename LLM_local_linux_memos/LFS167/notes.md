@@ -533,3 +533,276 @@ pipeline {
 
 ---
 
+- **How to start a pipeline** : New item on Jenkins Dashboard > Enter name, select Pipeline Job > OK. 
+
+- **Configuring SCM**: After Clicking OK > you need to connect with your SCM repository. If there is no repo, we need to create one first. 
+
+1. Source code is hosted on Github repository. Repository stores all re required build scripts.
+    - Sign in to github via a browser. 
+    - You can use a pre-defined tempate to create a repo.
+    - Enter Repo name
+    - Optional Description
+    - Can be set to Private or public
+    - Create from template if you chose template. 
+  
+2. After Creation we need to define the pipeline. Jenkins lets you manually type Pipeline code as part of a pipeline job. For our example pipeline we can use the SCM option. 
+   - Choose git for where do you store your code. 
+   - Enter repo URL
+   - Add credentials for access repository
+   - Finally click Create Pipeline.
+
+---
+- **NB!**: 
+- You will need to add GitHub credentials via UI so Jenkins can access your private repository. You would need a personal access token for Jenkins to GitHub connectivity. Please follow GitHub official instructions for creating a personal access token. Please note that your personal access token will be displayed only during the time of creation. Hence, you need to save it somewhere for future reference.
+
+- You can store your access credentials in Jenkins by clicking on the Add button shown in the above screenshot.
+
+- Please also pay attention to the Kind field. Username corresponding to your GitHub username and password is your personal access token. You can save it by clicking on the Add button on the bottom of the Add Credentials screen.
+
+---
+
+3. Brach selection. You must either choose a specific branch to build or leave that filed blank. THEN SAVE.
+
+4. Jenkinsfile is the starting point of a pipeline job. Your git repo is pre-populated with a starter Jenkisfile. it has 2 stages defined. Then we click on build now. 
+
+5. Once the build is finished Stage view will get updated with build information. it will depict build stage in time taken to each stage. To see build logs you can hover the cursor on stage time boxes. 
+---
+
+- **Build Stage**: In the build stage we compile and package the source code. IF the code does not require any compilation, you just package your code in this stage. One such example would be building and storing a Docker container image. 
+
+- In the example we will update the build stage and add a buit execution script. In the example is a simplistic script that just prints to standard out, in real world there will be much more complex. 
+
+```
+Original code snippet:
+
+stage('Build') {
+     steps {
+       echo "Run build"
+     }
+   }
+
+Updated code snippet:
+
+steps {
+       sh 'chmod a+x run_build_script.sh'
+       sh './run_build_script.sh'
+     }
+   }
+```
+
+- First line invodeks chmod shell command to grant execute permission to our build script. second like executes our build script. 
+
+- After that we commit change, and go to Jenkins UI and click on build now and then Launch build. 
+
+- **NB!**: remember to replace yourJenkinsHost with the actual hostname of your Jenkins server. Similarly, replace buildNumber with the actual build number of your job. You will find the build number on the pipeline-demo landing page.
+
+---
+
+- **Test Stage**:  Let's assume our software needs to run on Linux and Windows platforms. As part of testing, we need to make sure that we have separate tests for each of the platforms. Since these tests have a singular dependency on Build stage, we can run them both parallelly. This is a feature of Pipeline jobs which makes it possible to run multiple stages in parallel.
+
+- All parallel stages are written inside a parallel block. In our example, we will have a parallel block inside the Test stage and have separate stage blocks for each test stage inside it.
+
+```
+stage('Test') {
+    parallel {
+      stage('Test On Windows') {
+        steps {
+          echo "Running tests on Windows"
+        }
+      }
+      stage('Test On Linux') {
+        steps {
+          echo "Running tests on Linux"
+        }
+      }
+    }
+  }
+```
+
+- After this addition we can modify our Jenkinsfile and add a parallel stage. Test block should look like this: 
+
+```
+stage('Test') {
+     parallel {
+       stage('Test On Windows') {
+         steps {
+           echo "Running tests on Windows"
+         }
+       }
+       stage('Test On Linux') {
+         steps {
+           echo "Running tests on Linux"
+         }
+       }
+     }
+   }
+```
+
+- Nothing else will change on the Jenkinsfile except the Test stage. Make sure to save the changes by clicking on Commit changes button in GitHub web UI. 
+
+- After that we can observe the test stage via the Stage view: 
+
+![](images/jenkinsstageview.png)
+
+- Additional information is also available on the logs: 
+
+![](images/pipelinelog.png)
+
+- So far the pipeline has only 2 stage, One for building th3e software and one parallel stage for testing the software. Lets extend the use to add a deployment stage. 
+
+---
+
+- **Deployment stage**: once software development scenario once automated testing is done, software changes are deployed to a staging environment for further testing. Integration testing is coducted in this enviroment. 
+
+- Advantage of Pipeline job is that it lets you create a realistic software delivery workflow. Often staging deployments require manual approval from quality assurance teams. Pipeline allows you to halt the workflow and get approvals before moving on to the next stage. 
+
+- To start: we need to editthe Jenkinsfile from Githu webui. We need to add stage called confirm Deploy to Staging. The code block will look like this: 
+
+```
+stage('Confirm Deploy to staging') {
+     steps {
+       timeout(time: 60, unit: 'SECONDS') {
+         input(message: 'Okay to Deploy?', ok: 'Let\'s Do it!')
+       }
+     }
+   }
+```
+- The code block should be added immediately after the test on Linux stage. To figure out the exact location, you can refer to Jenkinsfile- final copy in the github Repo. 
+
+- This stage halts the pipeline execution until someone manually clicks the OK button. Input directive includes a message and OK button to resume the pipeline flow. Pay attention to the timeout block.The idea is not to block this pipeline forever ( in the example if not approved this pipeline will abord after 60sec.)
+
+- We can add another stage. This one for the actual deployment to staging. We can extend it with this code block  under the Confirm Deploy to Staging stage. 
+
+```
+stage('Deploy to Staging') {
+     steps {
+       echo "Deploying to staging..."
+     }
+   }
+```
+
+- As soon as the OKay to deploy button is clicked Jenkins will execute the sgaging deployment stage. After saving changes to Jenkinsfile and start the pipeline , there will be noticable halt in the pipeline workflow that once gets to Deploy to sgaging stage. We can pprove it with UI. 
+
+![](images/stagingstage.png)
+
+- Another way of approving the deployment is going directly and clicking the OK link. 
+- There is also a message on via the Console- Let's Do IT or Abort. Once clicked on lets do it, Jenkins will execture the deployment stage. 
+
+---
+
+- **Deploy Production Stage**: Final Stage of our pipeline is deployment to the production stage. we will have an approval stage and a deployment stage. The code for the approval stage will be similar to the staging approval stage. 
+
+- To start > Github repo > Edit Jenkinsfile and add Confirm Deploy to production stage after Deploy to Staging stage. 
+
+```
+stage('Confirm Deploy to production') {
+     steps {
+       timeout(time: 60, unit: 'SECONDS') {
+         input(message: 'Okay to Deploy?', ok: 'Let\'s Do it!')
+       }
+     }
+   }
+
+#Next, comes the stage that does the actual deployment. In our example, it will also be very similar to the staging deployment stage.
+
+stage('Deploy to Production') {
+     steps {
+       echo "Deploying to production..."
+     }
+   }
+```
+
+- Savechanges and launch from the UI. 
+
+![](images/product.png)
+
+
+---
+
+- **Post-build Actions**: These actions include notifying user on failure or success conditions. Edit our Jenkinsfile again. 
+
+-Post section after the closing curly brace of stages section and right before the closing curly brace of the pipeline block. 
+
+```post {
+   success {
+     echo "build succeeded"
+   }
+   failure {
+     echo "Build failed"
+   }
+ }
+```
+----
+
+- Whole Jenkins file should look like: 
+
+```
+pipeline {
+ agent any
+ stages {
+   stage('Build') {
+     steps {
+       sh 'chmod a+x run_build_script.sh'
+       sh './run_build_script.sh'
+     }
+   }
+   stage('Test') {
+     parallel {
+       stage('Test On Windows') {
+         steps {
+           echo "Running tests on Windows"
+         }
+       }
+       stage('Test On Linux') {
+         steps {
+           echo "Running tests on Linux"
+         }
+       }
+     }
+   }
+   stage('Confirm Deploy to staging') {
+     steps {
+       timeout(time: 60, unit: 'SECONDS') {
+         input(message: 'Okay to Deploy?', ok: 'Let\'s Do it!')
+       }
+     }
+   }
+   stage('Deploy to Staging') {
+     steps {
+       echo "Deploying to staging..."
+     }
+   }
+   stage('Confirm Deploy to production') {
+     steps {
+       timeout(time: 60, unit: 'SECONDS') {
+         input(message: 'Okay to Deploy?', ok: 'Let\'s Do it!')
+       }
+     }
+   }
+   stage('Deploy to Production') {
+     steps {
+       echo "Deploying to production..."
+     }
+   }
+ }
+ post {
+   success {
+     echo "build succeeded"
+   }
+   failure {
+     echo "Build failed"
+   }
+ }
+}
+```
+
+- **Final view of the pipeline**: 
+
+![](images/finalpipeline.png)
+
+---
+
+### 10. Distributed Builds Architecture
+
+---
+
