@@ -806,3 +806,127 @@ pipeline {
 
 ---
 
+- **Why Distributed Built**: Up until now, we have run all the builds on the Jenkins Controller. So far it worked well for us. However, what if you need to run hundreds of builds every day? Well, you can try scaling your Jenkins Controller vertically by adding more resources (CPU, memory, etc), but you will eventually cap out of resources as you can scale a server vertically only up to a certain point.
+
+- The next thing that probably comes to your mind is adding more Jenkins Controllers. There are two major issues with this approach. First, it is going to create an administrative overhead to configure and keep track of all the Jenkins Controllers, and their corresponding builds, configurations, etc. Secondly, you may be developing applications that need to be supported on a variety of OS platforms, and you may need to run builds on various platforms. For instance, consider a situation when your application needs to be built and tested on Linux, Windows, and macOS. You won’t be able to achieve this because each Jenkins Controller is tied to a specific operating system.
+
+- Besides scaling, there is also a major security flaw associated with running your builds on the Jenkins Controllers. All Jenkins projects run with administrator privileges, and a malicious actor can potentially access or delete any private information compromising the security of your data.
+
+- The solution to the above problems is a distributed build architecture that allows you to have a single Jenkins Controller and leverage additional servers to perform the builds.
+
+---
+
+- **Distributed Build Terminology**: 
+
+1. Controller: A machine where Jenkins is installed. It centrally stores all the configurations, loads plugins, and renders the Jenkins UI.
+2. Agent: A machine that connects to the Jenkins master and performs various operations as directed by the Jenkins Controller.
+3. Node: A machine that can allocate an executor and run Jenkins jobs. Examples are Jenkins Controller and Agents. You will notice that nodes and agents are sometimes used synonymously.
+4. Executor: A Jenkins executor is one of the basic building blocks which allows a build to run on a node. You can configure more than one executor for every node. The number of executors is set based on the number of CPUs, IO performance and other hardware characteristics of a node and the type of builds you have configured to run. The number of executors determines the number of concurrent builds that can be run at any given point in time. It is Jenkins security best practice to set the number of executors to 0 on the Jenkins Controller, and not run any builds on it.
+
+---
+
+- **Distributed Builds Architecture**: all jenkins projects are configured centrally on the Jenkins Controller. The Jenkins Controller accepts all the request for builds and manages the build environment, but offloads the bulk of work to the configured agents. 
+
+- Advantages: 
+    1. It allows you to run builds for multiple OS platforms. For example, if you need to run a build on a Windows platform, all you need to do is add a new Windows agent and connect it to your Jenkins Controller.
+    2. It lets you scale your build infrastructure on-demand by adding more build agents.
+    3. It helps you mitigate security risk by restricting the information that an agent can request from the Jenkins Controller.
+   
+![](images/distributed%20architecture.png)
+
+- Set up is also required: 
+
+1. The Jenkins Controller needs to be able to communicate with the agent to offload the work of building the job. The agent executes all the tasks and passes information (artifacts, build log, etc.) back to the Jenkins Controller which essentially requires bi-directional communication between the Jenkins Controller and the agents.
+
+2. All Jenkins agents require Java to be installed as there is a slave.jar file that needs to be run on all the agents. The Java version of the agent must be the same as the Java version installed on the Jenkins Controller.
+
+3. The slave.jar file is located at <Your Jenkins URL>/jnlpJars/slave.jar.
+
+4. Other than these requirements, there is no need for a shared file system, a shared subnet, etc.
+   
+---
+
+- **Build agent** 
+
+1. **How to connect**: Dashboard > Manage Jenkins > Manage Nodes and Clouds. New node > Enter noade name > Select Permannet Agent click OK. 
+
+---
+2. **Configure a build agent**:
+   2.1. Description: A meaningful description of the agent.
+   2.2. Number of executos: Set this number based on the CPU cores on the agent.
+   2.3. Remote Root Directory: An absolute path to a root directory on the agent. This directory will be used as a temporary root directory for building projects.
+
+
+---
+3. **Labels of build agent**: Labels are used to group multiple agents into one logical group. For example, if you need to run builds on a Linux agent, you can assign each Linux agent a label called "linux". You can also use multiple labels for each agent. For example, a Linux agent that also runs Ruby builds can have two labels, "linux" and "ruby". Be sure to not use special characters for label names.
+
+3.1 Freestyle Jobs: Check the toggle for Restrict where this project can be run under the General section, then enter the label name for the Label Expression.
+
+3.2 Pipeline Jobs: Bring up the Pipeline editor for your Pipeline job. Under Pipeline Settings, select the type of agent from the Agent dropdown menu and enter a name for the Label.
+
+---
+
+4. **Usage of build agent**: You have two options to choose from:
+
+    - Use this node as much as possible
+    This is rather self-explanatory.
+    - Only build jobs with label expressions matching this node
+    Reserve this node for all the jobs that are restricted to certain nodes using node names and labels.
+
+---
+
+5. **Launch method of a build agent**: three main methods:     
+    - Launch Agents via SSH
+    - Launch Agent by connecting it to the controller
+    - Launch Agent via execution of command on the controller
+  
+  5.1 Launch Agents via SSH: This is supported by default on all Linux and macOS systems. You can also install OpenSSH on the latest versions of Windows systems (see Microsoft Documentation to learn more).
+
+  In order to use this launch method, you need the following:
+
+      Install SSH and ensure that the SSHD is running successfully on the agent
+      Set up a user account that can be used to log into the agent
+      Add Jenkins Controller’s public key to the agent’s authorized_keys file.
+
+  Note that once the connection is established Jenkins will automatically copy the slave.jar file onto the agent.
+
+  5.2 Launch Agent by Connecting It to the Controller: This launch method is useful for cases where agents are Windows OS-based, or they are behind a firewall and unable to use SSH to connect.
+
+  In order to use this launch method, you need to configure the port that Jenkins Controller will use to listen for incoming agent connections on the Configure Global Security page.
+
+  Configure TCP Port for Inbound Agents > Once you configure the agent, you have the option of launching it with or without the GUI. It is best to run the agent without using the GUI.
+
+  5.3 Launch Agent via Execution of Command on the Controller: You can use a command on the Controller to launch an Agent as long as the Jenkins Controller is able to execute commands remotely using SSH, RSH, etc. Both this and the Launch Agents via SSH method have similar requirements for setup.
+
+  In order to use this launch method, you will need to install the Command Agent Launcher plugin.
+
+  Instead of using a single command, you can also create a shell script on the agent which includes a set of commands such as setting JDK path, location of slave.jar file, etc., to be run on the agent and execute this script remotely from the Jenkins Controller.
+
+---
+
+6. **Availability of a build agent**: You can choose one of the following options:
+
+    - Keep this agent online as much as possible
+    - Bring this agent online and offline at specific times
+    - Bring this agent online when in demand, and take offline when idle.
+
+Optionally, you can specify additional Node Properties such as environment variables, tool locations, etc. Once you are done configuring, click Save to save the configuration.
+
+---
+
+7. **View and management of Jenkins build agent**: Dashboard > Manage Jenkins > Manage Nodes and Clouds page.
+
+---
+8. **Verify Project Execution on an Agent**: If you restrict a project to using a certain agent or a label, you can verify if the project is picking the right agent from the Build Executor Status on the main Jenkins dashboard.
+
+---
+
+9. **Load statistics** : verall load on your build infrastructure by going to the Jenkins Dashboard > Manage Jenkins > Load Statistics page.
+
+- The following statiscs can be observed: 
+  - Number of online executors: A total number of executors that have been configured to run a build and are currently online.
+  - Number of busy executors: The number of executors currently running a build.
+  - Number of available executors: Number of executors currently available to run a build.
+  - Queue length: Number of jobs in the build queue that are waiting for an executor to free up.
+
+
