@@ -142,3 +142,71 @@ sudo [OPTIONS] COMMAND
 - sudo can be used to swtich to other user accounts as well. To specify a different user account we can use the -u option. 
 - 
 ---
+
+### Chapter 7
+
+---
+
+- Permissions- they determine the ways different user can interacti with a file or directory. 
+
+![](images/Unhatched/filepermissions.png)
+
+- there are also different kind of Permission types. Read, Write and execute. 
+
+![](images/Unhatched/permissiontypes.png)
+
+---
+
+### Chapter 8
+
+---
+
+- Changing File permissions. **chmod** command is used to change the permissions of a file directory. Only the root user or the use who owns the file is able to change the permissions of a file. 
+
+- chmod is named after modes of access, so > chmod = CHange the MODes of access. 
+
+- There are two types of techniques for changing permissions with the **chmod** command. symbolic and octal. 
+
+- symbolic- good for changing one se of permissions at a time. 
+
+- octal- or numeric requires knowled of the octal value of each of the permissions and requires all three set of permissions (user, group, other) to be specified every time. 
+
+---
+
+- Symbolic method. 
+
+```
+chmod [<SET><ACTION><PERMISSIONS>]... FILE
+
+# To use the symbolic method of chmod first indicate which set of permissions is being changed. 
+```
+- <**SET**> symbols table: 
+![](images/Unhatched/symbolicmethodset.png)
+
+- <**ACTION**> symbols table:
+![](images/Unhatched/symbolicmethodaction.png)
+
+- <**PERMISSIONS**> sumbols table:
+![](images/Unhatched/symbolicmethodpermissions.png)
+
+- After that a space and the pathnames for the file to assign those permissions. 
+
+- example:
+```
+# START
+-rw-r--r-- 1 sysadmin sysadmin 647 Dec 20  2017 hello.sh 
+
+#ADDING CHMOD
+
+chmod u+x hello.sh
+# u= user owner permission set
+# += character to indicate a permission is being added
+# x = execute permissions
+
+
+# AFTER CHMOD 
+-rwxr--r-- 1 sysadmin sysadmin 647 Dec 20  2017 hello.sh 
+
+# to run it we need **./** = command should be run from the current directory.
+
+```
