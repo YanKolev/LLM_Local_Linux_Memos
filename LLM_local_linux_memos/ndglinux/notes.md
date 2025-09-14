@@ -210,3 +210,38 @@ chmod u+x hello.sh
 # to run it we need **./** = command should be run from the current directory.
 
 ```
+---
+
+### Chapter 9
+
+---
+
+- Changing File Ownership. Initially the owner of a file is the use who creates it. **chown** command is used to change the ownership of files and directories. Changing the use requires administrative access. A regular user cannot use this command to change the user owner of a file, even to give the ownership of one of their own files to another user. 
+
+- **chown** command also permits changing group ownership, which can be accomplished by either root or the owner of the file. 
+
+- To change the user owner of a file, the following syntax can be used. The first argument - [OWNER], specifies which user is to be the new owner. Second argument, FILE, specifies which file's ownership is changing. 
+
+```
+chown [OPTIONS] [OWNER] FILE
+```
+
+- in order to switch the owner for lets say from sysadmin to root user. we will need to add sudo  + password. 
+  
+```
+# start before chown
+-rw-r--r-- 1 sysadmin sysadmin   647 Dec 20  2017 hello.sh  
+
+# command
+sudo chown root hello sh.
+password for sysadmin
+
+#after chown
+-rw-r--r-- 1 root sysadmin 647 Dec 20  2017 hello.sh 
+```
+- and if we try to execute it with ./hello.sh , it will NOT WORK, becuase we changed the owner to ROOT > we need sudo and a pasword.
+  ```
+  sudo ./hello.sh
+  [sudo] password for sysadmin:
+  ```
+---
