@@ -74,4 +74,71 @@ cd [options] [path]
 
 ---
 
-Upto chapter 5
+### Chapter 5
+
+---
+
+- Listing files. ls is also used to list the contents of a directory. 
+  ```
+  ls [Options] [file]
+  ```
+- if you combine with -l flag you can see permissions ownership or timestamps.
+- Each line printed will correspond to a file contained within the directory. info can be broken down into fields separated by spaces. Fields are as: 
+
+![](images/Unhatched/filetype.png)
+
+- There are also: Permissions, user owner, group owner and filesize. 
+
+![](images/Unhatched/filetype2.png)
+
+- As well as timestap, filena and symbolic links.
+![](images/Unhatched/symbollinks.png)
+
+---
+
+- File Sorting: ls by DEFAULT outputs sorted files alpahabetically. It can also sort by other methods. 
+
+```
+-t will sort the files by timestamp (ls -lt)
+-S will sort the files by size (ls -l -S)
+-r will reverse the order of any type of sort. (ls -lSr)
+```
+
+---
+### Chapter 6
+---
+- Administrative Access. Preventing regular user from executing these command helps protect the system. 
+
+- **su** command: 
+
+```
+su OPTIONS USERNAME
+```
+
+- su command allows you to temporarily act as a different user. it does this by creating a new shell. the shell is simply a text imput console that lets you type commands. 
+
+- Utilizing the shell option is recommended as the login shell fully configures the new shell with the setting of the new user 
+  
+```
+su - 
+su -l 
+su --login
+- exit - to exint 
+```
+- for su command, password is required. 
+
+---
+
+- **sudo** command:
+  
+```
+sudo [OPTIONS] COMMAND
+```
+
+- sudo allows user to execute a command as another use without creating a new shell. instead to execute a command with administrative privileges, use it as an argument to to the sudo command. 
+  
+- Like su, sudo commands assumes by default the root user arround should be used to execute commands. 
+  
+- sudo can be used to swtich to other user accounts as well. To specify a different user account we can use the -u option. 
+- 
+---
