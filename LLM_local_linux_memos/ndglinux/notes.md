@@ -245,3 +245,35 @@ password for sysadmin
   [sudo] password for sysadmin:
   ```
 ---
+
+### Chapter 10 
+
+
+---
+
+- Few commands are availble for linux to view files. **cat** command (concatenate) is ofter used to view contents of small files. 
+- it will display the entire contents of the file, hence why it is maily recommended for smaller files where the output is limited and does not require scrolling. 
+
+```
+cat [OPTIONS] [FILE]
+```
+
+- when viewing larger files, cat command can result it really large output that CANNOT BE PAUSE OR SCROLL THROUGH. 
+
+- another way to view content of files is with **head** or **tail** commands. These commands are used to view select number of lines fro top or bottom of a file. 
+
+```
+head [OPTIONS] [FILE]
+
+tail [OPTIONS] [FILE]
+```
+
+-default behavior of the head and tail commands in this shell is to display ten lines.
+
+- The -n option with the head and tail commands can be used to specify the amount of lines to display. To use the -n option, specify the amount of lines from the file you want to display after the option and use the filename as an argument:
+
+```
+head -n number_of_lines filename
+```
+
+---
