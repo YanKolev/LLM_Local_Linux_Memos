@@ -277,3 +277,27 @@ head -n number_of_lines filename
 ```
 
 ---
+
+### Chapter 11
+
+---
+
+- Copying files. It is useful for numerous reasons: 
+1. if a copy of a file created before changes are made, then it is possible to revert back to the original. 
+2. Copy of a file can be use to transfer a file to removable media devices. 
+3. Copy of an exisiting document can be used as a tempate for a new document. 
+
+```
+cp [OPTIONS] SOURCE DESTINATION
+
+# example
+sysadmin@localhost:~/Documents$ cp /etc/passwd .
+
+# The second argument is the . character. That is a shortcut which represents the current directory.
+```
+
+- Permissions can have an impact on file management commands, such as the cp command. In order to copy a file, it is necessary to have execute permission to access the directory where the file is located and the read permission for the file being copied.
+
+- It is also necessary to have write and execute permission on the directory the file is being copied to. Typically, there are two places where you should always have write and execute permission on the directory: your home directory and the /tmp directory.
+
+---
