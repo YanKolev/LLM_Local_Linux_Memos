@@ -359,3 +359,142 @@ mv animals.txt zoo.txt
 ```
 
 - NB! Permissions can have impact on the file management commands (mv included.). Moving a file requires write and execute permissions on both the origin and destination directories. 
+
+---
+
+### Chapter 13
+
+- Removing files. **rm** is the command to delete files and directories. Deleted files do not go into a ''trash can '' they are permanently gone. 
+
+```
+
+rm [OPTIONS] FILE
+
+```
+
+- **rm** command will ingnore directories that is asked to remove, to delete a directory, use a recursive option -r or -R options. 
+
+- Permissions can also affect **rm**. To be able to delete a file you will need to have write and execute permissions.
+
+---
+
+### Chapter 14
+
+---
+
+- Filteing Input. **grep** is command is a text filter that will search input and return lines which contain a match to a given pattern. 
+
+```
+grep [OPTIONS] PATTERN [FILE]
+```
+
+
+---
+
+- Regular Expressions. They have two forms: basic and extended. Most commands that useregular expressions can interpret basic regular expressions. Extended regular expressions are not available for all commands and a command option is typically required for them to work correct.y. 
+
+- Chart of Basic REGEX:
+![](images/Unhatched/basicregex.png)
+
+- For extended regular expressions, which must be either the **egrep** command or -E option with **grep**. 
+
+![](images/Unhatched/extendedregex.png)
+
+
+---
+
+- Basic patterns. Regex are patterns that oncly certain command are able to interpret. Regular expressions can be expanded to match certain sequences of characters in text. examples are to show power of **grep** command. 
+
+- Anchor characters- one of the ways that can narrow down search results. 
+  
+- To prevent the shell from misinterpreting them as special shell characters, these patterns should be protected by strong quotes, which simply means placing them between single quotes. 
+
+- First anchor character ^ is used to ensure that a pattern appears at the beginnin of the line. 
+
+```
+grep 'root' passwd
+
+grep '^root' /etc/passwd
+
+```
+- second example will find all lines in /etc/passwd that start with root use the pattern ^root. Note that ^ must be the first character in the pattern to be effective. 
+
+- Second anchor character $ can be used to ensure a pattern appears at the END OF THE LINE. 
+
+```
+grep 'r$' alpha-first.txt
+```
+
+- to example: to find the lines that end with r in the alpha-first.txt.
+
+- Match a single character with .  (it will match any character except for the new line character).
+
+- the pattern r..f would file any line that contained the letter r followed by exactly two characters (can be any character except a newline)
+
+```
+grep 'r..f' red.txt
+
+# same concep can be run with other combinations: r and d
+
+grep 'r..d' red.txt
+
+# or . can be used any number of times. To find all words that have at least 4 characters the following pattern can be used:
+
+grep '....' red.txt
+
+# the line does not have to be an exact match, it simply must contain the pattern as seen here when r..t is searched for in the /etc/passwd
+
+grep 'r..t' /etc/passwd
+```
+
+- Match a single character with []. Square brackets [] match a single character from the list or range of possible characters contained within the brackets. 
+
+- To find all the lines in the profile.txt which have a number in them, use the pattern [0123456789] or [0-9]
+```
+grep '[0-9]' profile.txt
+
+# also we can find the lines which contain any non-numeric cracters > we can insert ^ as the first characters inside brackets
+
+grep '[^0-9]' profile.txt
+```
+
+- NB!: Do not mistake [^0-9] to match lines which do not contain numbers. It actually matches lines which contain non-numbers. Look at the original file to see the difference. The third and sixth lines only contain numbers, they do not contain non-numbers so those lines do not match.
+
+- When other regular expression characters are placed inside of a square brackets, they are treated as literal characters. For example, the . normally matches any one character, but placed inside the brackets it will just match itself. Only lines which contain the . character are matched. 
+
+```
+grep '[.]' profile.txt
+```
+
+- Match a Repeated Character Or Patterns With *. * is used to match zero or more occurences of a character or pattern precending it. 
+
+```
+grep 're*d' red.txt
+# e* would match zeor or more occurrences of the letter e
+
+grep 'r[oe]*d' red.txt
+#will match zero or more occurences of the o character or the e character.
+
+```
+
+- when used with only one character * is not very helpful. any of the following patterns would match every string or line in the file 
+
+
+```
+grep 'z*' red.txt
+
+grep 'e*' red.txt
+
+
+```
+
+- this is because * can match 0 occurences of a pattern, to make it more useful is necessary to create a pattern which includes more than just one character preceding * , we can add anoher e > ee* to effectively match every line which contains at least one e.
+
+```
+grep 'ee*' red.txt
+```
+
+
+- Standard Input. if a file name is not given > grep will read from standard input( comesfrom the keyboard with input provided by the user). you can type whatever you want and the looked for phrase/word in quotes will be looked by grep.  to stop it Ctrl-D.
+
+---
