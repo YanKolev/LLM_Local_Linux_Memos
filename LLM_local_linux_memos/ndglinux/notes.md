@@ -336,3 +336,26 @@ dd if=/dev/sda of=/dev/sdb
 
 ---
 
+### Chapter 12
+
+---
+
+- Moving Files. **mv** command is used to move a file from one location in the filesystem to another. 
+
+```
+mv SOURCE DESTINATION
+```
+
+- **mv** command requires at least two arguments. 1st arg= source (path to the file to be moved). 2nd arg = destination (path to where the file will be moved to). 
+
+- If a file is moved from one directory to another wtihout specifying a new name for the file, it will retain its original name.
+
+- if we want to move multiple files, as long as the THE FINAL ARGUMENT IS PROVIDED to the command is the destination. 
+
+- moving a file within same directory is an effective way to rename it. 
+
+```
+mv animals.txt zoo.txt
+```
+
+- NB! Permissions can have impact on the file management commands (mv included.). Moving a file requires write and execute permissions on both the origin and destination directories. 
