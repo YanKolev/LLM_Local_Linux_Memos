@@ -301,3 +301,38 @@ sysadmin@localhost:~/Documents$ cp /etc/passwd .
 - It is also necessary to have write and execute permission on the directory the file is being copied to. Typically, there are two places where you should always have write and execute permission on the directory: your home directory and the /tmp directory.
 
 ---
+
+- Another command for copying files is **dd** command. It can copy files or entire partitions at the bit level. 
+
+```
+dd [OPTIONS] OPERAND
+```
+
+- Useful features of the commad: 
+1. can be used to clone or delete/wipe entire disks or partitions.
+2. can be used to copy raw data to removable devices- USB/CDROMS
+3. can backup and restore the MBR (MASTER BOOT RECORD).
+4. can be used to create a file of a specific sieze that is filled with binary zeroes, which can be then used as a swap file(virtual memory).
+   
+- **dd** command creates a file named /tmp/swapex with 50 blocks of zeroes that are one megabyte in size.
+
+```
+~$ dd if=/dev/zero of=/tmp/swapex bs=1M count=50 
+50+0 records in
+50+0 records out
+52428800 bytes (52 MB) copied, 0.825745 s, 635 MB/s
+```
+
+---
+
+- Arguments for **dd** command: 
+![](images/Unhatched/ddarguments.png)
+
+- NB! No block size or count needs to be specified when copying over entire devices. 
+- Example to clone from one hard drvie (/dev/sda) to another (/dev/sdb) can be done with this command:
+```
+dd if=/dev/sda of=/dev/sdb
+```
+
+---
+
