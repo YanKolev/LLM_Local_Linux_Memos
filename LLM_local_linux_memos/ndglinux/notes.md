@@ -498,3 +498,80 @@ grep 'ee*' red.txt
 - Standard Input. if a file name is not given > grep will read from standard input( comesfrom the keyboard with input provided by the user). you can type whatever you want and the looked for phrase/word in quotes will be looked by grep.  to stop it Ctrl-D.
 
 ---
+
+### Chapter 15
+
+- **shutdown** command arranges fro the system to be brought down in a safe way. all logged in users are notified that the system is going down and within the last five minutes leading to the shudown, new logins are prevented. 
+
+```
+shutdown [OPTIONS] TIME [MESSAGE]
+```
+
+- shutdonw requires time argument specifying when the shutdown should begin. Formats can be : word- now, a time of day in the format hh:mm or the number of minites delay in the format +minutes. 
+
+- NB clocks on different systems might be set to different timezons, to check it, use date in terminal. 
+
+---
+
+### Chapter 16
+
+- Network Configuration: **ifconfig**- stands for interface configuration and is used to display network configuration information. 
+
+- **iwconfig** is similar to ifconfig, but is dedicated to wireless network interfaces. 
+
+![](images/Unhatched/network.png)
+
+
+- **ifconfig** can be used to temporarili modify network settings. Typically changes should be permanent, so ifcongi to make such is RARE.
+
+- **ping** is used to verify connectivity between two computers. it does this by sending packets to another machine on a network. If the sender receives a response it should be possible to connect to the machine. 
+
+- **ping** uses IP addresses to identify a computer on the network that it wants to connect to.  it will continue to send packages until the break command is entered in the console. 
+
+- **ping** to limit how many pings are sent, use **-c** option followed by the number of pings to be set. 
+
+```
+ping -c 4 192.168.1.2
+```
+
+- ping is being limited to 4 times and and IP address to send them to. 
+
+- if command is successful following output: 
+```
+64 bytes from 192.168.1.2: icmp_req=1 ttl=64 time=0.051 ms  
+```
+
+- if command fails: 
+```
+From 192.168.1.2 icmp_seq=1 Destination Host Unreachable
+```
+
+- ping command may fail even though the remote machine is connecting, This is because some admins configure their machines, or even entire networks to NOT RESPOND TO PING REQUESTS as a security measure. 
+
+- ping also works with a domain name like yahoo. com, using it saves time and if is successfull > there is proper name resolution and IP address is functioning as well. 
+
+---
+
+### Chapter 17
+
+- Viewing processes. running a command results in something called a process. In Linux, processes are executed with the privileges of the user who executes the command. This allows for processes to be limited to certain capabilities based on the user identity. 
+
+- generally the operating system will differentiate users based upon whether they are the administrator. Typically regular users, like the sysadmin user, cannot control another user's processes. Users who have administrative privileges, like the root account, can control any user processes, including stopping any user process.
+
+- **ps** will display the processes that are runnin in the current terminal by default. 
+
+- it may return forllowing information: 
+
+
+1. PID: The process identifier, which is unique to the process. This information is useful for controlling the process by its ID number.
+
+2. TTY: The name of the terminal where the process is running. This information is useful for distinguishing between different processes that have the same name.
+
+3. TIME: The total amount of processor time used by the process. Typically, this information isn't used by regular users.
+
+4. CMD: The command that started the process.
+
+- If we want to view the processes in the current terminal **ps**. If we want to view we can use **ps -e** > every process. if we want more detail we can add -f option > **ps -ef**.
+
+---
+
