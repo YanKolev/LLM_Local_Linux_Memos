@@ -157,3 +157,152 @@
 
 ---
 
+### Chapter 5 - Command Line
+
+---
+
+- Command line provides precise control and greater speed to automate tasks via scripting. 
+
+- Shell: a command line interpreter that translates command into actions. Most commonly used - Bash. 
+
+- Bash features: 
+
+1. Scripting: place commands in a file and then interpret it. Has some programming features > conditional statements and the ability to create functions (subroutines).
+2. Aliases: ability to create short nicknames for longer commands. 
+3. Variables- used to store infomation for the bash shell and the user. Can be used to modify how command and features work as well as provide system information. 
+
+- The ~ symbol is used as shorthand for the user's home directory. Typically the home directory for the user is under the /home directory and named after the user account name; for example, /home/sysadmin.
+
+---
+
+- Commands: command is a software program that, when executed on the CLI performs action on the computer. 
+
+```
+command [options] [arguments]
+```
+
+- Options are used to modify the core behaviour of a command while argumes are used to provide addtional information (filename/username)
+
+- NB! Linux is **case-sensitive**. Commands, options, arguments, variables and file names must be entered exactly.
+
+- Argument can be used to specify something for the command to act upon.  Example: Ls is given a directory as argument > it listes the contents of that directory. 
+  ```
+    ls /etc/ppp
+  ```
+- ls accepts multiple arguments so we can have 2 directories listed as directories. 
+  
+- Options: to expand/modify the behaviour. (ex: ls -l > long listing)
+- Other option is r( reverse), lists results in reverse alphabetical order (ex: ls -r)
+- Most cases optioncas can be used together. Instead of having them as 2 options (which still can be used), they can be combines (ex: ls -lr).
+
+- Order of combined option is not that important, the output will be the same.
+  ```
+    ls -l -r 
+    ls -rl
+    ls -lr
+  ```
+
+- By default **-l** option display sizes in bytes. to make it human readable we add **-h**.
+  ```
+    ls -lh
+  ```
+
+- Full word options are preceded by two dash --, -h > --human-readable. 
+
+- When a command is used in the terminal is stored in a history list. Pressing arrow up displays the previous command on the prompt line. Left and Right arrow can be used for editing. 
+
+```
+history
+
+#if the command is within the history list, it can be executed by 
+
+! + number > !1/!2/!3
+
+# to execute the nth command from the bottom of the history list, use !-n
+!-3
+
+# to execute last command !!
+
+# to execute most recent iteration of a specific command > ! + command 
+!ls
+```
+---
+
+- **Variables**- feature that allows the user/shell to store data. 2 types of variables in Bash: local/ environment.
+  
+- Local variables: shell/local variables exist only in the current shell and can not affect other commands or applications. When the shell is closed > variable is lost. 
+
+- To set value to a variable.
+  ```
+    variable=value
+  ```
+- If the variable already exists, the value of the variable is modified. If the variable name does not already exist, the shel creates a new local variable an dsets the value. 
+
+- To display the value a variable we need to use echo $ +variable name (as argument).
+```
+variable1='something'
+
+echo $variable1
+something
+
+```
+----
+
+- **Environment Variables**: also called global variables: system-wide. Used in all shells by Bash. Examples (PATH, HOME, HISTSIZE).
+
+- HISTSIZE- variable defines how many previous command to store in the history list. 
+
+```
+echo $HISTSIZE
+#will pring 1000
+
+# to change it HISTSIZE=500
+echo $HISTSIZE
+500
+```
+
+- When run without arguments, the **env** command outputs a list of the environment variables. The list can be quite long. Hence w ecan use text search to filter that output. (env | grep variable1).
+- The pipe character passes the output of the **env** to the **grep** command, which searches the output. 
+
+- **export** is used to turn local variable into an environmental. 
+  ```
+  export variable
+
+  # export variable1 (to make it environmental, otherwise grep does not work)
+  # 1 export
+  export varaible1
+  # 2 extract
+  env | grep variable1
+  #grep will show the variable.
+  ```
+
+- **export** can also be used to make viariable an environment variable upon its creation by using assignment expression as argument. 
+
+```
+export variable2='else'
+env | grep variable2
+
+# we can also change value of environment variable
+variable1=$variable1' '$variable2
+
+# Environment variables can be removed using the **unset** command
+unset variable22
+```
+
+
+---
+
+- **Path Variable** : most important Bash variable. In contains a list that defines which directories the shell looks in to find commands. 
+
+- If valid command is entered and the shell returns "command not found" error its because bash shell was unable to locate a command by that name in any of the directories included in the path. 
+
+```
+echo $PATH
+```
+
+- Think of it as an address of the directory that inclde step-by-step navigation directions.
+- if custome software is installed on the system it may be necessary to modify the PATH to make it easier to execute these commands. 
+
+- **NB! When updating the PATH variable, always include the current path, so as not to lose access to commands located in those directories. This can be accomplished by appending $PATH to the value in the assignment expression. Recall that a variable name preceded by a dollar sign represents the value of the variable.**. 
+
+---
