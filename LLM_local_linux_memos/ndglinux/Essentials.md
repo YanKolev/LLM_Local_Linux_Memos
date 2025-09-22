@@ -306,3 +306,88 @@ echo $PATH
 - **NB! When updating the PATH variable, always include the current path, so as not to lose access to commands located in those directories. This can be accomplished by appending $PATH to the value in the assignment expression. Recall that a variable name preceded by a dollar sign represents the value of the variable.**. 
 
 ---
+
+- **Command types**: the way to learn more aabout a command is to look at the where it comes from. The **type** command can be used to determine information about the command type. 
+  
+```
+type command
+```
+
+- Internal commands, called built-in, are built into the shell itself. Example (**cd**), when using it shell already knows how to interpret it, requiring no additional programs to be started. 
+
+- External Commands: are binary executables store in directories that are searched by the shell. (ls, cal,). The shell searches through the directories that are listed in the PATH variable to try and find a file named ls that it can execute. 
+
+- If a command does not behave  as expected or if a command is not accessible that should be it, it can be good to know where the shell is finding the command or which version is using (easier troubleshooting), for this we have **which** command to display the full path of the command we are looking for. 
+
+```
+which command
+
+#which ls
+#which cal
+```
+
+- When path is returned, they can be also executed by typing the full path to the command: (ls > /bin/ls. cal > /usr/bin/cal).
+
+- In some cases type may differ than which command. Hence we can put an option to have all locations displayed: 
+```
+# type -a echo 
+echo is a shell builtin
+echo is /bin/echo
+```
+
+----
+
+- **Aliases**: they can be used to map longer command to shorter key sequences. When the shell sees an alias being executed it substitutes the longer sequence before proceeding to interpret commands. (Ex: ls -l is commonly aliased to l OR ll). Because these smaller commands are easier to type it becomes faster. 
+```
+# to check what aliases are set in the current shell- use **alias** command.
+alias egrep='egrep --color=auto'                                       
+alias fgrep='fgrep --color=auto'                                        
+alias grep='grep --color=auto'                                          
+alias l='ls -CF'                                                       
+alias la='ls -A'                                                       
+alias ll='ls -alF'                                                     
+alias ls='ls --color=auto'
+```
+
+- Previous aliases are created by initialization files. these files are designed to make the process of  creating aliases automatic. 
+
+- **Aliases Creation**: New aliases can be created using the lowwing format where **name** is the name to be given the alias and command is the command to be executed when the alias is run. 
+
+```
+alias name=command
+```
+
+- Aliases created in such way only persist while the shell is open. Once the shell is closed, the new aliases are lost. Each shell has its own aliases, so aliaces created in one shell wont be available in new shell that is opened. 
+
+- **type** command can identify aliases to other commands. (ex. type ll).
+
+----
+
+
+- **Functions**: can be also built using existing commands > to either create new commands o rto override commands built-in to the shell or commands stored in files. Aliases and functions are normally loaded from the initialization files when the shell first starts. 
+
+- Functions are more advanced than aliases and typically are used in Bash shell scripts. Functions are used to execue multiple commands. Example of function syntax: 
+```
+function name ()
+{
+  commands
+}
+
+```
+- function can be anything that the admin wants to call the function. Commands are what commands admin wants to execute, be mindful of the braces and parenthesis. 
+
+- functions are useful to be executed one at at a time instead of typing each command repeatedly. 
+```
+my report (){
+  > ls Documents
+  > date
+  > echo "Document directory report
+  > }
+```
+
+- When making such function, a **>** character will appear as a prompt to enter the commands for the function. Curly braces are used to let the shell know when a function begins and ends so as the exit the > prompt. 
+
+- once a function is created, the function name acan be invoked from the bash promp to be executed.
+
+---
+
