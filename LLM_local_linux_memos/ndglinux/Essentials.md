@@ -391,3 +391,101 @@ my report (){
 
 ---
 
+- **Quoting**: Quotation marks are used throught Linux administation and most programmming languages. to let the system know that the information contained within should be iether ignored or treated in a way that is very different than it would normally. 
+
+- Bash has single, double and back quotes. 
+
+- Double quotes: stop the shell from interpreting some mechacharacters (special characters) including glob characters. 
+
+- glob characters, also called wild cards, are symbos that have special meaning to the shell. They are interpreted by the shell itself before it attempts to run any command. Glob characters includes the asterisk *, question mark ?, and [] among others. 
+
+- Within double quotes * is jus an asterisk and so on. Useful when you want to display something on the screen that is normally a special character to the shell 
+
+- **Double quotes** still allow for command subtitution, variable substitution. ex> value of tha PATH is still displayed. 
+```
+sysadmin@localhost:~$ echo "The path is $PATH"                          
+The path is /usr/bin/custom:/home/sysadmin/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+```
+
+- **Single quotes**: it will prevent special characters, globs, variables command substitiuon from any interpretation by the shell. 
+
+
+- **Backslash**: (single quote a single character)  when special characters are used inside-> they are not considered variables. but if you want to treat one as a variabele you can use backlash:
+```
+# double quotes: 
+enter= sysadmin@localhost:~$ echo "The service costs $1 and the path is $PATH"
+
+return= The service costs  and the path is /usr/bin/custom:/home/sysadmin/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games 
+
+# single quotes: 
+sysadmin@localhost:~$ echo 'The service costs $1 and the path is $PATH' 
+The service costs $1 and the path is $PATH 
+
+
+sysadmin@localhost:~$ echo The service costs \$1 and the path is $PATH
+The service costs $1 and the path is /usr/bin/custom:/home/sysadmin/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+
+
+```
+---
+
+- **Backquotes**: to specify a command within a command- > also called substitution. allows for more complex commands. 
+
+```
+sysadmin@localhost:~$ date                                           
+Mon Nov  4 03:35:50 UTC 2018
+
+sysadmin@localhost:~$ echo Today is date                               
+Today is date
+
+sysadmin@localhost:~$ echo Today is `date`                         
+Today is Mon Nov 4 03:40:04 UTC 2018
+
+```
+
+
+- **Control Statements**:  allow to use multiple commands at once or run additional commands, used within scripts.
+
+- **semicolon**: used to run multiple commands, one after the other. each command runs independently and consecutively regardsless of the result of the first command, the second runce once the first has completed then thier and so on. 
+
+```
+# example
+
+command1; command2; command3
+
+sysadmin@localhost:~$ cal 1 2030; cal 2 2030; cal 3 2030   
+
+```
+
+- **Double Ampersand &&**: acts like a logical "AND" if the first command is successful, then second command will also run. If first fails > second command will not run. 
+
+```
+sysadmin@localhost:~$ ls /etc/ppp                  
+ip-down.d  ip-up.d           
+sysadmin@localhost:~$ ls /etc/junk                             
+ls: cannot access /etc/junk: No such file or directory
+
+
+sysadmin@localhost:~$ ls /etc/ppp && echo success          
+ip-down.d  ip-up.d        
+success            
+
+sysadmin@localhost:~$ ls /etc/junk && echo success          
+ls: cannot access /etc/junk: No such file or directory
+
+```
+
+- **Double Pipe ||** : logical OR operator. Depending on the result of the first command, the second command will either run or be skipped. 
+
+- With double pipe, the first command runs successfully second one is skipped. If first fails, the second command runs. "Either run this first command or the second one" 
+
+```
+sysadmin@localhost:~$ ls /etc/ppp || echo failed                 
+ip-down.d  ip-up.d              
+sysadmin@localhost:~$ ls /etc/junk || echo failed                  
+ls: cannot access /etc/junk: No such file or directory             
+failed
+
+```
+
+---
