@@ -489,3 +489,35 @@ failed
 ```
 
 ---
+
+### Chapter 5 Lab Notes
+
+---
+
+- ls -l /home - with the /home argument, we can see that the /home directory is called
+- whoami- displays user name of the current user. 
+- uname- displays information about the current system. we can add option for traditional Unix- -n, in Linux in can be 2 hyphens followed by a word --nodename.
+- pwd - print working directory.
+- command history- can be accessed via up arrow hey or command history 
+- which- command to determine if there is an executable file.
+- type- used to determine inforamtionb about command type.
+- aliases- used to map longer commands to shorter key sequences. 
+- 
+```
+Single ' quotes prevent the shell from "interpreting" or expanding all special characters. Often single quotes are used to protect a string (a sequence of characters) from being changed by the shell, so that the string can be interpreted by a command as a parameter to affect the way the command is executed.
+
+Double " quotes stop the expansion of glob characters like the asterisk (*), question mark (?), and square brackets ( [] ). Double quotes do allow for both variable expansion and command substitution (see back quotes) to take place.
+
+Back ` quotes cause command substitution which allows for a command to be executed within the line of another command.
+
+```
+
+- $( before the command and ) after the command to accomplish command substitution: echo today is $(date).
+
+- If you don't want the backquotes to be used to execute a command, place single quotes around them, OR \ character in front of each backquote character.
+- Double quote " characters don't have any effect on backquote characters.
+
+---
+
+
+
