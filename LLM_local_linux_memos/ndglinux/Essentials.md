@@ -519,5 +519,77 @@ Back ` quotes cause command substitution which allows for a command to be execut
 
 ---
 
+### Chapter 6 - Getting Help
 
+---
+
+- Man pages by typing man infront of a command. After that basic vi/vim navigation
+
+- Nagivation resembles vi movement, check more in-depth. 
+
+----
+
+### Chapter 6 lab notes
+
+---
+
+- date : checks today's date
+- for more information use man date- to open man pages, coming from Unix days- manual pages. Coommands for pan pages are in the graph. 
+  
+![](images/Essentials/manmovement.png)
+
+- Searches are NOT CASE SENSITIVE, and DO NOT WRAP around from the bottom to top. 
+- To start a forward seach for the word "file": 
+  ```
+  /file
+
+  # or other varians:
+  /day /time /
+  ```
+- Once itmatches it will be highlighted, move to next highlight with n press. with back press N
+- spacebar moves down one screen
+- -k option for to the man command => keyword argument. 
+  ```
+  man -k password
+  ```
+- apropos- command views also man page summaries with a keyword
+```
+apropos password
+```
+
+- man -k = apropos command
+- 
+
+The different man pages are distinguished by "sections". By default there are nine sections of man pages:
+
+- Executable programs or shell commands
+- System calls (functions provided by the kernel)
+- Library calls (functions within program libraries)
+- Special files (usually found in /dev)
+- File formats and conventions, e.g. /etc/passwd
+    Games
+- Miscellaneous (including macro packages and conventions), e.g. man(7)>, groff(7)
+- System administration commands (usually only for root)
+- Kernel routines
+
+- to display differet section we need to use following command
+```
+man 5 passwd
+```
+- instead of using **man -f** to display all page, we can use **whatis** (the same command). 
+- almost all system features have man pages, some of those features have advanced features called info pages. 
+  ```
+  info date
+  ```
+- info pages are easier to read ofr beginner linux users.
+- while viewing info page, **Shift+h** for list of movement commands.
+- **l** to return to viewing document.
+- **q** to quit info pages 
+- **locate**- to search for a file.
+- The locate command makes use of a database that is traditionally updated once per day (normally in the middle of the night). This database contains a list of all files that were on the system when the database was last updated.
+- As a result, any files that you created today will not normally be searchable with the locate command. If you have access to the system as the root user (the system administrator account), you can manually update this file by running the updatedb command. Regular users cannot update the database file.
+- nother possible solution to searching for "newer" files is to make use of the find command. This command searches the live filesystem, rather than a static database. The find command isn't part of the Linux Essentials objectives for this lab, so it is only mentioned here. Execute man find if you want to explore this command on your own.
+- **whereis** to find where a command is located. it looks only for commands and man pages.
+
+---
 
