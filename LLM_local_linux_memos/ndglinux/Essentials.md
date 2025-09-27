@@ -593,3 +593,29 @@ man 5 passwd
 
 ---
 
+### Chapter 7 - Navigating the Filesystem
+
+----
+
+- In linux everyting is considered a file. Directories are type of file used to store other files. (folder in other OS).
+- Linux's top level directory is called root directory, symbolized with / character, additionally there are no drives in Linux, each physical device is accessible under a directory, as opposed to a drive letter. 
+- Typicall system appears like:
+
+![](images/Essentials/filesystem.png)
+
+
+---
+
+- On most distros there is a directory called home under the root directory. Under this /home directory is a directory for each user on the filesystem. The directory name is the same as the name of the user, so user sysadmin would have directory called /home/sysadmin. 
+
+- The home directory is an important directory. To begin with, when a user opens a shell, they should automatically be placed in their home directory, as typically this is where they do most of their work.
+
+- Additionally, the home directory is one of the few directories where the user has full control to create and delete additional files and directories. On most Linux distributions, the only users who can access the files in a home directory are the owner and the administrator on the system. Most other directories in a Linux filesystem are protected with file permissions.
+
+- Home directory has a special symbol that represents it: **~** the tilde character. So ~bob = /home/bob.
+
+- to show where you are currently: PWD
+```
+pwd [OPTIONS]
+```
+- PWD prints the working directory which is the current location of the user within the filesystem 
