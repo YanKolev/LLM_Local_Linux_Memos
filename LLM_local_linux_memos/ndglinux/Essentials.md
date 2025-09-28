@@ -619,3 +619,69 @@ man 5 passwd
 pwd [OPTIONS]
 ```
 - PWD prints the working directory which is the current location of the user within the filesystem 
+
+- changing directories: **cd**
+  ```
+  cd [options] [path]
+  ```
+- the argument to the **cd** is actually a path. a list of directories separated by the / character. Paths are absolute and relative. 
+- **absolute paths** allow the user to specify the exact location of a directory. It always starts at root directory and threfore it always begins with /.
+- **relative paths** start from the currenyt directory. A relative pathgives directions to a file relative to the current location in the filesystem. they do not start with **/**. 
+
+- **shortcuts**: **..** - represents one directory higher (parent directory). **.**- represent current directory.
+- listing hidden files **ls -a** can be used to display the contents of a directory and the hidden files with **.** character, **.** files are customization files.
+- long display listing: **ls -l** will display the metadata as well. 
+
+- filetypes: 
+![](images/Essentials/filetype.png)
+
+- permissions: 
+![](images/Essentials/permissions.png)
+
+- ownership:
+![](images/Essentials/ownership.png)
+
+- breaking down information to human-size: 
+```
+ls -lh
+#adding -h option with the -l / alone it will not work
+```
+
+- listing directories **-d** it will reffer to the curent directory, but it can be used with -l option. 
+  ```
+  ls -ld
+  #it will indicate the information of the current directory not its contents. 
+  ```
+
+- if we needreverse order, we can use -r
+  ```
+  ls -R /etc/ppp
+  ```
+- if we need sorting
+```
+# ls sorts alphabetically by file name
+ls /etc/ssh
+
+# to sort by size we can use -S option
+ls -S /etc/ssh
+
+# if we combined l flag and S will list from largest to smallest and display actual size of file
+ls -lS /etc/ssh
+
+# to add human readable flag
+ls -lSh /etc/ssh
+
+# to sort files based on the time they were modified
+ls -tl /etc/ssh
+
+# if files were modified long ago w ecan use --full-time option
+ls -t --full-time /etc/ssh
+
+# if we need to performs a reverse sort we can have -r option, it can be combined with -S or -t options. this will sort files by size, smallest to larges:
+ls -lrS /etc/ssh
+
+# or list fils by modification date oldest to newes:
+ls -lrt /etc/ssh
+```
+---
+
