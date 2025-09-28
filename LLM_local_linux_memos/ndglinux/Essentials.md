@@ -685,3 +685,16 @@ ls -lrt /etc/ssh
 ```
 ---
 
+### Chapter 7 - Lab notes
+
+---
+
+- ls lists files, color can indicate what type the items is. 
+```
+Black or White   Regular file
+Blue             Directory file
+Cyan             Symbolic link file (filethat points to  
+anoher file)
+Green            Executable file (a program)
+
+```
