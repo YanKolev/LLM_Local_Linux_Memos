@@ -698,3 +698,84 @@ anoher file)
 Green            Executable file (a program)
 
 ```
+
+----
+
+
+### Chapter 8 - Managing files and directories
+
+
+---
+
+- **Globbing**: glob characters are often referred to as wild cards. These are symbol characters that have special meaning to the shell. They allow you to specify patterns that match filenames in a directory. So instead of manipulating a single file at a time, you can easily execute commands that affect many files. >> Many files with a specific extention or a particular filename lenght. They can be used with any command.
+
+---
+
+
+- **Asterisk * Character** : used to represent zero or more of any character in a filename. To display all of the files in /etc directory that begin with letter t will be: 
+```
+echo /etc/t*
+```
+
+- The pattern t* matches any file in the /etc directory that begins with the character t followed by **zero** or more of any character. (any files that begin with the letter t).
+  
+- Asteristk character can be used at any place within the filename pattern. 
+```
+#examples
+echo /etc/*.d
+echo /etc/r*.conf
+
+
+```
+---
+
+- **Question Mark ? Character**: represents any singlecharacter. Each ? matches exactly one character, no more and no less. 
+
+```
+# if you want to display all files in the /etc directory that begin with the letter t and have exactly 7 characters after the t
+
+echo /etc/t???????
+
+#if there are files in /etc with 20 character or more in filename (asterisk+question mark)
+echo /etc/*????????????????????
+
+#files with three-letter extensions by using the pattern
+# echo /etc/*.???
+```
+
+---
+
+- **Bracket [] Characters**. are used to match a single character by representing a range of characters taht are possible to match characters. 
+
+
+```
+# pattern will match any file that begins with either g or u character and contains zero or more additional characters 
+
+echo /etc/[gu]*
+
+
+```
+
+- or they can be used to match a range of characters:
+```
+#command will match all files that begin with any letter between and including a and d
+
+echo /etc/[a-d]*
+
+# command will match pattern that contains at least one number
+
+echo /etc/*[0-9]*
+
+```
+---
+
+- **Exclamation Point ! Character**: used in conjunction with the square brackets [] to negate a range.
+```
+# matches any file that does not begin with D or P
+
+echo /etc/[!DP]
+
+# ! negates the range
+echo /etc/[!a-t]
+
+```
