@@ -781,3 +781,83 @@ echo /etc/[!a-t]
 ```
 
 ----
+
+- **Listing with Globs**: ls is a command is normally used to listfiles in a directory, as a result using the echo might be strange choice, however **using ls can cause some problems when files using glob patterns**. 
+
+- It is important to keep in mind that the shell itself not the commands echo or ls, that expand the glob pattern into corresponding file names. **(echo /etc/a*)** - is executed, the shell did before executing the echo command.
+
+```
+# ls /etc/a* command is run, what the shell would really run would be this:
+
+ls /etc/adduser.conf  /etc/alternatives  /etc/apparmor  /etc/apparmor.d  /etc/apt
+
+# ls /etc/a* is the same as running the following commands consecutively:
+
+ls /etc/adduser.conf  
+ls /etc/alternatives  
+ls /etc/apparmor  
+ls /etc/apparmor.d  
+ls /etc/apt
+
+
+```
+
+- If the ls command is given a directory name, the command displays the contents of the directory (the names of the files in the directory), not just the directory name.
+
+- When the ls command sees a filename as an argument, it just displays the filename. However, for any directory, it displays the contents of the directory, not just the directory name.
+
+- There is a simple solution to this problem: always use the -d option with globs, which tells the ls command to display the name of directories, instead of their contents:
+```
+sysadmin@localhost:~$ls -d /etc/x*                                             
+/etc/xdg
+```
+
+----
+
+- **Copy files** : command cp is used to copy files. It requires a source and a destination. 
+```
+cp source destination
+```
+- The source is the fileto be copied. the destination is where the copy is to be located. (when successful the command soed not have any output).
+
+---
+
+- **copy verbose mode**:  -v option that causes cp command to produce output if successful. 
+```
+cp -v /ect/hosts ~
+`ect/hosts' -> `/home/sysadmin/hosts'
+```
+- When the destination is a directory, the resulting new file keeps the same as the original file. To give the new file to a different name, we need to provide the new name as a part of the destination. 
+
+- **copy / avoid overwriting data**: if the data exists, cp command can be destructive. if the destination file exist >> cp command >> overwrites the existing file's contents with the contets of the source file. 
+
+- **copy / avoid overwriting data safeguards**: **-i** , interactive option. the cp command prompts the user to answer y or n for every copy. If a value of y (yes) were given, then the copy process would have taken place. However, the value of n (no) was given when prompted to overwrite the file, so no changes were made to the file.
+```
+sysadmin@localhost:~$ cp -i /etc/skel/.* ~                             
+cp: -r not specified; omitting directory '/etc/skel/.'                          
+cp: -r not specified; omitting directory '/etc/skel/..'                                   
+cp: overwrite `/home/sysadmin/.bash_logout'? n                         
+cp: overwrite `/home/sysadmin/.bashrc'? n                              
+cp: overwrite `/home/sysadmin/.profile'? n                            
+cp: overwrite `/home/sysadmin/.selected_editor'? n
+```
+
+- **copy / avoid overwriting data safeguards**: **-n**, to answer n to each propt automatically, we can use -n > meaning no clobber or no overwrite.
+```
+sysadmin@localhost:~$ cp -n /etc/skel/.* ~                                      
+cp: -r not specified; omitting directory '/etc/skel/.'                          
+cp: -r not specified; omitting directory '/etc/skel/..'
+
+```
+
+- **copy directories**: by default command does not copy directories, it will return error message. However we can use the option **-r** recursive, which allows the cp command to copy both files and directories. 
+```
+cp -r source_directory destination_directory
+```
+- **NB** We need to be careful will with option. The entire directory structure will be copied which could result in copying a lof of files and directories.
+```
+# -r and -R -> serve the same purpose.
+# -R can be used with most commands, while -r can have different meaning with some commands.
+cp -r -> means (copy recursively > both files and directories)
+ls -r means reverse sort. 
+```
