@@ -861,3 +861,52 @@ cp -r source_directory destination_directory
 cp -r -> means (copy recursively > both files and directories)
 ls -r means reverse sort. 
 ```
+----
+
+- **moving files** : to move files we use the **mv** command. the syntax goes as follows: 
+```
+mv source destination
+```
+
+---
+
+- **renaming with mv**: mv command can also rename a file, if the destinaiton for the mv command is a directory, the file is moved to the directory specified. The name of the file only changes if a destination file name is also specified. 
+- if a destination directory is not specified, the file is renamed using the destination file name and remais in the source directory. 
+```
+sysadmin@localhost:~/Videos$ mv newexample.txt myfile.txt           
+sysadmin@localhost:~/Videos$ ls
+hosts  myfile.txt
+
+# move the newexample.txt file from the current directory to the current directory and give the new file the name myfile.txt.
+
+```
+
+- **movement command also has the following options**
+```
+-i    | Interactive: Ask if a file is to be overwritten
+-n    | No Clobber: Dont overwrite a destination file's contents
+-v    | Verbose: Show the resulting move.
+
+# there is no -r option as the mv command moves directories by default.
+
+```
+
+---
+
+- **creating files** : to create an empty file, we use **touch** command. the size of the file is 0 bytes. touch doesnt place any data within the new file.
+
+- **removing files**: to delete a file we can use the **rm** command. (it deletes files with no questions asked). Need to be minful when deleting multiple files by using glob characters. There is no command to undelete a file and no trash can from which to remover deleted files.
+  ```
+  # as a precaution we can add -i when deleting files
+  ```
+
+- **removing directories**: we can use the **rm** command when removing directories, BUT default behaviour is not NOT delete direcoties. 
+- in order to use **rm** we need to add the **-r** recursive option.
+- when we delete a directory, all of the files and subdirectories are deleted without any interactive question. **is best practice to use -i flag/for interactive**! 
+- **rmdir** command is when a directory is empty.
+
+---
+
+- **creating directories mkdir**: to create a directory we can use the **mkdir** command. 
+
+----
