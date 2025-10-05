@@ -1217,4 +1217,25 @@ Archive:  School.zip
   inflating: School/Art/animals.txt
 
 ```
+------
 
+### Chapter 9 - Lab Notes
+
+
+----
+
+
+- Display the contents of a **tar** with the following options
+  ```
+  -t > list contents
+  -v > verbose
+  -f > filename
+  ```
+
+- files when backed recursivelly wil use relative path names.
+- To create a tar file that is compressed, use the -z option. The -z option makes use of the gzip utility to perform compression.
+
+```
+tar –zcvf mybackups/udev.tar.gz /etc/udev
+ls –lh mybackups
+```
