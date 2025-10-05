@@ -910,3 +910,125 @@ hosts  myfile.txt
 - **creating directories mkdir**: to create a directory we can use the **mkdir** command. 
 
 ----
+
+### Chapter 8 Lab notes
+
+
+----
+
+
+- Globbing: often refer to as "wildcard" characters. Using glob characters you matchh filenames using patterns. When glob characters are used, the shell will expand the entire pattern to match all files in the specified directory that match the patern. 
+
+```
+# if we use echo and the glob pattern * > will display all filenames in the current directory that match it. 
+
+echo *
+
+# * the asterisk, matches zero or more characters in a filename
+
+# will display all the files in the current directory that start withthe letter D or the letter P
+echo D*
+echo P*
+
+
+# asterisk can be used anywhere in the string. 
+
+echo *s
+
+# it can be also use multiple times or in the middle of several characters
+
+echo D*n*S
+returns > Documents Downloads
+
+```
+
+----
+
+- Second globe character: **?** matches one unknown character, typing 6 of them will match six-character filenames
+
+````
+echo ??????
+returns  > Public Videos
+
+#NB! each ? must match exactly one character in a filename. 
+
+# using ? with other characters will limit the matches. if we use D + 9?
+
+echo D?????????
+returns > Documents Downloads
+
+--------------------------------------------------
+# we can combine glob characters together. the command will display file names that are at least six characters long and end in the letter s.
+
+echo ?????*s
+returns > Documents Downloads Pictures Templates Videos       
+
+# the echo comamnds means  >  "match filenames that begin with any five characters, then have zero or more of any characters and then end with an s character".
+````
+
+-----
+
+- glob character **[]** : specifies which one character will be allowed. The allowed charaters can be specified as a range, a list or by what is knowsn as character class.
+
+- the allowed characters can also be negated with an exclamation point !. 
+```
+# character of the file name can be either a D or a P
+echo [DP]*
+
+# the first character can be any character excepta DP or P
+echo [!DP]*
+------------
+# range of characters. 
+------------
+
+# first character of the file name can be any character starting ad a D and ending at P. 
+echo [D-P]*
+
+# range of characters is negated, meanig any single character will match as long as it is not between the letter D and P
+echo [!D-P]*
+
+```
+
+------
+
+- Copy and movement of files. 
+
+```
+cp -v (-verbose option): tells us what the system is doing.
+
+if we add a dot ., it will indicate the current directory as the target
+
+cp -v /ect/hosts .
+
+# The period . character is a handy way to say "the current directory". It can be used with all Linux commands, not just the cp command.
+
+
+# to copy and PRESERVE FILE ATTRIBUTES with **-p** option
+# date and permission modes will be preserved.
+
+# to copy all files in a directory **-R**
+mkdir Myetc
+cp –R /etc/udev Myetc
+ls –l Myetc
+ls –lR Myetc
+
+
+# toremove a directory, we can use the -r option to rm comamnd. 
+rm-r Myetc
+
+# rmdir can also be used (BUT IF THE DIRECTORY IS EMPTY)
+-r option removes all directories and their contents recursively.
+```
+
+--- 
+
+- moving a file is analogous to a **cut and paste**- the file is cut from the original location and pasted to the specified destination. 
+```
+touch premove
+ls
+mv premove postmove
+ls
+rm postmove
+
+```
+----
