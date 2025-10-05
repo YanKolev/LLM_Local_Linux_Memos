@@ -1032,3 +1032,189 @@ rm postmove
 
 ```
 ----
+
+### Chapter 9 - Archiving and Compression
+
+
+---
+
+- Archiving is for one or more files need to eb transmitted or stored as efficiently as possible. There are two ways of achieving so: 
+    1. Archiving: combines multiple files into one, which eliminates the overhead in individual files and makes the files easier to transmit.
+    2. Compression: Makes files smaller by removing redundant information. 
+
+- files can be compressed indivudually, or multiple files can be combined into a single archive and then subsequently compressed. The latter is still referred to as archiving. 
+- when a file is decompressed, and one or more files are extracted, this is called un-archiving.
+
+----
+
+- Compression reduc3s the amount for data needed to store or transmit a file while storing it in such a way that the file can be restored. 
+
+- Compression is usually achieved by compression algorithm.  
+- There are 2 types of compression:
+  1. Lossless- no information is removed from the files. Compressing a file and decompressing it leaves something identical to the original. 
+  2. Lossy- information might be removed from the file. It is compressed in a such way that decompressing it will result in a file that is slightly different from the original. 
+
+- Most image formats, such as GIF, PNG, and JPEG, implement some form of compression. JPEGs use lossy compression, while GIFs and PNGs are compressed but lossless. You can generally decide how much quality you want to preserve. A lower quality results in a smaller file, but after decompression, you may notice artifacts such as rough edges or discolorations. High quality will look much like the original image, but the file size will be closer to the original.
+- Compressing an already compressed file will not make it smaller. This fact is often forgotten when it comes to images since they are already stored in a compressed format. With lossless compression, this multiple compression is not a problem, but if you compress and decompress a file several times using a lossy algorithm, you will eventually have something that is unrecognizable.
+
+----
+
+- most common tool is **gzip**: the syntax is as follows: 
+```
+gzip file.extension 
+
+# example below
+gzip longfile.txt
+
+# to check the file we can use ls -l 
+
+ls -l longfile*
+
+# OR we can use the gzip with the flag
+
+gzip -l longfile.txt.gz
+```
+
+- the compressed files can be resored to their original form using either the **gunzip** or the **gzip -d** command. 
+  ```
+  gunzip lognfile.txt.gz
+  ```
+- **gunzip** command is a script that calls **gzip** with the right parameters.
+- other commands that are identical to **gzip/gunzip**: **bzip2/bunzip2**  / **xz/unxz**. 
+- gzip uses Lempel-Ziv data compression algo, while bzip uses - Burrows-Wheeler block sorting(more CPU dependednt).
+- xz uses the Lempel-Ziv-Markov chain algorithm which can result in lower decompressing CPU times taht are on par with gzip while proving better compression ration similar to the bzip2 tools. 
+
+------
+
+- Archiving Files: **tar** archive, takes in several files and creates a single output file that can be split up again into the original files on the other end of the transmission. 
+- **tar** has 3 modes: 
+1. Create: Make a new archive out of the  a series of files.
+2. Extract: Pull one or more files out of an archive. 
+3. List: Show the contents of the archive without extracting. 
+
+- **create mode** : syntax is as follows: 
+```
+tar -c [-f ARCHIVE] [OPTIONS] [FILE...]
+```
+
+- Options: **-c** > create an archive
+- Options: **-f ARCHIVE** > Use archive file. Arguments ARCHIVE will be the name of the resulting file. 
+- Options: **-z** > compress or decompress archive using gzip
+- Options: **-j** > compress or decompress an archive using the bzip2 command. 
+
+```
+# The first argument creates an archive called alpha_files.tar. The wildcard option * is used to include all files that begin with alpha in the archive:
+
+sysadmin@localhost:~/Documents$ tar -cf alpha_files.tar alpha*
+
+
+# The final size of alpha_files.tar is 10240 bytes.Normally, tarball files are slightly larger than the combined input files due to the overhead information on recreating the original files. Tarballs can be compressed for easier transport, either by using gzip on the archive or by having tar do it with the -z option.
+
+
+sysadmin@localhost:~/Documents$ ls -l alpha_files.tar
+-rw-rw-r-- 1 sysadmin sysadmin 10240 Oct 31 17:07 alpha_files.tar
+-----
+
+# ile extensions don’t affect the way a file is treated, the convention is to use .tar for tarballs, and .tar.gz or .tgz for compressed tarballs.
+
+sysadmin@localhost:~/Documents$ tar -czf alpha_files.tar.gz alpha*
+sysadmin@localhost:~/Documents$ ls -l alpha_files.tar.gz
+-rw-rw-r-- 1 sysadmin sysadmin 417 Oct 31 17:15 alpha_files.tar.gz
+
+```
+
+----
+
+- **List Mode**: the following syntax is used for list mode
+```
+
+tar -t [-f ARCHIVE] [OPTIONS]
+```
+
+- we can see, compressed or not what is inside by using the **-t** option. 
+- Following options are useful:
+  1. **-t** option > list the files in the archive
+  2. **-j** option > Decompress with an **bzip2** command
+  3. **-f ARCHIVE** option > operate on the given archive.
+
+```
+# this command will list contents of the folders.tbz archive
+tar -tjf folder.tbz
+```
+- **tar** command will recurse into subdirectories automatically when compressing and will store the path info inside the archive.
+
+---
+
+- **Extract Mode**: following syntax
+  ```
+  tar -x [-f ARCHIVE] [OPTIONS]
+  ```
+
+- creatomg archives is often used to make multiple files easier to move.
+- Options for extracting: 
+  1. **-x** > Extract files from an archive.
+  2. **-j** > Decompress with the bzip2 command.
+  3. **-f ARCHIVE** > Operate on the given archive.
+  4. **-v** > Verbose, to output the files processed.
+
+```
+# Options can be stringed together in one command
+sysadmin@localhost:~/Downloads$ tar -xjf folders.tbz
+sysadmin@localhost:~/Downloads$ ls -l
+total 8
+drwx------ 5 sysadmin sysadmin 4096 Dec 20  2017 School
+-rw-rw-r-- 1 sysadmin sysadmin  413 Oct 31 18:37 folders.tbz
+
+
+# verbose option: 
+sysadmin@localhost:~/Downloads$ tar -xjvf folders.tbz
+
+#It is important to keep the –f flag at the end, as tar assumes whatever follows this option is a file name. In the next example, the –f and –v flags were transposed, leading to tar interpreting the command as an operation on a file called v, which does not exist.
+
+
+# If you only want some files out of the archive, add their names to the end of the command, but by default, they must match the name in the archive exactly, or use a pattern. 
+
+sysadmin@localhost:~/Downloads$ tar -xjvf folders.tbz School/Art/linux.txt
+School/Art/linux.txt
+```
+
+----
+
+- **Compressiong and ZIP**: ZIP is the de facto archiving utility in Microsoft, Linux also supports it. The default mode of zip is to add files to an archive and compress it. 
+```
+zip [OPTIONS] [zipfile [file.....]]
+
+
+# The first argument zipfile is the name of the archive to be created, after that, a list of files to be added. The following example shows a compressed archive called alpha_files.zip being created:
+
+sysadmin@localhost:~/Documents$ zip alpha_files.zip alpha*
+  adding: alpha-first.txt (deflated 32%)
+
+
+# It should be noted that tar requires the –f option to indicate a filename is being passed, while zip and unzip require a filename and therefore don’t need you to inform the command a filename is being passed.
+
+# zip command will not recurse into subdirectories by default. if we want to behave like tar we need to add **-r** flag. 
+
+# -l option will list files in the .zip archives
+
+# to be able to unzip commands we need to use unzip command
+
+unzip School.zip
+
+# if we want to extract a specific file, we will need to pass the directory components along with the filename OR use a wildcard
+
+#1
+sysadmin@localhost:~/Documents/tmp$ unzip School.zip School/Math/numbers.txt
+Archive:  School.zip
+ extracting: School/Math/numbers.txt
+
+#2 
+sysadmin@localhost:~/Documents/tmp$ unzip School.zip School/Art/*t
+Archive:  School.zip
+  inflating: School/Art/linux.txt
+  inflating: School/Art/red.txt
+  inflating: School/Art/hidden.txt
+  inflating: School/Art/animals.txt
+
+```
+
