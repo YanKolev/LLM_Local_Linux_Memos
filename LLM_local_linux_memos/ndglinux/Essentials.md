@@ -1239,3 +1239,54 @@ Archive:  School.zip
 tar –zcvf mybackups/udev.tar.gz /etc/udev
 ls –lh mybackups
 ```
+
+----
+
+### Chapter 10 - Working with text
+
+----
+
+- Big portion of the files in a Linux system are text file, its important to understand how to view and mofify these files in various ways. 
+
+- **cat** - command that is simple but useful. most popular function is to display the content of the text files. 
+- cat command is good for small files, but not ideal choice for large files. 
+- for large files is more useful to use a **pager** command to view contents. Pager commands display one page of data at a time, allowing you to move forward and backward in the file by using movement keys. 
+- Two most commonly used pager commands: **less** and **more**. 
+- **less**: command provides a very advanced paging cpability. its the default pager for the man command. 
+- **more**: used since Unix, available on every distro, while less is not complicated as less. 
+
+---
+
+- to view a file with **less** command, pass the file name in an argument:
+  ```
+  less words
+  ```
+- to view help option for **less**, use the H key or Shift + H.
+
+![](images/Essentials/lesscommands.png)
+
+- **less** searching command. To start a search and look **FORWARD** from your position **/**, then type the text or pattern to match and press Enter. 
+- **less** seaching **BACKWARD** from your current position **?**, then type the text or pattern. If more than one match can be found by a search, we can use **n** > next match , OR **SHIFT+N** to go to previous match. 
+- **less** searches use patterns called regular expressions patterns. 
+
+----
+
+- **head** and **tail** are used to display only the first/last few lines of a file (or when used with a pipe  the output of a previous command).
+- by default both **head** and **tail** display ten lines of the file that is provided as an argument.
+- passing a number as an option for bot head an tail will return the specified number of lines instead of the specified 10. **-n** can also be be used
+  ```
+  head -n 3 /etc/sysctl/conf
+  ```
+
+- Negative Value option. (for **tail** -3 or -n 3 is the same). For **head** -3 will return first 3 lines. 
+- Positive value option. **tail**: If the -n option is used with a number prefixed by the plus sign, then the tail command recognizes this to mean to display the contents starting at the specified line and continuing all the way to the end.
+
+```
+nl /etc/passwd | tail -n +25
+```
+
+- Live file changes can be viewed by using the -f option to the tail command—useful when you want to see changes to a file as they are happening.
+
+- A good example of this would be when viewing log files as a system administrator. Log files can be used to troubleshoot problems and administrators often view them "interactively" with the tail command while performing commands in a separate window.
+
+- For example, if you were to log in as the root user, you could troubleshoot issues with the email server by viewing live changes to the /var/log/mail.log log file. 
