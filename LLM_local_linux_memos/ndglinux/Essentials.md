@@ -1398,3 +1398,57 @@ tr 'a-z' 'A-Z' < example.txt
 
 ---
 
+- **Sorting files or Input**: command **sort** can used to re-arrange the lines of files or input in either dictionary or numeric order. 
+- **sort**: can re-arrange the output based on the contents of one or more fields. Fields are determined by a field delimiter container on each line. Delimiter- is a character that separates a string of text or data. it defauls to whitespace like spaces or tabs. 
+
+![](images/Essentials/sorting.png)
+
+---
+
+- another option for **sort** is the **-r** option which is used to perform a reverse sort.
+```
+cat os.csv
+
+sort -t, -k2 -k1n -k3 os.csv
+
+-t, specifies the comma character as the field delimiter
+-k2 sort by field #2
+-k1n Numerically sort by field #1
+-k3 sort by field #3
+```
+
+---
+
+- **File statistics**: viewing them with command **wc**- word count, provides number of lines, words and bytes. it allows up to 3 statistics to be printed for each file provided, as well as toral of these statistics if more than one filename is porvided. 
+
+- The output is in 3 columns:
+  1. Number of lines
+  2. Number of words
+  3. Number of bytes
+  4. File name
+   
+- **wc** alsoallows to view specific statisting with -l flagm to show number of lines, -w: just show the number of words, -c: to show the number of bytes. There can be combination any of the three flags.
+
+---
+
+- **Filter file Sections: cut**: cut command can extract columns of text from a file or a standard input. Primarily used with delimited database files. 
+- by default **cut** expects its input to be separated by tab character, but the -d option can specify alternative delimiters such as colon or comma. -f option can specify whichfileds to dispay, either as a hyphenated range or a comma-separated list. 
+
+````
+# first, fifth, six and sevent fileds from the mypaawd database are displayed.
+cut -d: --f1,5-7 mypasswd
+
+# with -c flag can extract colums of text absed upn character position- useful when working with a fixed-width database files or command outputs. 
+
+#fields of the ls-l are displaed in same character positions, so it will display the file type (charater 1), permissions (characters 2-10), a space (character 11) and a filename (characters 50+)
+#ls -l | cut -c1-11,50-
+
+````
+
+-----
+
+- **filter file contents: grep**: can be used to filter lines in a file or the output of another command that matches a specified pattern. it can be simple pattern or advanced with the use of regular expressions. 
+
+```
+# to find all the users that can
+```
