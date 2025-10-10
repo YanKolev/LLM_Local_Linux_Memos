@@ -1452,3 +1452,22 @@ cut -d: --f1,5-7 mypasswd
 ```
 # to find all the users that can
 ```
+
+- for more granular control of the search we can use the -c option: in provides how many lines match the pattern. 
+- to determine the original lune numbers, we can use the **-n** flag for grep. 
+- **-v** flag inverts the match, outputting all lines that do not contain the pattern. 
+- **-i** flag ignores the case (capitalization) distinctions, searches both upper and lower case.
+- **-w** flag only returns lineswhich contain matches that form whole words. To form a word, character string mustbe preceded and followed by a non-word character. Word characters include letters, digits, and the underscore character.
+
+---
+
+- **Basic Regular Expressions**: known as reges, are a collection of special characters that are used to find simple or complex patterns in files. 
+- Basic regular expressins linclude: 
+
+![](images/Essentials/basicregex.png)
+
+
+- commands that can use regex are : grep, more and less.
+-  it is good practice to use single quotes around regular expressions to prevent the shell from trying to interpret special meaning from them.
+
+----
