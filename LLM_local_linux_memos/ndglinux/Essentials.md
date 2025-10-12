@@ -1471,3 +1471,117 @@ cut -d: --f1,5-7 mypasswd
 -  it is good practice to use single quotes around regular expressions to prevent the shell from trying to interpret special meaning from them.
 
 ----
+
+- **Period . character**: it matches any character except for the new line character. it can find any character that is used period for. Example:
+```
+grep 'r..f' red.txt
+```
+- it does not have to be exact match, it simply must contain the pattern. 
+- it can be used any number of times. even to find all words that have for characters. Example:
+```
+grep '....' red.txt
+```
+
+----
+
+- **Bracket [] characters**: when using . any possible character could match. If we want to specify exactly which characters we want to match we can use brackets. It makes possible to match from a list or a range. 
+```
+grep '[0-9]' profile.txt
+```
+- to find all lines in a profile text which have a number in them. we can also use this pattern [0123456789]. However in need to be a valid range [7-1]- it will give invalid range end. The range is specified in the ASCII table. The ASCII value of the letter a is 97 while the value of d is 100. Since 97 is smaller than 100, the range a-d (97-100) is a valid range.
+
+- to match a character is **NOT** one of the listed characters, we need to start with **^**. Example:
+```
+grep '[^0-9]' profile.txt
+```
+- the command matches lines which contain non-numbers.
+
+
+----
+
+- **Asterisk * character**: to match zero or more character occurences or pattern preceding it. Example:
+```
+# e* would match zero or more occurences of the letter e.
+grep 're*d' red.txt
+```
+- it also possible to match zero or more occurences of alist of characters by utilizing the square brackets. The pattern [oe]* , matches zero or more occurences of the o character or the e character. 
+```
+grep 'r[oe]*d' red.txt
+```
+- when used only one character *, isnt very helpful. to make it useful its good to create a patern which includes more than just the one character preceding it. 
+```
+grep 'ee*' red.txt
+```
+
+----
+
+- **Anchor characters**: when performing pattern match, the match could occur anywhere on the line. Anchor characters are one of the ways regular expressions can be used to narrow odwn search results. 
+
+- the caret (cicrumflex) **^**m is used to make sure a patterns appears at the beginning of the line. ^ must be the first character in the pattern to be effective. 
+
+- second achor **$** can be used to ensure a patern at the end of the line. **$** must be the last character in the pattern to be effective as an anchor.
+
+```
+# caret pattern- first character of the pattern
+
+grep '^root' /etc/passwd
+
+# end anchor- last character of the pattern
+
+grep 'r$' alpha-first.txt
+```
+
+----
+
+- **Backlash \ character**:  to match a character that happens to be a special regular expression character. 
+
+```
+# re* matched every line which contained an r followed by zero or more of the letter e.
+grep 're*' newhome.txt
+
+# To look for an actual asterisk * character, place a backslash \ character before the asterisk * character:
+
+grep 're\*' newhome.txt
+
+```
+
+---
+
+- **extended regular expressions**: we can used **grep -E**
+
+```
+? - matches previous character zero or one time, optional character
++ - matches previous character repeated one or more times
+
+| - alternation or like a logical "or" operator
+
+```
+
+- Examples: 
+
+```
+o match colo followed by zero or one u character followed by an r character:
+
+sysadmin@localhost:~/Documents$ grep -E 'colou?r' spelling.txt
+American English: Do you consider gray to be a color or a shade?
+British English: Do you consider grey to be a colour or a shade?
+
+To match one or more e characters:
+
+sysadmin@localhost:~/Documents$ grep -E 'e+' red.txt
+red
+reef
+reeed
+reed
+reel
+read                     
+
+To match either gray or grey:
+
+sysadmin@localhost:~/Documents$ grep -E 'gray|grey' spelling.txt
+American English: Do you consider gray to be a color or a shade?
+British English: Do you consider grey to be a colour or a shade?
+
+```
+
+----
