@@ -102,3 +102,38 @@
 
 ![](images/openfaasworkflow.png)
 
+- Application layer to show all components working together. Each function is a Docker image, which means it needs a name and a tag. The tag can be used for version control with semver. One of the endpoints si a service, which goes to show that microservices and function can co-exist and work well together with Serverless. 
+
+- Interaction with OpenFaaS happens through REST API, metrics will be available through Prometheus. 
+
+- Core functionality provided by OpenFaaS Gateway: 
+1. Create, list, update and delete functions.
+2. Scale function replicas. 
+3. Invoke a function.
+4. Query health, metrics, and scaling status of functions.
+5. Create, list and delete secrets
+6. View logs from functions.
+7. Queue-up asynchronous requests.
+
+- Three ways of interactin with the REST API tend to be: 
+1. Using CLI (faas-cli)
+2. Using the built-in UI
+3. Via rest API directly from application or via cURL.
+
+----
+
+- **Events, Triggers and Invocations**: All communication within OpenFaaS happens over HTTP using rest. It is poweful when coupled with events and triggers. 
+
+- A trigger is a way to invoke a function, with a simple HTTP call being the simplest option. Most OpenFaaS are built with the connector-sdk, open source add-on that lets developers write connectors between an even source and functions.
+
+- Triggers include: 
+1. Apache Kafka- pub/sub system used by enterprise companies.
+2. cron- time-based invocation
+3. SQS- trigger via AWS SQS
+4. NATS- a high-speed messaging CNCF project
+5. Minio- an open source S3 replacement and object store
+6. RabbitMQ- traditional message queue
+7. MQTT- pub/sub system ofter used with IOT devices. 
+
+
+----
