@@ -137,3 +137,126 @@
 
 
 ----
+
+### Setting up Kubermetes and OpenFaaS
+
+- Preffered way to deploy OpenFaaS is deploying it to k8s. either locally via cluster on the laptop or a cloud managed service. 
+
+- There is a lightweight and portable option named **faasd**- https://github.com/openfaas/faasd
+
+- Using cloud Kubernetes service pros and cons: 
+- Pros: 
+1. Low overhead
+2. Integration with cloud services
+- Cons:
+1. Cost per node in the cluster
+2. Cost for the cluster control plane (aws and gcp have cost/ Azure does not for the free tier).
+
+- experimentation candidates: Azure, faasd.
+
+- Suing cluster locally pros and cons:
+- Pros:
+1. Fastest.
+2. Possibly Free
+- Cons:
+1. Computer slowdown
+2. Battery drain
+3. No public IP unless tunel is used (https://inlets.dev/)
+
+- Course recoomendadion: cloud k8s services. If domain is owned ( we can add TLS to the functions). Minimum requirements - Public cloud cluster with 2-3 nodes with 2-4GB RAM and 2vCPUs on each node.
+
+- For local Clusters : minikube, Docker Desktop, Microk8s, k3d(uses k3s).
+
+---
+
+- **Helm and adkade**
+
+- Configuration files for a k8s application are distributed as a set of static YAML files. Having static files makes customization and distribution hard > hence Helm and Kustomize. 
+
+- **Helm**: Can publish their own set of configuration for their application- caled Cahart, that can be discovered, istalled and updgraded and a managed with helo or third-party automation tools. Biggest difference over static YAML files is that can be fine-tuned.
+
+- Fine tunig Helm chart- what domain name to use, or what the maximum timeout is fot an http microservice. They can be customezed with **values.yaml** file or by passing in the --set key=value flag to the helm install or upgrade command.
+
+- **EXAMPLE  OF HELM COMMANDS, IF YOU RUN > BIG KABOOM, TRUST**
+
+- Helm 3, add chart to repo, update local index
+
+```
+helm repo add stable ht‌tps://kubernetes-charts.storage.googleapis.com
+
+helm repo update
+
+```
+
+- install chart, pass in values. yaml or overrite each option with --set such as **persistence.enabled=false** which turns off permanent storage requests for Postgresql. 
+
+````
+helm upgrade --install postgresql stable/postgresql --set persistence.enabled=false
+```` 
+
+- Charts can be removed with: 
+
+```
+helm delete postgresql
+
+```
+
+------
+
+- **arkade** : CLI, written in Go provides seris of apps , kubernetes-dashboard, istio, OpenFas, Postgesql, cert-manage, mongoDB. 
+
+- to install: 
+```
+curl -sLS ht‌tps://get.arkade.dev | sudo sh
+arkade --help
+```
+
+- each app has available flags, they can be used with --help
+```
+arkade install --help
+```
+
+- to get further information:
+```
+arkade install openfaas --help
+```
+
+- with such options we can configure whether there is a a loadbalancer in use (--load-balancer) or if we want 1 replica of the OpenFaas Gateway (--gateways 1) or several (--gateways N)
+
+- arkade provides application to obtain HTTPS certificates, such as openfaas-ingress app. 
+```
+arkade install openfaas-ingress --help
+```
+
+---
+
+- **Deployment Steps**
+
+- if there is no Helm3 installed, OpenFaaS will download it automatically for you. 
+
+```
+arkade instal openfaas
+```
+
+- after installation the following steps should be followed: 
+
+```
+# Get the faas-cli
+curl -SLsf ht‌‌tps://cli.openfaas.com | sudo sh
+
+# Forward the gateway to your machine
+kubectl rollout status -n openfaas deploy/gateway
+kubectl port-forward -n openfaas svc/gateway 8080:8080 &
+
+# If basic auth is enabled, you can now log into your gateway:
+PASSWORD=$(kubectl get secret -n openfaas basic-auth -o
+jsonpath="{.data.basic-auth-password}" | base64 --decode; echo)
+echo -n $PASSWORD | faas-cli login --username admin --password-stdin
+
+faas-cli store deploy figlet
+faas-cli list
+
+````
+
+----
+
