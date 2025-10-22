@@ -256,7 +256,29 @@ echo -n $PASSWORD | faas-cli login --username admin --password-stdin
 faas-cli store deploy figlet
 faas-cli list
 
-````
+```
 
 ----
+
+### OpenFaaS Featues
+
+- **Gateway UI** we can access the passwords and port-forwarding command at any time with **arkade info openfaas**. 
+
+- to obrain auto-generated password to log in: **arkade info openfaas**. Under  # If basic auth is enabled, you can now log into your gateway: -> are the command to assing password to an environment variable and log in from the CLI. 
+
+- to seet PASSWORD environment variable:
+```
+PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode; echo)
+```
+- then echo it in the terminal to view passwords **echo $PASSWORD**.
+
+- Copy pass, open UI, navigate to ht‌tp://127.0.0.1:8080 (its ok to be HTTP instead of HTTPS- port-forwarding command runs over encrypted connection)
+
+- Then User- Admin and the password from before to log in. Password can be changed at any time. we can also use OpenID connect, available separately. 
+
+- Gateway landing. (OpenFaas- one of rare projects that provide UI). 
+
+- **Deploy new function**: then on search, look for **certinfo**, deploy certinfo- > it is used to check when a TLS certificate will expire. 
+
+- **Invoking a fucntion**: enter a domain and **INVOKE**, it will be gray until the function has been downaloade from a container registy and started in a k8s cluster. 
 
