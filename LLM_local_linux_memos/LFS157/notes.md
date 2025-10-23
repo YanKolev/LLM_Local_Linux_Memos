@@ -282,3 +282,7 @@ PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-a
 
 - **Invoking a fucntion**: enter a domain and **INVOKE**, it will be gray until the function has been downaloade from a container registy and started in a k8s cluster. 
 
+- **custom tab**: need to delete any fields that are visible and copy infor as example. Once deployed, the fucntion will execute the bash command **env** and priint out all the environment variables in the container.
+
+![](images/functiondeploy.png)
+
