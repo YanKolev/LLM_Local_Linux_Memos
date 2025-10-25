@@ -286,3 +286,66 @@ PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-a
 
 ![](images/functiondeploy.png)
 
+
+-----
+
+- **Print Environment Variables**: -write_debug environment variable is read back. This function can be useful for debugging the container environments and even shows taht even a bash command can operate as a function. we can copy the above with the function **alpine/function:latest** and change the **fprocess** to execute a different command. 
+
+- To add a function that runs the cal command and print a calender with name **print-cal**. 
+
+```
+curl -sL ht‌tp://127.0.0.1:8080/function/print-cal
+```
+
+- Ready/Not ready field: Long wait time in Not ready can imply the following: 
+1. large container image, 
+2. image not pushed to a container registy
+3. node does not have enough disk space for the container image
+4. run out of RAM in my cluster
+5. code is crashing when starting.
+
+
+- URL: can be used to copy and open fucnton in a browser or invode it using curl
+
+- image: shows Docker image, and tag being used. can check which version of a function has been deployed.
+
+- Invocation count: global count of invocations read from the pre-build Prometheus time-series. 
+
+- Each function can be deleted asynchronously > it takes time to dissapear. 
+
+----
+
+- **CLI**: the cli for OpenFaaS (faas-cli) > written in Goland and acts as a HTTP client tothe OpenFaas Gatetway component. 
+
+```
+# to get help with cli
+
+faas-cli --help
+
+# Search and deploy pre-made functions from the Function Store or find a function template for your specific language:
+
+    faas-cli store list/deploy
+    faas-cli template store list/pull
+
+# Create, build, and publish a function followed by deploying it to your cluster:
+
+    faas-cli new
+    faas-cli build
+    faas-cli push
+    faas-cli deploy
+
+# List, inspect, invoke, and troubleshoot your functions:
+
+    faas-cli list
+    faas-cli describe
+    faas-cli invoke
+    faas-cli logs
+
+# Authenticate to the CLI, and create secrets for your functions:
+
+    faas-cli login
+    faas-cli secret
+```
+
+---
+
