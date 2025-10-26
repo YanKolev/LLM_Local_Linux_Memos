@@ -349,3 +349,103 @@ faas-cli --help
 
 ---
 
+- **Function and Template Store**: store enables collaboration and re-use. Implemented with JSON. PRs(pull requests) can be sent to public github. Function store was added first and can be acessed via cli. 
+```
+faas-cli store list
+faas-cli store deploy
+
+# to return top 5 results
+faas-cli store list | head -n 5
+
+# to filter resuls for the word analysis
+faas-cli store list | grep Analysis
+
+#to inspect before proceeding
+faas-cli store inspect SentimentAnalysis
+
+# to deploy
+faas-cli store deploy SentimentAnalysis
+
+- functions can be invoked via UI, via curl or CLI
+
+# we have to invoke the function with a negative and positive sentence sentiment and see what level of polarity and subjectivy we can create (values are between -1.0 and 1.0)
+
+echo "I had a terrible dinner tonight, I must learn to cook" | faas-cli invoke sentimentanalysis
+
+# it will return 
+{"polarity": -1.0, "sentence_count": 1, "subjectivity": 1.0}
+
+# more positive sentence.
+echo "breakfast tacos are amazing" | faas-cli invoke sentimentanalysis
+
+#it will return
+{"polarity": 0.6000000000000001, "sentence_count": 1, "subjectivity": 0.9}
+```
+- in the example sentence is rated highly on subjectivy- meaning its opinion. 
+
+- Practical application can be to segment customer reviews from a product website and we can look into negative/positive reviews. Can be used on a forum or on a message board to detect bullying.
+
+- faas-cli invoke- uses unix pipe we can sent a whole file to examine.
+
+-----
+
+- practical application: Project Gutenberg, provides copyright free books, they can be downloaded in plain text.
+```
+curl -sL ht‌tp://www.gutenberg.org/cache/epub/5623/pg5623.txt -o pg5623.txt cat pg5623.txt | faas-cli invoke sentimentanalysis -o pg5623.txt cat pg5623.txt | faas-cli invoke sentimentanalysis 
+
+# it will return: 
+{"polarity": 0.05546477366050716, "sentence_count": 3932, "subjectivity": 0.25133792915996667} 
+
+# curl can be piped directly into the funtcion
+
+curl -sL ht‌tp://www.gutenberg.org/cache/epub/5623/pg5623.txt | cat pg5623.txt | faas-cli invoke sentimentanalysis
+
+```
+
+- invocation will take longer with second example, and the function deletes 3932 sentences.
+- we can **combine functions** that fetch a comment from a list of customer reviews AND the sentimentanalysis function to determine its sentiment. (IF THEY ARE USING MACHINE LEARNING- 1-2GB RAM is the requirement.)
+
+```
+# examples of functions are: 
+
+    Inception
+    Input the URL of an image and receive a JSON classification of its contents as the result.
+    Colorization
+    Give the URL to a black and white image, and have a color image returned to you that you can save to disk.
+    Open NSFW Model
+    Find out whether the image on the given URL is generally safe for work (SFW).
+    Tesseract OCR
+    For a given image URL as the input, you will receive the text that was detected when analyzing the image.
+```
+
+---
+
+### Build Function with Python
+
+- **Templates from Function Store** are use to scaffold a funtions. They are structured and can be obtained via:
+1. OpenFaaS repository
+2. OpenFaaS Incubator via template store
+3. Creating your own templates. 
+
+- **Creating your own templates**: start with Git repository and store the templates in it. Commands for addtional info: 
+```
+    ./template/
+    The top level folder is always named template and cannot be moved.
+    
+    ./template/NAME/
+    Then we have a subfolder, i.e. NAME, such as python3.
+    ./template/NAME/.template.yml
+    Within this file, you have the template’s name, any options for bundles of system package to install, and an optional welcome message printed after faas-cli new.
+
+    ./template/NAME/Dockerfile
+    Each template must have a Dockerfile to be built.
+    ./template/NAME/handler/index.ext
+    Then we have the main entry point for the function; here we either work with STDIO or HTTP and the name for python3 is index.py.
+
+    ./template/NAME/handler/handler.ext
+    Then we have the user-facing code. This is the example of a handler, which you see after running faas-cli new - the name for python3 is handler.py.
+
+    ./template/NAME/handler/packages.ext
+    Some templates offer package installation through a packages file in the handler folder; an example would be requirements.txt for python3.
+
+```
