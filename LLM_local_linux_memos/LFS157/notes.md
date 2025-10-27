@@ -1027,3 +1027,57 @@ curl --data-binary @/tmp/golden-gate.jpg ht‌tp://127.0.0.1:8080/function/bw-ap
 curl --data-binary @/tmp/golden-gate.jpg --header "api-key=$(cat ./bw-api-key.txt)" ht‌tp://127.0.0.1:8080/function/bw-api-protected > bw.jpg
 ```
 ---
+
+- **Invoking Function Asynchronously**: OpenFaaS can run any function invocation in the background, and whilst the executions take just as long to complete, they can be run in parallel to save time and to hide the latency from the caller.
+
+- There is a difference in 200ms, to elimate that latency we can use something like AWS S3/ or open source- Minio.
+- we can use another function ro recieve the functions' response, or write custom http server and run it ourside of the Kubernetes cluster. 
+
+- How to create a receiver function: 
+```
+export OPENFAAS_PREFIX=yourRegistryPrefix
+faas-cli template store pull python3-http-debian
+faas-cli new --lang python3-http-debian receive-photo
+```
+
+- edit receive-photo/handler.py:
+```
+def handle(event, context):
+
+    return {
+        "statusCode": 200,
+        "body": "Received {} bytes from caller".format(len(event.body))
+    }
+```
+- deploy the function with: 
+```
+faas-cli up -f receive-photo.yml
+```
+
+- downloading and converting will be looking like this:
+```
+curl -sLS ht‌tps://upload.wikimedia.org/wikipedia/commons/thumb/7/71/2010-kodiak-bear-1.jpg/640px-2010-kodiak-bear-1.jpg -o /tmp/bear.jpg
+
+Next, let’s invoke the B&W conversion function, passing in the URL for the receive-photo function as the callback URL.
+
+time curl -s --data-binary @/tmp/bear.jpg \
+  --header "api-key=$(cat ./bw-api-key.txt)"\
+  --header "X-Callback-Url: ht‌tp://gateway.openfaas:8080/function/receive-photo" \
+ht‌tp://127.0.0.1:8080/async-function/bw-api-protected
+
+Note that when calling the gateway from another function, we need to use gateway.openfaas instead of 127.0.0.1.
+
+Run the following command to see the receive-photo function being called:
+
+kubectl logs -n openfaas deploy/queue-worker
+
+[#6] Invoking: bw-api-protected with 71849 bytes, via: ht‌tp://gateway.openfaas.svc.cluster.local:8080/function/bw-api-protected/
+[#6] Invoked: bw-api-protected [200] in 0.037707s
+[#6] Callback to: ht‌tp://gateway.openfaas:8080/function/receive-photo
+[#6] bw-api-protected returned 52485 bytes
+[#6] Posted result for bw-api-protected to callback-url: ht‌tp://gateway.openfaas:8080/function/receive-photo, status: 200
+
+
+```
+---
+
