@@ -449,3 +449,184 @@ curl -sL ht‌tp://www.gutenberg.org/cache/epub/5623/pg5623.txt | cat pg5623.txt
     Some templates offer package installation through a packages file in the handler folder; an example would be requirements.txt for python3.
 
 ```
+
+---
+
+- **Functions with Python**: Need to follow the sotrage when creating a function. Variations are: local container registry, registry hosted by your cloud provider or managed registry. Primary use is Docker Hub, but other options are - Quay, Bitnami, Jfrog or Harbor.
+
+- Docker hub environmet variable example: 
+```
+export OPENFAAS_PREFIX=yourRegistryPrefix
+
+# self-hosted container registry variant
+export OPENFAAS_PREFIX=my-registry.openfaas.com/yourRestryPrefix
+```
+
+- Creating a functionwith Python3 and faas is simple with the command:
+```
+faas-cli new --lang python3 api
+```
+
+- api can be repladed with any other name.
+
+- After creating the function there will be three files: 
+1. api.yml
+2. api/handler.py
+3. api/requirement.txt
+
+- We eed to edit the **handler.py** withthe following:
+```
+#handler upon creation
+
+def handle(req):
+    return req
+
+
+# needs to be edited to
+def handle (req):
+    return "Input: {}".format(req)    
+```
+- **requirements.txt** - file can be used to install pip modules at build time. pip modules add support for MySQL or Numpy.
+
+- **apy.yml** contains information on how to buld and deploy function:
+```
+version: 1.0
+provider:
+  name: openfaas
+  gateway: ht‌tp://127.0.0.1:8080
+functions:
+  api:
+    lang: python3
+    handler: ./api
+image: yourRegistryPrefixWillBeHere/api:latest
+```
+- Core aspects: 
+1. lang: name of the template to build with.
+2. handler: the folder (not the file) where the handlr code is to be found. 
+3. image: Docker image name to build with its appropriate prefix for use with **docker build/push** (best practice- to leave to latest version.)
+
+- Provider fileds are optional- but provide alternative to hard-code alternative gatway address. 
+
+- 3 parts to get the function up and running: 
+1. faas-cli build- creates local container image, and install any other files needed. 
+2. faas-cli push- transfer the container image from local Docker library up to the hosted registry.
+3. faas-cli deploy- using OpenFaaS REST API- create a depolyment inside the k8s cluster and a new pod to serve traffic. 
+
+- all cam be combined with faas-cli up
+```
+faas-cli up -f api.yml
+
+# it will return 
+ht‌‌tp://127.0.0.1:8080/function/api
+```
+- after this command, we can invoke the function using, UI, curl or personal application code as well as faas-cli.
+
+```
+curl --data "bytes" ht‌tp://127.0.0.1:8080/function/api
+
+#it will return bytes
+
+```
+
+- how to print Hello World
+1. edint function code ( build/api/function/handler.py), change return req to return "Hello World". 
+2. call faas-cli to invoke the function:
+```
+faas-cli up -f api.yml curl ht‌tp://127.0.0.1:8080/function/api
+
+# will return
+Hello World
+```
+
+---
+
+- **PIP Addition**
+
+- To add pip we need to add the following line in **./api/requirements.txt**
+```
+Jinja2
+```
+
+- Jinja2 ca be use to turn HTML template to HTML file. More on the Documentation: https://jinja.palletsprojects.com/en/stable/ 
+
+- After that Edit > Edit handler **./api/handler.py**
+```
+from jinja2 import Template
+
+def handle(req):
+    t = Template("Hello {{name}}")
+    res = t.render (name="John")
+    return res
+```
+- after the edit to invoke the function:
+```
+curl ht‌tp://127.0.0.1:8080/function/api
+
+# it will return
+Hello John
+```
+
+----
+
+- **Parse JSON Request** : how to parse input from our function given inJSON into an object, being able to access keys on it and their values for use in the template. Itwill allow to accept multiple arguments into our function.
+```
+from jinja2 import Template
+import json
+
+def handle(req):
+    input = json.loads(req)
+
+    t = Template ("Hello {{name}})
+    res = t.render(name=input["name"])
+    return res
+```
+- after that to invoke the function: 
+```
+faas-cli up -f api.yml
+
+curl ht‌‌tp://127.0.0.1:8080/function/api --data-binary '{ "name": "Randy" }'
+```
+
+- To pass even more than one value into the function: 
+```
+from jinja2 import Template
+import json
+
+def handle (req):
+    input = json.loads(req)
+
+    t = Template("{{greeting}} {{name}}")
+    res = t.render(name= input["name], greeting=input["greeting])
+    return res
+```
+- to invokoe the funtion: 
+```
+curl ht‌tp://127.0.0.1:8080/function/api --data-binary '{ "name": "Jan", "greeting": "Hallo" }'
+
+# it will return 
+Hallo Jan
+```
+
+----
+
+- **Compiling Dependecies**: majority of OpenFaaS templates are based upon Alpine Linux, many pip modules will work with Alpine. But might run into issues, best practice- using Debial alternative where available. (we can use **pytho3-debian**).We can convert and even add dependecy numpy. 
+
+- To convert we need to edit the files: 
+1. **api.yml** > set **lang: python3 -> lang:pytho3-debian**
+2. **requirements.txt** > remove everying then add **numpy**
+3. **handler.py** ( set up 2 arrays with the values, 1,2,3,4 and then use numpy's dot method to find the dot product):
+```
+import numpy as np
+
+def handle(req):
+    a = np.array([1,2,3,4])
+    b = np.array([1,2,3,4])
+    return a.dot(b)
+```
+
+- then return faas-cli up to see the pre-built binary being collected for numpy.
+- to invoke the function: **curl ht‌tp://127.0.0.1:8080/function/api**
+- The result is 30: 1x1=1, 2x2=4, 3x3=9, 4x4=16, 1+4+9+16=30
+
+----
+
