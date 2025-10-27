@@ -630,3 +630,139 @@ def handle(req):
 
 ----
 
+### Configuring a Function
+
+----
+
+- Open FaaS Watchdog: http proxy written in Golang, embedded into the container with your function. It has 2 versions: 
+1. Classic- created in 2016, for each requet it receives, it will work and execute a process. Advantages: Any process can become serverless without any modifications.Disadvantages: when used to create many processes under high traffic contions, it will add latency to the response time for each request. 
+
+2. of-watchdog- it has HTTP mode, forks your process only once at start-up, then communicates it over HTTP until the function is killed or scaled down. Advantages: use of connection pools, reduces latency of each call, reduces latency and bandwidth cost for machine learning models. 
+
+- most of-watchdog templates have an http sufix or a reference to an HTTP server framework- Flask/Express.
+
+- We can run our Docker container without the Openfaas watchdog as song as it conforms to serverless 2.0 definitoon. Used for- porting existing code or services over, before potentially remowrking them to use a function template. 
+
+---
+
+- **Controlling Function's HTTP Resonse with OpenFaaS Watchdog**
+
+- for Python we can use **python3-flask and python3-http** templates. Flask tempalte uses similar format > easy to port exisiting function. Template needs to be pulled in from template store. 
+
+```
+export OPENFAAS_PREFIX=yourRegistryPrefix
+faas-cli template store pull python3-flask-debian
+faas-cli new --lang python3-flask-debian http-api 
+
+# it will return empy handler
+def handle(req):
+    return req
+
+```
+
+- how to return custom HTTP response code
+```
+def handle(req):
+    return "There was an error with the server", 500
+
+# will return 500 (internal server error instead of 200)
+```
+
+- returning a custom http header
+```
+def handle(req):
+    return (
+        '{"status":"accepted the request"}', 201,
+        {"Content-Type": "application/json"},
+    )
+# alerting client taht the response is in JSON format, it can be customized    
+```
+- serializing the response to JSON (response is going to be object in-memory, needing to be serialized and send to client)
+```
+def handle(req):
+    # Create an object
+    res = {"status": "ok"}
+
+    # Change one of the values within the object
+    res["status"] = "resource not found"
+
+    # Also set the HTTP status code to “not found”
+    code = 404
+
+    # use json.dumps to serialize the response
+    return (
+      json.dumps(res),
+      code,
+      {"Content-Type": "application/json"},
+    )
+```
+
+- Working with binary data: by default- OpenFaaS templates accept a string input that can be overridden to a raw binary body. (if you want to accept a file as an input and store it or process it insome way).
+
+- to make it we need to add the following to **functionName.yml**
+```
+functions:
+    functionName:
+        other:configurations
+        environment:
+            RAW_BODY: True
+```
+
+---
+
+
+- Image manipulation function, to take a color Jpeg image to return it as a black and white image. Steps:
+1. Start a new function: 
+```
+export OPENFAAS_PREFIX=yourRegistryPrefix 
+faas-cli template store pull python3-flask-debian
+faas-cli new --lang python3-flask-debian bw-api
+```
+- using Debian > Pillow needs to be compiles, requres toolchain, not efficient on Alpine Linux.
+
+2. add to bw-api/requirements.txt:
+```
+Pillow
+```
+
+3. Create a new function:
+```
+from PIL import Image
+import io
+
+def handle(req):
+    buf = io.BytesIO()
+    with Image.open(io.BytesIO(req)) as im:
+        im_grayscale = im.convert("L")
+        try:
+            im_grayscale.save(buf, format='JPEG')
+        except OSError:
+            return "cannot process input file", 500, {"Content-type": "text/plain"}
+
+        byte_im = buf.getvalue()
+        # Return a binary response, so that the client knows to download
+        # the data to a file
+        return byte_im, 200, {"Content-type": "application/octet-stream"}
+```
+4. Add **RAW_BODY** to function's yaml file:
+```
+
+functions:
+  bw-api:
+    lang: python3-flask-debian
+    handler: ./bw-api
+    image: yourRegistryPrefix/bw-api:0.1.0
+    environment:
+      RAW_BODY: True
+```
+5. Run faas-cli up and test with image. 
+```
+# 5.1 use image under Creative Commons license:
+curl -sLS ht‌tps://upload.wikimedia.org/wikipedia/commons/8/85/The_Golden_Gate_Bridge_and_Comet_C2020_F3_NEOWISE_and.jpg -o /tmp/golden-gate.jpg
+
+# 5.2 send data as binary input into fuction and have it save to local file bw.jpg
+curl --data-binary @/tmp/golden-gate.jpg ht‌tp://127.0.0.1:8080/function/bw-api > bw.jp
+```
+
+----
+
