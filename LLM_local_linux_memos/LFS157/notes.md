@@ -1081,3 +1081,215 @@ kubectl logs -n openfaas deploy/queue-worker
 ```
 ---
 
+### Operating Serverless
+
+- Best practice is to check updates for the OpenFaaS Helm chart. 
+```
+1. help upgrade --install
+2. arkade install openfaas
+3. Gitops like Flux /ArgoCD
+```
+- Frequent updates of AD-Hoc Components.
+
+- Metrics: Use of prometheus: This can be referred to as RED metrics or - rate, error, and duration.
+
+```
+
+Prometheus does not come with any kind of authentication, so we keep it hidden by default. Port-forward Prometheus to your local computer:
+
+kubectl port-forward deployment/prometheus 9090:9090 -n openfaas &
+
+Now open its UI using ht‌tp://127.0.0.1:9090:
+
+Type in the following and hit Enter:
+
+gateway_function_invocation_total{code="200"}
+
+```
+
+- Monitor function with a dashboard- Grafana, to deploy grafana: 
+```
+Deploy a pod for Grafana:
+
+kubectl -n openfaas run \
+--image=stefanprodan/faas-grafana:4.6.3 \
+--port=3000 \
+grafana
+
+Just like before, let’s port-forward it to our local computer to access it without exposing it to the Internet.
+
+kubectl port-forward pod/grafana 3000:3000 -n openfaas
+
+The default password is admin:admin. Open it from ht‌‌tp://127.0.0.1:3000/.
+```
+
+- AutoScaling: OpenFaaS always deploys a minimum level of replicas for your functions so that they can serve a request immediately to a user.
+
+- Minimum and maximum replica can be set with: 
+```
+# by adding a label to the function 
+    com.openfaas.scale.min - by default, this is set to 1, which is also the lowest value and unrelated to scale-to-zero.
+    com.openfaas.scale.max - the current default value is 20 for 20 replicas.
+    com.openfaas.scale.factor - by default, this is set to 20% and has to be a value between 0-100 (including borders).
+```
+
+- If you want to have at least 5 replicas at all times, but to scale up to 15 when under load, in stack.yml file: 
+```
+labels:
+  com.openfaas.scale.min: 5
+  com.openfaas.scale.max: 15
+```
+
+- to add traffic- we cah use hey:  HTTP load generator, ApacheBench (ab) replacement
+
+- NB in Linux- we need to chmod +x! 
+
+- to clone a tester application in Go we have to: 
+```
+git clone ht‌tps://github.com/alexellis/echo-fn \
+&& cd echo-fn \
+&& faas-cli template store pull golang-http \
+&& faas-cli deploy \
+--label com.openfaas.scale.max=10 \
+--label com.openfaas.scale.min=1
+
+Finally, run a load-test with hey. You will have to use the path to the location where you saved the hey executable file:
+
+./path/to/hey_linux_amd64 -z=30s -q 5 -c 2 -m POST -d=Test ht‌tp://127.0.0.1:8080/function/go-echo
+```
+
+-The above simulates two active users -c at 5 requests per second -q over a duration -z of 30 seconds.
+
+- How to manually scale down the fucntion and invoke it again. 
+
+```
+Show the pods that are removed and then created again:
+
+kubectl get pods -n openfaas-fn -w
+
+Show the container image being pulled and a pod being scheduled:
+
+kubectl get events --sort-by=.metadata.creationTimestamp -n openfaas-fn -w
+
+Show the gateway finding out how many replicas are present, and then blocking the request until the desired state is met:
+
+kubectl logs -n openfaas deploy/gateway -c gateway -f
+
+Scale the function down manually, then wait a few seconds:
+
+kubectl scale deployment/go-echo -n openfaas-fn --replicas=0;
+sleep 10
+
+Now we are ready to invoke the function again:
+
+curl -d "hi" http://127.0.0.1:8080/function/go-echo
+```
+
+---
+
+- **Adding TLS to installation**- REQUIRES A REGISTERED DOMAIN NAME! 
+
+- Once ready to deploy a production environment, then expose OpenFaaS Gateway on the internet to accept traffic to your functions.
+
+- With the domain name, we will need 3-4 projects by utilizing arkade CLI:
+
+```
+arkade install ingress-nginx
+arkade install cert-manager
+arkade install openfaas-ingress \
+ --email user@example.com \
+ --domain openfaas.yourdomain.com
+```
+
+- Now create a DNS A record for the external IP you see from kubectl get svc of openfaas.yourdomain.com - this will be different for each cloud provider so look up how to create a DNS A record for your particular provider. Once added this could take a few minutes or more to propagate on the Internet.
+
+- Try ping openfaas.yourdomain.com to see if the IP is resolving correctly, and when it is, continue with the next step.
+
+- That’s it! You are now able to access OpenFaaS from ht‌tps://openfaas.yourdomain.com and all of your functions by adding /function/name to the end. To use the CLI, simply run faas-cli login again, adding a --gateway flag.
+
+- We installed an Ingress Controller with the ingress-nginx app, then cert-manager to provision certificates from LetsEncrypt, and finally, the openfaas-ingress app created an Ingress definition and certificate issuer in the cluster. Your certificates will renew every 3 months.
+
+- If you are running behind a firewall or on your laptop or Raspberry Pi, then you can use the inlets-operator project along with inlets PRO to get a public IP for ingress-nginx.
+
+- If you want to set up friendly domains for each of your functions, you can do that with the IngressOperator project for instance: go-echo.example.com or go-echo.com. You can also set up custom REST-like HTTP paths and versions. We will cover some other scenarios for the operator later in this chapter. Read more about the IngressOperator on GitHub.
+
+---
+
+- Versioning Container images: In the OpenFaaS YAML file, you will remember the image field. This can be used to ensure that you do not overwrite a previously built function image with your newer code.
+
+```
+For example, our initial version of a webhook receiver may be:
+
+image: yourRegistryPrefix/stripe-webhook:1.0.0
+
+To build a separate version, we should change the tag as follows:
+
+image: yourRegistryPrefix/stripe-webhook:1.0.1
+
+We can also get a generated tag, based upon the SHA (hash) from the Git repository that we may be working in. The image won’t change in the YAML file. However, the build/push and deploy commands will gain the suffix.
+
+For example, if we ran git log and our image value was alexellis2/stripe-webhook:1.0.1:
+
+commit 86cd201208b0dd1ff9d92d6f52f2a3b29e4cf02c (HEAD -> master)
+Author: Alex Ellis <alexellis2@gmail.com>
+Date:   Wed Aug 5 11:52:29 2020 +0100
+
+    Initial commit
+
+Then the actual artifact pushed to the container registry will be:
+
+alexellis2/stripe-webhook:1.0.1-86cd201
+
+```
+
+---
+
+- Versioning Deployed Functions: 
+
+1. Rolling updates: Kubernetes also provides what is called a rolling update. So, if you run faas-cli deploy -f stripe-webhook.yml, then Kubernetes will attempt to pull the new container image and start it. Once the new version of the code is running, the older version will be stopped.
+
+1. 1 This does have a few drawbacks - if the new version appears to start but actually has a functional error, then you will need to roll the version back by changing the image tag in your OpenFaaS YAML file and running faas-cli deploy again.
+
+2. Separate Versions: 
+```
+Before:
+
+functions:
+  stripe-webhook:
+    image: yourRegistryPrefix/stripe-webhook:1.0.0
+
+After:
+
+functions:
+  stripe-webhook-101:
+    image: yourRegistryPrefix/stripe-webhook:1.0.1
+```
+
+---
+
+- Advanced Routing with FunctionIgress: achieved via Ingress Operator. 
+
+- Map a function to a Domain
+
+```
+You can also map a function to a specific domain:
+
+stripe-webhook.example.com
+
+This is ideal when you want to run a website, blog, or wiki through OpenFaaS.
+
+It can also be useful for blue/green deployments where you want a user to only have one URL, such as stripe-webhook.example.com, but behind the scenes, you can have that point at different versions of the same function without giving the user a new URL.
+```
+
+- Mapping Functions Routes
+```
+You can also map a function to a specific HTTP route, such as:
+
+domain.com/v1/stripe-webhook/
+
+Or
+
+domain.com/v2/stripe-webhook/
+
+This can be useful for maintaining different versions for users.
+```
