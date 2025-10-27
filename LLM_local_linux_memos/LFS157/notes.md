@@ -766,3 +766,264 @@ curl --data-binary @/tmp/golden-gate.jpg ht‌tp://127.0.0.1:8080/function/bw-ap
 
 ----
 
+- **Building and Serving Websites**: Simplest way to serve web pages and microservices from OpenFaaS is using a Dockerfile template and a Flask microservice.
+
+- Functions can also serve static HTML pages, render tempates or a mix of both, byreading a file from disk and returning it through the function along with an appropriate content-type. 
+
+- how to make HTTP template: 
+
+```
+faas-cli template store pull python3-http
+faas-cli new --lang python3-http homepage --prefix containerRegistryPrefix
+```
+
+- after we run previous commands we need to add the following to the **homepage/handler.py**: 
+```
+from pathlib import Path
+
+def get_file(path):
+   mime = "text/plain"
+
+   if path.endswith(".css"):
+       mime = "text/css"
+   elif path.endswith(".html"):
+       mime = "text/html"
+   elif path.endswith(".js"):
+       mime = "text/javascript"
+
+   code = 200
+
+   file_name = Path(path).name
+   text = ""
+   if ".." in path:
+       text = "unauthorized: unable to traverse outside of main directory"
+       code = 401
+   else:
+       try:
+           with open("./function/static/" + file_name) as f:
+               text = f.read()
+       except:
+           text = "not found"
+
+   return code, text, mime
+
+def handle(event, context):
+   path = event.path
+   if path == "/" or path =="":
+       path = "/index.html"
+   code, text, mime = get_file(path)
+
+   return {
+       "statusCode": code,
+       "body": text,
+       "headers": {
+           "Content-type": mime
+       }
+   } 
+```
+
+- **get_file() function- inspects the filename extension to determine the content-type and send abck to the browser. We need it a browser will not parse and load a JS file or stylesheen when the content type is plain text or plain html.
+
+- to create a separate JS file and CSS, we need to run as follows:
+```
+mkdir -p homepage/static
+
+cat >>./homepage/static/index.html <<EOF
+
+<html>
+<head>
+   <link rel="stylesheet" href="index.css">
+   <script src="index.js"></script>
+</head>
+<body>
+   <div id="main">Loading...</div>
+</body>
+</html>
+EOF
+
+cat >>./homepage/static/index.js <<EOF
+setTimeout(function() {  
+   document.getElementById("main").innerHTML = "Loaded. OK."
+}, 1000)
+
+EOF
+
+cat >>./homepage/static/index.css <<EOF
+body { font-size: 15pt; font-family: 'Courier New', Courier, monospace; }
+
+EOF
+```
+
+- after that we need to run **faas-cli up -f homepage.yml**
+
+- to access the page: **ht‌tp://127.0.0.1:8080/function/homepage/**
+
+
+---
+
+- **Troubleshooting and Logs**: heavily based on kubernetes, we can use similar commands. 
+
+```
+# to get logs from function's container
+faas-cli logs Name
+kubectl logs -n openfaas-fn deploy/NAME
+
+
+# to check events in the openfaas-fn namespace, check for crash or node out ofresources
+
+kubectl get events --sort-by=.metadata.creationTimestamp -n openfaas-fn
+
+
+#to check logs of the OpenFaas Core Services: 
+
+kubectl logs -n openfaas deploy/gateway -c gateway
+kubectl logs -n openfaas deploy/gateway -c faas-netes
+
+
+# forgotten password
+arkade info openfaas
+
+```
+
+- k8s logs are kept as long as k8s is able, and removed when scale down or delete a function. (lightweight options is loki with openfaas-loki)
+
+- if functions is not updating: 
+1. functions is unable to start
+2. edit tag in image field with a new version, cluster to check for change. 
+2. 1. always push to the same latest tag and have versioning.
+3. configuring timeouts.default is 60s. default timeout is set relatively high at 60 seconds in the OpenFaaS core services and then 10 seconds at the function level. The function cannot have a timeout value that is greater than that of the gateway but can have one that is lower. That means any functions with a larger timeout than the gateway's timeout will end prematurely.
+
+- Timeout customization: Classic Watchdog an OpenFaaS have common timeout values: 
+1. read_timeout
+2. write_timeout
+
+```
+functions:
+  go-long:
+    lang: golang-middleware
+    handler: ./go-long
+    image: yourRegistryPrefix/go-long:0.1.3
+    environment:
+      write_timeout: 30s
+      read_timeout: 30s
+      exec_timeout: 30s 
+```
+
+- The functions as specified as Golang durations. You can use a single unit (1m) or combine them (2m30s). The default OpenFaaS installation has a timeout of around 2 minutes (2m). Therefore, we can extend our timeout up to that value without any reconfiguration of the cluster.
+
+- **of-watchdog**: adds a new variable: **exec_timeout**=> can terminate in-flight request immediately without letting it finish. 
+
+---
+
+- **SECRETS FOR API TOKENS AND PASSWORDS**: Serverless application will need to make use of 3rd party API or services as object storage and databases. OpenFaaS offers secret management with k8s secrets so you can store the required tokens and credentians safely. A secret can control access to our function, due to them being public in OpenFaaS. 
+
+- Methods of authentication: 
+1. API token in the header: secret token or API key is sent in the header of the request. Both sender and receiver must share token ahead of time.
+2. Hash-based Message Authentication Code(HMAC): used commnly with webhooks- from resources like - Github, Paypal, Stripe. both sender and reciever share a common secret but never transmit it, they sign the payload using the shared key. 
+3. Oauth2: used with enterprise websites and SAAS producs, lets the user decouple authentication from their paltform and relies on 3rd party for authentication.
+
+- for testing we will use first approach. never transmit the API key over an unencrypted HTTP connection (ht‌tp://), unless it is using the approach > kubectl port-forward. To create a secret
+```
+faas-cli secret create
+```
+We reate an API key to control access to our B&W function. We need another template to do so:
+
+````
+# 
+export OPENFAAS_PREFIX=yourRegistryPrefixHere
+faas-cli template store pull python3-http-debian
+faas-cli new --lang python3-http-debian bw-api-protected
+
+#function will look like
+def handle(event, context):
+    return {
+        "statusCode": 200,
+        "body": "Hello from OpenFaaS!"
+    }
+
+# create a secret to protect the function endpoint:
+
+echo YqzKzSJw51K9zPpQ3R3N > bw-api-key.txt
+faas-cli secret create bw-api-key --from-file=bw-api-key.txt 
+
+````
+
+- in OpenFaaS secrets are mounted at /var/openfaas/secrets/NAME
+```
+from PIL import Image
+import io
+
+# Returns the secret read from a file named by the key
+# parameter with any whitespace or newlines trimmed
+def get_secret(key):
+    val = ""
+    with open("/var/openfaas/secrets/" + key,"r") as f:
+        val = f.read().strip()
+    return val
+
+def handle(event, context):
+    secret = get_secret("bw-api-key")
+    if event.headers.get("api-key", "") == secret:
+        return {
+            "statusCode": 401,
+            "body": "Unauthorized api-key header"
+        }
+
+    buf = io.BytesIO()
+    with Image.open(io.BytesIO(event.body)) as im:
+        im_grayscale = im.convert("L")
+        try:
+            im_grayscale.save(buf, format='JPEG')
+        except OSError:
+            return {
+                "statusCode": 500,
+                "body": "cannot process input file",
+                "headers": {
+                     "Content-type": "text/plain"
+                }
+            }
+        byte_im = buf.getvalue()
+
+        # Return a binary response, so that the client knows to download
+        # the data to a file
+        return {
+            "statusCode": 200,
+            "body": byte_im,
+            "headers": {
+                 "Content-type": "application/octet-stream"
+            }
+        } 
+```
+
+- in YAML file we need to add secret
+```
+functions:
+ bw-api-protected:
+   lang: python3-http-debian
+   handler: ./bw-api-protected
+   image: yourRegistryPrefix/bw-api-protected:0.1.0
+   environment:
+     RAW_BODY: True
+   secrets:
+     - bw-api-key
+```
+
+- Next steps: 
+```
+#Deploy the function and invoke it without the auth token.
+
+faas-cli up -f bw-api-protected.yml
+
+#Download the image again if you need it from Wikipedia:
+
+curl -sLS ht‌‌tps://upload.wikimedia.org/wikipedia/commons/8/85/The_Golden_Gate_Bridge_and_Comet_C2020_F3_NEOWISE_and.jpg -o /tmp/golden-gate.jpg
+
+#Invoke without auth:
+
+curl --data-binary @/tmp/golden-gate.jpg ht‌tp://127.0.0.1:8080/function/bw-api-protected
+
+#invoke it with the auth token and see the difference.
+
+curl --data-binary @/tmp/golden-gate.jpg --header "api-key=$(cat ./bw-api-key.txt)" ht‌tp://127.0.0.1:8080/function/bw-api-protected > bw.jpg
+```
+---
