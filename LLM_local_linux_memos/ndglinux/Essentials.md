@@ -1585,3 +1585,8 @@ British English: Do you consider grey to be a colour or a shade?
 ```
 
 ----
+
+### Chapter 10 - Lab notes
+
+---
+
