@@ -1590,3 +1590,46 @@ British English: Do you consider grey to be a colour or a shade?
 
 ---
 
+- **grep** uses regular expressions. 
+- **grep -E** searches extended regular expressions. or **egrep**. 
+- **fgrep** match literal characters.
+- **Best practice**: Use single quotes (not double quotes) around regular expressions to prevent the shell program from trying to interpret them.
+
+- **^** character can be used to match a pattern at the beginning of a line.
+- **$** character matches the pattern at the end of a line. 
+- **.** character to match any single character
+- **|** pipe acts an "or" operator. grep does not recognize the pipse as the alternation operator by default. it includes pipe as a plain character in the patten to be matched. in order fog grep to read it i should be sued with -E flag **grep -E 'sshd|root|operator' passwd**.
+
+- **egrep** we can use pipe to check the following regular epxpression. Look for string **nob and non**
+```
+egrep 'no(b|n)' passwd
+```
+- parentheses (), are to limit the scope of the | chracter. Without them it means that "match either nob or n". 
+- **grep** can be used with []- to specify range. 
+```
+head passwd | grep '[0-9]'
+```
+
+- You can use { } characters with a number to express that you want to repeat a pattern a specific number of times; for example: {3}. The use of the numeric qualifier requires the extended mode of grep:
+```
+grep -E '[0-9]{3}' passwd
+```
+
+- and it will return 
+```
+sync:x:4:65534:sync:/bin:/bin/sync                                              
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin                      
+_apt:x:100:65534::/nonexistent:/usr/sbin/nologin                                
+systemd-network:x:101:102:systemd Network Management,,,:/run/systemd/netif:/usr/
+sbin/nologin                                                                    
+systemd-resolve:x:102:103:systemd Resolver,,,:/run/systemd/resolve:/usr/sbin/nol
+ogin                                                                            
+syslog:x:103:106::/home/syslog:/usr/sbin/nologin                                
+messagebus:x:104:107::/nonexistent:/usr/sbin/nologin                            
+bind:x:105:110::/var/cache/bind:/usr/sbin/nologin                               
+sshd:x:106:65534::/run/sshd:/usr/sbin/nologin                                   
+operator:x:1000:37::/root:/bin/sh                                               
+sysadmin:x:1001:1001:System Administrator,,,,:/home/sysadmin:/bin/bash    
+```
+
+---
