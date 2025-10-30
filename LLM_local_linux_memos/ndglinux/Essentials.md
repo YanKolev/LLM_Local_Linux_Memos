@@ -1633,3 +1633,160 @@ sysadmin:x:1001:1001:System Administrator,,,,:/home/sysadmin:/bin/bash
 ```
 
 ---
+
+### Chapter 11- Basic Scripting
+
+---
+
+- Shell Script- a file of executable commands that has been stored in a text file. when file is run, each commad is executed. They have access to all comamnd of the shell + logic. 
+
+- Programs to write scripts are Nano/ vi / vim. 
+
+- Helpful nano commands are: 
+
+![](images/Essentials/nanocontrols.png)
+
+- Every script stars with a shebang **#!**. then addition which actual shell is used. 
+
+----
+
+
+- **Variables**
+
+----
+- there are no spaces between the name of the variable
+```
+#!/bin/bash
+
+ANIMAL="penguin
+echo "My favorite animal is $ANIMAL"
+
+```
+- When the interpreter sees that dollar sign it recognizes that it will be substituting the contents of the variable, which is called interpolation.
+
+- another way to assign a variable is to use the output of another command as the contents of the varibale by enclosing it in back ticks:
+```
+#!/bin/bash
+CURRENT_DIRECTORY=`pwd`
+echo "You are in $CURRENT_DIRECTORY"
+
+```
+- we can get input from the use and assign it to a variable with the **read** command:
+```
+#!/bin/bash
+
+echo -n "What is your name?"
+read NAME
+echo "Hello $NAME!"
+
+```
+
+- A dollar $ sign followed by a number N corresponds to the Nth argument passed to the script.
+
+- After a program runs, be it a binary or a script, it returns an exit code which is an integer between 0 and 255.
+
+- **grep** can be used for: look for a string within a file with the **-q** flag, meaning quiet. grep in quiet mode > returns 0 if the string was found, and 1 if not. 
+- we can exit code of our own script with exit command.
+```
+#!/bin/bash
+
+# Something bad happened!
+
+exit 1
+
+```
+- **#** -> is a comment, everyting after it is ignored. 
+- to exit 1 returns exit 1 to the caller. 
+- exit code 0 => "everything is OK"
+- exit code greater than 0 means some error happened.
+
+----
+
+- **Conditionals**
+
+----
+
+- when we make a shell script do different function based on test its called > Branching. 
+
+- if statement is basic operator to implement branching. 
+```
+if somecommand; then
+  # do this if somecommand has an exit code of 0
+fi
+```
+
+- example of script that does different things absed on the pressence of a string in the password file
+```
+#!/bin/bash
+
+if grep -q root /etc/passwd; then
+  echo root is in the password file
+else
+  echo root is missing from the password file.
+fi
+
+```
+- exit code of grep is 0 if string is found. there is else block> allowing us to do nother action if the condition is false. **Else block must be closed with fi keyword**. 
+
+- **test** command gives acces to comparison and file test operators. Examples: 
+
+![](images/Essentials/testcommand.png)
+
+- **test** looks at integer and string comparisons differently. 01 and 1 are the by numeric comparison, but not by string comparison. 
+
+- **-gt** meaning greater than, always tests if one file is newer than the other and many more. RTFM! 
+
+- **test** is verbose, so we can use []- brackets and eclose the condition in square brackets as same as running test. 
+
+```
+if test -f /tmp/foo; then
+
+if [-f /tmp/foo]; then
+
+# both are identical
+```
+
+- if we need multiple comparissons we need elif (else if)
+```
+#!/bin/bash
+
+if ["$1" = "hello"]; then
+  echo "hello yourself"
+elif [ "$1" = "goodbye"]; then
+  echo "nice to have met you"
+  echo "I hope to see you again"
+else
+  echo "I didn't understand that"
+fi
+
+```
+- if hello is passed back- first block is executed.
+- if not script checks if its goodbye and echoes a different message. 
+- **$1** variable is quoted and the string comparised is used instead of the numeric version **-eq**
+
+- **if/elif/else** can be quite verbose, **case** statement provides a different way of making tests
+```
+#!/bin/bash
+
+case "$1" in
+hello|hi)
+  echo "hello yourself"
+  ;;
+goodbye)
+  echo "nice to have met you"
+  echo "I hope to see you again"
+  ;;
+*)
+  echo "I didn't understand that"
+esac
+
+```
+
+- cases statement starts with a dectiption of the expression being tested: **case EXPRESSION in**, expression is quoted $1. 
+
+- each set of tests are executed as a pattern match terminated by a closing parenthesis. 
+- first example looks for hello or hi, separated by pipe (logical OR operator in our case). following that are commands to eb executed if the pattern retunrs true, which are terminated by semicolons. Then pattern repeats.
+
+- **The * pattern** is same as **else** because it matches everything. the processing stops after the first match. if none of the other options are matched * ensures that the last one will match. 
+
+---
