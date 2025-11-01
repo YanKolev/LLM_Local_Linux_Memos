@@ -1790,3 +1790,51 @@ esac
 - **The * pattern** is same as **else** because it matches everything. the processing stops after the first match. if none of the other options are matched * ensures that the last one will match. 
 
 ---
+
+- **Loops**: allow code to be executed repeatedly. to run same commands over each file in a directory or run action 100times. for shell scripts there are 2 main loops: 
+
+1. **for loop**
+2. **while loop**
+
+- **for loop** are used when you have a finite collection over which you want to iterate, such as a list of files or a list of server names:
+```
+#!/bin/bash
+
+SERVERS= "servera serverb serverc"
+for S in $SERVERS; do
+  echo "Doing something to $S"
+done
+
+```
+- breakdown: first sets a variable containing a space separated list of server names. for statement loops over the list of servers, each time it sets the S variable to the current server name. (S does not have dollar sign, but $SERVER DOES, so it will be expanded to the list of servers). The list does not have to be a variable. 
+
+- variant 2: 
+```
+#!/bin/bash
+
+for NAME in Sean Jon Isaac David; do
+  echo "Hello $NAME"
+done
+
+for S in *; do
+  echo "Doing something to $S"
+done
+
+```
+
+- breakdown: similar to variant 1, but the list is passed tothe for loop directly instead of using variable. using variable helps for later changes to the variable than reworking wghole loop. Second loop uses glob character * > its expanded to shell on all files in the current directory.
+
+- **while loop**: operates on a list of unknown size. main purpose is to keep runnin on each iteration perform a **test** to see if it should run another time. 
+```
+#!/bin/bash
+
+i=0
+while [$i -lt 10]; do
+  echo $i
+  i = $(($i+1))
+done
+echo "Done counting"
+```
+-breakdown: loop that counts from 0 to 9, counter variable, i, is initialized to 0, while loop is run with the test being "is $1 less than 10 ?" uses same notation as if statement. current value of i is echoed and then 1 is added via $((arithmetic)) and assigned back to i. Once i becomes 10 while statement retuns false and processing continues after the loop. 
+
+---
