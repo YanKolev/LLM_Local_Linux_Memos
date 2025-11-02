@@ -1838,3 +1838,28 @@ echo "Done counting"
 -breakdown: loop that counts from 0 to 9, counter variable, i, is initialized to 0, while loop is run with the test being "is $1 less than 10 ?" uses same notation as if statement. current value of i is echoed and then 1 is added via $((arithmetic)) and assigned back to i. Once i becomes 10 while statement retuns false and processing continues after the loop. 
 
 ---
+
+### Chapter 11 - Lab notes
+
+---
+
+- work with vi text editor. Shortcuts: 
+
+![](images/Essentials/vicommands.png)
+
+- nagivation keys: 
+
+![](images/Essentials/vinavigation.png)
+
+- to delete a word: dw (delete word)
+- to undo - u
+- to delete 2 words: 2dw
+- delete four characters one at a time: xxxx
+- to unto last 4 operations: 4u / undo last 2 operation: 2u
+- to delete 14 characters: 14x
+- to delete 5 characters to the left of cursor: 5X (5+Shift+x)
+- to delete current line: dd
+- whatever was laste deleted or yanked can be "pasted": p 
+- delete two lines: 2dd
+- to join two lines: J (shift+J)
+- to copy/yank current word: yw
