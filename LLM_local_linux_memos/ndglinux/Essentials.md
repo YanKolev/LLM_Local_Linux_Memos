@@ -1863,3 +1863,131 @@ echo "Done counting"
 - delete two lines: 2dd
 - to join two lines: J (shift+J)
 - to copy/yank current word: yw
+- to paste/put p (shift+p)
+- to move to first line, then join three lines: 1G 3J
+- to search and delete the word "text" + add space after it: **:%s/text //g**
+- navigate to beginning of file > 1G
+- to lower case shift + `
+- to save file :w
+- to append text to the right of cursor > press a
+- to open a blank line below the current like : o
+- to open a blank like above uppercase O
+
+- methods to save changes: 
+
+![](images/Essentials/visavechanges.png)
+
+
+- to navigate to 3rd line, and delete the third and fourth lines: 3G 2dd
+- to search the word line : **/line**
+- to search next istance: n
+- to search backwards: ?line
+- **!NB**: Insert modes include: i, I, a, A, o, and O.
+
+------ 
+
+- Sample shell script:
+```
+#!/bin/bash
+
+echo "Please enter your age
+read age
+if test $age -lt 16
+  then echo "You are not old enough to drive."
+else
+  echo "You can drive!"
+fi
+
+# to make it run 
+cat drive.sh
+chmod a+x drive.sh
+./drive/sh
+```
+
+- If $age is less than 16, then echo 'You are not old enough to drive', else echo 'You can drive!'. The fi ends the if statement.
+
+- $age must be an integer value. If it is not, the program will KABOOM.
+
+- to fix it we need brackets: 
+```
+#!/bin/bash                                                                   
+echo "Please enter your age"                                                  
+read age                                                                      
+if [ $age -lt 16 ]                                                            
+then                                                                          
+   echo "You are not old enough to drive."                                    
+else                                                                          
+   echo "You can drive!"                                                      
+fi                          
+```
+
+- **NB!** There must be spaces around the square brackets. [$age -lt 16] would fail, but [ $age -lt 16 ] would work.
+
+- shell script to determine if a user account is on this system 
+```
+#!/bin/bash
+echo "Enter a username to check: "
+read name
+if grep $name /etc/passwd > /dev/null
+then
+    echo "$name is on this system"
+else
+    echo "$name does not exist"
+fi
+
+- to make it run: 
+cat check.sh
+chmod a+x check.sh
+./check.sh
+
+# if we add name root- it will return thats on the system, if we add- John- it will return: john does not exist. 
+```
+
+
+- shell script that counts. (using while loop)
+```
+#!/bin/bash                                                                   
+echo "Please enter a number greater than 100"                                 
+read num                                                                      
+while [ $num -le 100 ]                                                        
+do                                                                            
+    echo "$num is NOT greater than 100."                                      
+    echo "Please enter a number greater than 100."                            
+    read num                                                                  
+done                                                                          
+echo "Finally, $num is greater than 100" 
+```
+
+- logic behing it: If the conditional check for the while statement ( [ $num -le 100 ] ) returns true, then the statements between do and done are executed.
+
+- Once those statements have completed executing, the conditional check for the while statement is checked again. If true again, then again the statements between do and done are executed.
+
+- This will continue repeating until the while condition returns false, or when the value is greater than 100.
+
+- we can use these statements on the command line just like you use them in a shell script. This can be useful for a statement like the for statement, a statement that will assign a list of values one at a time to a variable. This allows us to perform a set of operations on each value.
+
+```
+for name in /etc/passwd /etc/hosts /etc/group           
+> do                                                                          
+>     wc $name                                                                
+> done                                                                        
+  24   30 1001 /etc/passwd                                                    
+  7  15 161 /etc/hosts                                                        
+  46  46 561 /etc/group         
+
+```
+
+- **seq**: is often used with for statement. **seq**- generate a list of integer value from 1 to 10
+
+
+```
+# to create 12 files named test1, test2, test3, etc. (up to test12):
+ls
+for num in `seq 1 12`
+do
+          touch test$num
+done
+ls
+
+```
+----
