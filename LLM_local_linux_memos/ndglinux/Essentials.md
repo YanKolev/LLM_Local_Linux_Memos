@@ -1991,3 +1991,38 @@ ls
 
 ```
 ----
+
+### Chapter 12- Understanding Computer Hardware
+
+----
+
+- motherboard, cpu, ram.
+- if a system has more than one processor, is called- multiprocessor.
+- two types of processors used on desktop and server computers: x86 and x86_64. On an x86 system, the system processes data 32 bits at a time; on an x86_64 the system processes data 64 bits at a time. An x86_64 system is also capable of processing data 32 bits at a time in a backward compatible mode. One of the main advantages of a 64-bit system is the ability to work with more memory, while other advantages include increased efficiency of processing and increased security.
+
+```
+arch- to see the family of the cpu of the current system belongs to
+lscpu- more information bout the CPU
+
+```
+
+- **RAM**: The 32-bit architecture systems can use up to 4 gigabytes (GB) of RAM, while 64-bit architectures are capable of addressing and using far more RAM.
+```
+# command to check ram: 
+free
+free -m #rounds to the nearest megabyte
+free -g # rounds to the nearest gigabyte
+```
+
+- **Busses**: bus- high speed connection that allows communication between computer components. PCI- Peripheral component interconnect, USB- Universal Serial Bus 
+
+- to view peripheral devices:
+```
+slpci
+```
+- universal serial bus devices: hot plug- can be connected/disconnected when system is running. cold plug- system needs to be shut down in order to connect/disconnec.
+
+- to display devices connected via USB
+```
+lssub
+```
