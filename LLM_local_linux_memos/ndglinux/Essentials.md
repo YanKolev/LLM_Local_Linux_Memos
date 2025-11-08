@@ -2018,7 +2018,7 @@ free -g # rounds to the nearest gigabyte
 
 - to view peripheral devices:
 ```
-slpci
+lspci
 ```
 - universal serial bus devices: hot plug- can be connected/disconnected when system is running. cold plug- system needs to be shut down in order to connect/disconnec.
 
@@ -2026,3 +2026,30 @@ slpci
 ```
 lssub
 ```
+
+- harddrives: different ways to be attached to the system: integrated controller into the motherboard, PCI card or USB device. definition: electromechanical or electronic storage device that holds data to be accessed by the system.
+
+- they can be divided into one or more partitions(logical division of a hdd).some hdd make use of partitioning technology- MBR- master boot record, others use the partitioning type GUID Partitioning Table (GPT). GPT has been in use since 2000, MBR since early days of PC. 
+
+- there are several disc comands **fdisk, cfdisk and sfdisk**, which are tools for working with the MBR partioned disks. 
+- **GPT** disks use newer type of partitioning, allowing the user to divide the disk into more partitions than what MBR supports.allows support for partitions larger than two terabytes (MBR does not). Tools: **gdisk, cgdisk and sgdisk**. 
+- tools that support both MBR AND GPT types: **parted, gparted**. 
+
+- many linux distros use **gparted** tools in the installation routine as it provides a graphical interface. 
+
+- hard drives are associated with the filenames (device files) stored in **/dev directory**: 
+  1. filetype- IDE (Intelligent Drive Electronics) hard drives begin with hd, while USB, SATA (Serial Advanced Technology Attachment) and SCSI (Small Computer System Interface) hard drives begin with sd.
+  2. device order- Each hard drive is then assigned a letter which follows the prefix. For example, the first IDE hard drive would be named /dev/hda and the second would be /dev/hdb, and so on.
+  3. partition-  each partition on a disk is given a unique numeric indicator. For example, if a USB hard drive has two partitions, they could be associated with the /dev/sda1 and /dev/sda2 device files.
+
+```
+ls /dev/sd*
+
+fdisk -l /dev/sda
+
+```
+
+- opticval drives: under the /medial folder for new distributions, and under /mnt folder for old. USB will be mounted on the /media/usbthumb path. to unmount we can use the **unmount** command. 
+
+-----
+
