@@ -2053,3 +2053,33 @@ fdisk -l /dev/sda
 
 -----
 
+### Chapter 12 Lab notes
+
+----
+
+```
+lscpu
+
+head -n 20 /proc/cpuinfo
+
+free -m 
+
+free -g
+
+lspci
+
+lspci -k
+
+lusb
+
+#For hardware to function, the Linux kernel usually loads a driver or module
+lsmod
+
+fdisk -l
+```
+
+-The fdisk command is useful for identifying and manipulating disk storage resources on a system. Since it can be used to create, format and delete partitions, as well as for getting information, it should be used with care in administrator mode to avoid data loss. The fdisk command can be used in two ways: interactively and non-interactively.
+
+- When the -l option is used with fdisk, then the command will non-interactively list block devices, which includes disks (hard drives) and logical volumes.
+
+- Without the -l option, the fdisk command enters an interactive mode that is typically used to modify partitions on a disk device.
