@@ -2083,3 +2083,79 @@ fdisk -l
 - When the -l option is used with fdisk, then the command will non-interactively list block devices, which includes disks (hard drives) and logical volumes.
 
 - Without the -l option, the fdisk command enters an interactive mode that is typically used to modify partitions on a disk device.
+
+---
+
+### Chapter 13 Data storage
+
+---
+
+- when people say Linux they are suggesting the combination of GNU/Linux- defined as the operation system. the kernel is the core of the system. 
+- Filesystem Hierarchy Standard- provides a guideline for distros how to organize files. Kernel provdes information about the filesystem under **/proc** and **/sys** pseudo filesystems.
+
+- hardware devices are made available through special files under **/dev** directory, ifmormation about them can be found in pseudo filesystem **/sys**.
+
+- pseudo filesystems appear to be real files on disk but exist only in memory. Pseudo file system such as **/proc** are designed to appear as a hierarchial tree of the root of system directories( however only exist in the system's memory), they appear to be resident on the storage device that the root file system is on. 
+
+- **/proc**: not only contains information about running processes, but also information abput the systems hardware and current kernel configuration. 
+
+```
+ls /proc
+```
+- will return contencs of the directory, the numbers shpw the **process ID** (PID), ex: 72 = PID 72. There is alsoway a process ID or PID 1. 
+
+![](images/Essentials/procids.png)
+
+---
+
+- most files under the **/proc** directory can not be modified, files underneath are potentially meant to be changed by the root user. modifying them-> changes the behaviour of the Linux kernel. 
+
+- direct modification of tiles is only temporary. to make persistent- entries can be added to appropriate section of the **/etc/sysctl.conf** file. 
+
+- /proc/sys/net/ipv4 directory contains a file named icmp_echo_ignore_all. If that file contains a zero 0 character, as it normally does, then the system will respond to icmp requests. If that file contains a one 1 character, then the system will not respond to icmp requests.
+
+----
+
+- **Process Hierarchy**: init process is PID 1. On a System V-based system, the init process would be the /sbin/init program. On a systemd-based system, the /bin/systemd file is typically executed but is almost always a link to the /lib/system/systemd executable.  Information can extracted **/proc/1** directory. 
+
+- when one process starts another process, the process that performs the starting is called **parent pcoess** and the process that is started is called **child process**. Parent PID is labeled PPID. 
+
+- When the system has been running for a long time, it may eventually reach the maximum PID value, which can be viewed and configured through the **/proc/sys/kernel/pid_max** file. Once the largest PID has been used, the system "rolls over" and continues seamlessly by assigning PID values that are available at the bottom of the range.
+
+- processes can be "mapped"" into a family tree of parent-child couplings. to review it **pstree**
+
+```
+pstree
+
+# it will return (from the course)
+init-+-cron
+‌⁠​​⁠​ 
+     |-login---bash---pstree
+     |-named---18*[{named}]
+     |-rsyslogd---2*[{rsyslogd}]
+     `-sshd
+
+
+    init is the parent of login
+    login is the child of init
+
+    login is the parent of bash
+    bash is the child of login
+
+    bash is the parent of pstree
+    pstree is the child of bash
+
+```
+
+----
+- Process Snapshot: to view processes **ps**- shows only the current processes runnin in the current shell.  if we run **ps --forest** (similar to pstree) > shows the parent and child relationship. for all processes **ps aux** or **ps -ef** (can be used with head/tail but needs pipe).
+
+- it can be used with grep, to locate a proess: **ps -ef | grep firefox**
+
+- processes in real-time. **top** provides all that information, top is sorted by the % of CPU that each process is currently using. to escape press q. When we open top we can use **K** to terminate runaway proecss, **R** to adjust the priority of the process. 
+
+- Pressing the K key while the top command is running will prompt the user to provide the PID and then a signal number. Sending the default signal requests the process terminate, but sending signal number 9, the KILL signal, forces the process to terminate.
+
+- Pressing the R key while the top command is running will prompt the user for the process to renice, and then for a niceness value. Niceness values can range from -20 to 19, and affect priority. Only the root user can use a niceness value that is a lower number than the current one, or a negative niceness value, which causes the process to run with an increased priority. Any user can provide a niceness value that is higher than the current niceness value, which causes the process to run with a lowered priority.
+
+----
