@@ -2289,3 +2289,32 @@ While the log files can be handy for troubleshooting problems, they can cause pr
 ```
 
 ---
+
+### Chapter 13 lab noes
+
+---
+
+- /proc directory is a preusdo filesystem maitained in the memory of the computer. **ps and top** read information from there. thre are also files about the kernel settings > but we need **to read echo or cat/sysctl to overwrite them**. 
+- for perma changes : **/etc/sysctl.conf file
+
+```
+ping localhost > /dev/null
+```
+- ping will be redirected to the /dev/null file (known as bitbucket), runs in the foreground and will hang up terminal. 
+
+- What is /dev/null? It is a virtual device, which has a special property: Any data written to /dev/null vanishes or disappears. Because of this characteristic, it is also called bitbucket or blackhole.
+
+```
+# when we add ampersand to the end of the command the process will start in the background.
+ping localhost > dev/null &
+
+```
+- Each terminal/shell will have unique job numbers. The PID is system-wide; each process having a unique ID number.
+
+- This information is important when performing certain process manipulations, such as stopping processes or changing their priority value.
+
+```
+# to see which command are runnin the current terminal
+jobs
+
+```
