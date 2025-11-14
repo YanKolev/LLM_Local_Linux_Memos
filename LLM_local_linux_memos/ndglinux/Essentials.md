@@ -2373,3 +2373,12 @@ ps -o pid,tty,time,%mem,cmd --sort %mem
 - Apache web server (log file resides in the /var/log/httpd directory), the Common Unix Printing System (/var/log/cups) and the auditd daemon (/var/log/audit). CentOS is called rsyslogd
 
 ---
+
+### Chapter 14 Network Configuration
+
+---
+
+- Basic network terminology: 
+
+![](images/Essentials/netw1.png)
+
