@@ -2382,3 +2382,19 @@ ps -o pid,tty,time,%mem,cmd --sort %mem
 
 ![](images/Essentials/netw1.png)
 
+---
+
+![](images/Essentials/netw2.png)
+
+---
+
+- IPv4 and IPv6. IPv4 address total of 8 bit numbers, used to define the address. Considered 32-bit address.(8 bit refers to numbers from 0 to 255). 
+- Each host on the internet must have unique IP address. 
+- IPv6: officially created in 1998, larger, 128-bit addresses. More advanced features: package management and more efficient data transportation. 
+- **NAT**: Net Address Tranlsation: technique to provide more hosts access to the internet. (group of hosts is placed into private network with no direct access to the Internet, router provides Internet access, only one router needs an IP address to communicate on the internet.)
+- Porting: switching from one technology to another. (Due to large usage of ipv4 switching to Ipv6 is challenge.)
+- normally wired machine uses static IP, but can be assigned via DHCP server. DHCP is always on mobile and attached to different networks. 
+
+---
+
+*14.5.1.1
