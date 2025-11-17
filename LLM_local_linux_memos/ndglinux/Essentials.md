@@ -2398,3 +2398,5 @@ ps -o pid,tty,time,%mem,cmd --sort %mem
 ---
 
 *14.5.1.1
+
+ifconfig, route, /etc/hosts, ping -c4 localhost, cat /etc/resolv.conf, dig localhost.localdomain, netstat, 
