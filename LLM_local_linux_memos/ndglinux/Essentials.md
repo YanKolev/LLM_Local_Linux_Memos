@@ -2397,6 +2397,58 @@ ps -o pid,tty,time,%mem,cmd --sort %mem
 
 ---
 
-*14.5.1.1
+- **IPv4** configuration: 
+  - in CentOS: /etc/sysconfig/network-scripts/ifcfg-eth0
+  - DebianOS: no sysconfig folder
 
-ifconfig, route, /etc/hosts, ping -c4 localhost, cat /etc/resolv.conf, dig localhost.localdomain, netstat, 
+- CentOS stores IPv4 and IPv6 at the same place:
+```
+IPV6INIT=yes
+IPV6ADDR=<IPv6 IP Address>
+IPV6_DEFAULTGW=<IPv6 IP Gateway Address>
+
+# if we want to be a DHCP IPv6 clien we add
+DHCPV6C=yes
+
+# also we need to add to the /etc/sysconfig/network file
+NETWORKING_IPV6=yes
+
+```
+
+- **NB!**: to make changes to network interface: - take interface down with **ifdown eth0**, make changes to the config file, then bring whole interface up with **ifup eth0**.  Another approach is to restart whole networking with command: **service network restart**. (re-reads all config files then restarts the networking for the system )
+
+---
+
+- Domain Name System (DNS): to reach certain website that we do not know the name of, we can use the hostname request. which relies on the DNS service of another computer. IP address of the DNS server is discovered during DHCP request. 
+- DNS server is stored in the **/etc/resolv.conf** file (nameservr is there). Nameserver is ofter set torhe IP address of the DNS server. 
+
+- Network Configuration files: Name resolution on a Linux host is accomplished by 3 critical files: the /etc/hosts, /etc/resolv.conf and /etc/nsswitch.conf files. 
+
+- **/etc/hosts**: table of hostnames to IP addresses. it can be used to supplement a DNS server
+- **/etc/resolv.conf**: contains IP addresses of the name servers the system should consult in any attempt to resolve names to IP addresses. These servers are often DNS servers + additional keywords and values that can affect the resoulution process. 
+- **/etc/nsswtich.conf**: modify hostname lookups. 
+```
+# the /etc/hosts file is searched first, the DNS server second
+
+hosts: files dns
+
+# DNS server would be searched first, local files second
+
+hosts: dns files
+```
+
+- Commands or programs on the system, like- browser reuqest a connection with a remote computer by DNS name. 
+1. /etc/nsswitch.conf is consulted
+```
+hosts files dns
+# system should consult local files first to resolve hostnames, file will be parsed for a match to the requested name
+```
+2. /etc/hosts is consulted, to attemtp to resolve the name. If name matches an entry in step 1, is resolved. IF NOT > will continue to the DNS option if the resolution is inaccurate. (this can happen if /etc/hosts points to a non-assigned IP address)
+3. local /etc/hosts does not result in a match, the system will use the configured DNS server entries contained in the /etc/resolv.conf file to attempt to resolve the name. 
+```
+# /etc/resolv.conf file should containe at least 2 entires for name servers, such example:
+nameserver 10.0.2.3
+nameserver 10.0.2.4
+```
+4. The DNS resolution system will use the first name server for an attempted lookup of the name, If unavailable or timeout period is reached, second server will then be queried for the name resolution. IF match > returned to the syses and used for initiating a connection and placed in the DNS cache for a configurable time period. 
+
