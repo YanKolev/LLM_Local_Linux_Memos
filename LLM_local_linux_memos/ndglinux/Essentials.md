@@ -2438,17 +2438,124 @@ hosts: dns files
 ```
 
 - Commands or programs on the system, like- browser reuqest a connection with a remote computer by DNS name. 
-1. /etc/nsswitch.conf is consulted
-```
-hosts files dns
-# system should consult local files first to resolve hostnames, file will be parsed for a match to the requested name
-```
-2. /etc/hosts is consulted, to attemtp to resolve the name. If name matches an entry in step 1, is resolved. IF NOT > will continue to the DNS option if the resolution is inaccurate. (this can happen if /etc/hosts points to a non-assigned IP address)
-3. local /etc/hosts does not result in a match, the system will use the configured DNS server entries contained in the /etc/resolv.conf file to attempt to resolve the name. 
-```
-# /etc/resolv.conf file should containe at least 2 entires for name servers, such example:
-nameserver 10.0.2.3
-nameserver 10.0.2.4
-```
-4. The DNS resolution system will use the first name server for an attempted lookup of the name, If unavailable or timeout period is reached, second server will then be queried for the name resolution. IF match > returned to the syses and used for initiating a connection and placed in the DNS cache for a configurable time period. 
+  1. /etc/nsswitch.conf is consulted
+  ```
+  hosts files dns
+  # system should consult local files first to resolve hostnames, file will be parsed for a match to the requested name
+  ```
+  2. /etc/hosts is consulted, to attemtp to resolve the name. If name matches an entry in step 1, is resolved. IF NOT > will continue to the DNS option if the resolution is inaccurate. (this can happen if /etc/hosts points to a non-assigned IP address)
+  3. local /etc/hosts does not result in a match, the system will use the configured DNS server entries contained in the /etc/resolv.conf file to attempt to resolve the name. 
+  ```
+  # /etc/resolv.conf file should containe at least 2 entires for name servers, such example:
+  nameserver 10.0.2.3
+  nameserver 10.0.2.4
+  ```
+  4. The DNS resolution system will use the first name server for an attempted lookup of the name, If unavailable or timeout period is reached, second server will then be queried for the name resolution. IF match > returned to the syses and used for initiating a connection and placed in the DNS cache for a configurable time period. 
 
+---
+
+- **Network Tools**
+
+---
+
+- **ifconfig**: interface configuration, used to display network configuration information. Shows IP address of the primary network device. **lo** device is referred to to as the loopback device. Its a special network device used by the system when sending network-based data to itself. **ifconfig** can be used to modify network settings temporary. 
+
+- ifconfig is becoming obsolete in some linux distros. being replaced by a form of
+**ip** command , specifically **ip addr show**. It has more functionalitym can be used in variety of ways. Can combine the work of several commands- **route** and **arp**. 
+```
+ip [OPTIONS] OBJECT COMMAND
+```
+
+- A router allows hosts from one network to communicate with another network. To view a table that describes where network packages are sent we can use **route**. 
+
+```
+root@localhost:~# route                                             
+Kernel IP routing table                                             
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface   
+192.168.1.0     *               255.255.255.0   U     0      0        0 eth0  
+default         192.168.1.1     0.0.0.0        UG     0      0        0 eth0 
+```
+- * indicates no gateway. second indicates that all other network packets are sent to the host with the IP address
+- there is also option for numeric data only: **rounte -n**.
+```
+Kernel IP routing table                                                         
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface   
+192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        0 eth0  
+0.0.0.0        192.168.1.1     0.0.0.0         UG    0      0        0 eth0 
+```
+- 0.0.0.0  referes to all other machines, its same as default. 
+- route is being replaced by **ip route / ip route show**
+
+
+- **ping**: can be used to determinte if another machine is reachable. can send network package to another machine and receive a response, then we can connect to that machine. by default it can send packages endlessly. 
+
+- to limit packages we can use **ping -c** and add a number for how many interactions we desite.
+```
+# -c 4 - will send 4 packages
+ping -c 4 192.168.1.2  
+
+# will send 9 packages
+ping -c 9 192.168.1.2 
+
+#there can be also unreaachable
+root@localhost:~# ping -c 4 192.168.1.1                                       
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.                          
+From 192.168.1.2 icmp_seq=1 Destination Host Unreachable                      
+From 192.168.1.2 icmp_seq=2 Destination Host Unreachable                      
+From 192.168.1.2 icmp_seq=3 Destination Host Unreachable                      
+From 192.168.1.2 icmp_seq=4 Destination Host Unreachable                      
+                                                             
+```
+
+- **ping** fails not because the system is unreachable, admins can configure machines/ whole networks to not respond to ping requests (as server can be attacked with DOS attack).
+
+- **ping** + hostname and if fails we can use IP address to see if fault is in the hostname. if there is a correct name resolution, IP address will function. 
+
+- **netstat**: can provide large info of network information. **netstat -i** will provide network traffic. TX-OK and TX-ERR are important
+  1. TX-ERR- number of packets failed to transmit 
+    If TX-ERR is consistently >0, it's worth checking NIC health, cables, or duplex settings.
+  2. TX-OK- number of packets successfully transmitted 
+
+- **netstat -r**: displays routing information. 
+- netstat also shows ports, if a port is open the service is available for other hosts. For example, you can log into a host from another host using a service called SSH. The SSH service is assigned port #22. So, if port #22 is open, then the service is available to other hosts. It is important to note that the host also needs to have the services running itself; this means that the service (in this case the ssh daemon) that allows remote users to log in needs to be started (which it typically is, for most Linux distributions).
+
+```
+# -t stands for TCP, -l listening, -n- shows numbers
+netstat -tln
+```
+
+- **ss** command: show socket statiscs, has more features that netstat. maif function- to view connections that are currently established between their local machine and remote machine, statics about the connections. 
+
+![](images/Essentials/sscommand.png)
+
+- **ss** can  change the output, -s > will show types of sockets statistics and number of actucal packets 
+- it can be used with less but YOU NEED PIPE! **ss -a | less** 
+
+- **dig**: to test functionality of DNS server. 
+- **host**: works with DNS to associate a hostname with an IP address. Can be used in reverse if IP address is show but hte domain name is not. 
+```
+# to associate a hostname with IP addr
+host example.com
+
+# to check for domain name
+host 192.168.1.2
+
+# can query canonical name-alias
+host -t CNAME example.com
+
+# Start of authority recors, indicate the primary server for the domain
+host -t SOA example.com
+```
+
+- **ssh** allwos to connected to another machine across network, log in and perform task on the remote machnie. 
+```
+ssh bob@test
+
+#exit with the command
+exit
+```
+- **RSA KEY FIngerpring**: connecting with ssh asks to verify the identity of the machine we are logging into: if YES, RSA key fingerpring of the remote machine is stored in the local system. When we log in again, RSA is compared to the copy of the local machine. IF CHANGED CHECK CAREFULLY: 
+```
+cat ~/.ssh/known_hosts
+```
+---
