@@ -2559,3 +2559,32 @@ exit
 cat ~/.ssh/known_hosts
 ```
 ---
+
+### Chapter 14 Lab notes
+
+---
+
+- **ifconfig**: gives information in 2 blocks: 
+  1. **eth0**: information about Ethernet network card
+  2. **lo**: information about loopback or internal network interface.
+
+- **route**: to view routing devices. 
+- to verify if an IP address has entry in the file /etc/hosts we can use: 
+```
+grep 127.0.0.1 /etc/hosts
+```
+- ping can be used to check if a machine is connected to a network, but can be configured not to respond to pings. 
+- to ping 4 times: **ping -c4**, to ping 4 times local host: **ping -c4 localhost**. If your system is connected to a network with DNS servers, then the nameserver entry in the /etc/resolv.conf file configures your system to use these servers to resolve hostnames into IP addresses.
+- cat /ect/resolv/conf - to check if nameserver entries exist
+```
+dig localhost.localdomain
+
+# netstat command, RTFM
+netstat -tln 
+netstat -uln
+netstat -tuln
+
+```
+
+---
+
