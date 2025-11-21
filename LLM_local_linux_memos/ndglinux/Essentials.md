@@ -2632,3 +2632,79 @@ sudo [options] command
 - sudo commands recude the risk of user accidentally executing a command as root. 
 
 ---
+
+- **user accounts**: several text files in / etc directory that contain the account data of hte users and groups defined on the system. 
+
+- we can use **tail -5 /etc/passwd**, each line contains information for a single user. data is separated into fields by colon characters. 
+
+```
+# example information
+
+sysadmin:x:1001:1001:System Administrator,,,,:/home/sysadmin:/bin/bash
+```
+- sysadmin - first field- user/username. (when logging into the system, and owenership is viewed with the ls -l command)
+- x : placeholder for password: the password is in the /etc/shadow file(not visible here)
+- 1001 : USER ID: UID: files are owned by UIDs not by usernames
+- 1001: Primary GROUP ID: indicates that the user is a member of that group, which means the user has special permissions of any file that is owned by this group.
+- System Administrator: comment: can contain any information about the user, including real name or other useful information. 
+- home/sysadmin: Home directory: for regular user, this will be /home/user. the root user has a different palce for the home directory /root
+- /bin/bash: shell- indicated the location of user's login shell. by default a user is  placed in this shell whenever they log into a command line environment or open  a terminal window. 
+
+- **TIP** to check quickly if a specific user has been defined on a system is to search **/etc/passwd** using grep.
+```
+grep sysadmin /etc/passwd
+
+sysadmin:x:1001:1001:System Administrator,,,,:/home/sysadmin:/bin/bash
+```
+
+---
+
+- **passwords**: passwords are stored in **/etc/shadow**, regular users cant view the contents. to view the file you need administrator priviliges. 
+```
+# can obtain with 
+su -
+# enter password 
+# then to look up the passwords
+tail -5 /etc/shadow
+
+# tail will return 
+syslog:*:16874:0:99999:7:::
+bind:*:16874:0:99999:7:::
+sshd:*:16874:0:99999:7:::
+operator:!:16874:0:99999:7:::
+sysadmin:$6$c75ekQWF$.GpiZpFnIXLzkALjDpZXmjxZcIll14OvL2mFSIfnc1aU2cQ/221QL5AX5RjKXpXPJRQ0uVN35TY3/..c7v0.n0:16874:5:30:7:60:15050:
+```
+
+- each line is separated into fields by colon characters:
+- **sysadmin**: username of the account, which matches the account name in /etc/passwd
+- **$6$c75ekQWF$.GpiZpFnIXLzkALjDpZXmjxZcIll14OvL2mFSIfnc1aU2cQ/221QL5AX5RjKXpXPJRQ0uVN35TY3/..c7v0.n0** : password field, contains encrypted passowrd for the accouint, its one-way encryption, it cant be reversed to determine the original password. **system accounts have asterisk * character in this field**. 
+- **16874**: last change, number 168740 is number of days since january 1, 1970, called the Epoch. value is generated automatically when the user's password is modified. 
+- **5**: minimum: field indicates the minimum number of days between passowrd changes. it is part of one of the password aging fields, a non-zero value in this field indicates that after a user changes their password, the password can't be changed again for the specified number of days, 5 in our case.  **value of zero means the user can always change their password**. 
+- **30**: maximum: maximum number of days the password is valid. used to force users to change their passowds on regular basis. 30-> user must change their password at least every 30days to avoid having their account locked out. **if number is set to 0, user may be able to immediately set their passoword back to the original value**, defeating the purprose of forcing user to change passwor devery 30days. **minimum:maximum of 5:30** means: user must change password every 30 days, after changing user must wait 5 days before they can change password again. if max field is **99999**, user must change their password every 274 years hehe. 
+- **7**: warn:  if maximum is set, warn field indicates the number of days before password expiry that the system warns the user. if set to 7 > anytime during the 7 days before the maximum time frame is reached, the user will be warned to change their password during the login process. The user is only warned at login, if set to **99999** > warn field is useless. 
+- **60**: inactive: if the user ignores the warnings and exceeds the password timeframe, their account will be lockedout. Inactive fields provides user with "grace" period in which their password can be changed, but only during login process. if set to 60 > 60 days to change to a new password. 
+- **15050**: Exprire: indicates the day account will expire. represented by the number of days from January 1 1970, expiredaccount is locked, not deleted meaning admin can reset password and unlock the account. can be used with tool > epoch converter. 
+- **::**: reserved: reserved field for future use. 
+
+-**grep / getent**: advantage of getent is that it can retrieve account information that is defined locally, in files /etc/passwd and /etc/shadow or a network directory server. syntax is as follows
+```
+getent database record
+```
+---
+
+- **system accounts**: users log into the system using regular user accounts, these accounts have UID values greater than 500 or 1000. Only root user has UID of 0. 
+
+- system accounts (UID- 1 to UID 499) are system accounts, not designed for users to log into. 
+```
+ For example, system accounts rarely have home directories as they typically are not used to create or store files. In the /etc/passwd file, system accounts have a non-login program in the shell field:
+
+sshd:x:103:65534::/var/run/sshd:/usr/sbin/nologin
+
+In the /etc/shadow file, system accounts typically have an asterisk * character in place of the password field:
+
+sshd:*:16874:0:99999:7:::
+
+Most system accounts are necessary for the system to function correctly. You should not delete a system account unless you are certain that removing the account won't cause problems. 
+```
+
+---
