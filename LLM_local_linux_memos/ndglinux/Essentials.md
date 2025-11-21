@@ -2588,3 +2588,47 @@ netstat -tuln
 
 ---
 
+### Chapter 15 System and User Security
+
+---
+
+- User accounts provide security on a Linux Operating system. User account belong to groups, each user belongs to at least one group(often many) to more easily share data that is stored in files with other users. 
+
+- User and group account data is stored in database files. The database files contain vital security information that may affect the ability of a user to log in and access the system. 
+
+---
+
+- administrative accounts: loggin into the system as root user allows usage of executable commands. Those commands can be dangerous to the system, use with caution. To be used only if administrative priviliges are needed. Ubuntu distributions use sudo command. 
+
+---
+
+- **switching users**: **su* , allows to run a shell as a different user. 
+```
+su [options] [username]
+```
+- when switching users, utilizing the login shell option si recommended. as the login shell fully configures the new shell with the settings of the new user, ensuring any commands executed run correctly. If the option is omitted, the new shell changes the UID but doesnt fully log in the user. Login shell can be specified:
+```
+su - 
+su -l
+su  --login
+```
+- by default, if a username is not specified the su command opens a new shell as the root user. (locked by default in mint). after finishing with the administrative commands, exit will log out, and return to original user. 
+
+- **sudo**- allows user to execute commands as another user. 
+```
+sudo [options] command
+```
+
+-if a distributions do not allow the root user to login directly via **su** command, the intallation process automatically configures one user account to be able to use the **sudo** command to execute commands as if the root user executed them 
+
+- administrative privileges are used to view **/etc/shadow** file. When using sudo to execute a command as the root user, > command prompts for the user's own password not that of the root user. It is for security purposes, to preverent unauthorized admin access. password prompt will not appear again as longs as the user continues to execute sudo commands less than 5 minutes apart. 
+
+```
+# sudo head /etc/shadow
+```
+- using sudo to execute an administrative command relusts in an entry placed in a log file. Each entry includes the name of the user who executed the command, the command that was executed and the date+time of execution. Provides accountablity, can be checked at /var/log/auth.log ( works with cat, tail, head and grep)
+- journalctl - RTFM ! / can also provide logs 
+
+- sudo commands recude the risk of user accidentally executing a command as root. 
+
+---
