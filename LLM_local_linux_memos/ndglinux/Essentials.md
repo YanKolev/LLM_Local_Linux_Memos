@@ -2783,3 +2783,34 @@ sysadmin 	pts/1       2013-10-11 10:00 (example.com)
 - **last** reads from /var/log/wtmp file - history of all user logins.
 
 ---
+
+### Chapter 15 Lab notes
+
+---
+- Practiced commands:
+
+```
+su
+sudo
+su -
+id
+head /etc/shadow
+sudo head /etc/shadow
+head /etc/passwd
+grep sysadmin /etc/passwd
+head -3 /ect/shadow
+ls -l /etc/shadow
+sudo head -3 /etc/shadow
+getent passwd sysadmin
+man 5 passwd
+id 
+id root
+who
+w
+last
+
+```
+
+- **getent** command has the advantage over the grep command as it is also able to access user accounts that are not defined locally. In other words, the getent command is able to get user information for users who may be defined on network directory servers such as LDAP, NIS, Windows Domain, or Active Directory Domain servers.
+
+---
