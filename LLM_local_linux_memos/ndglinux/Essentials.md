@@ -2708,3 +2708,78 @@ Most system accounts are necessary for the system to function correctly. You sho
 ```
 
 ---
+
+- **group accounts**: level of access across the system is not determined solely by use account. each user can be a member of one or more groups, which can affect level of access to the system. 
+
+- UNIX systems limited, users to no more than total of 16 groups,Linux over 65l group memberships. 
+
+- /etc/passwd file defines the primary group memrhip for a user. 
+- /etc/group file is for supplemental/secondary group membership. its a colon-delimited file. 
+```
+mail:x:12:mail,postfix
+```
+- **mail**: Group name field.
+- **x**: Password Placeholder. (password will be stored in /etc/gshadow file)
+- **12**: GID: Group ID, unique for every group
+- **mail,postfix**: User list: who is member of the group. Primary membership of a group is located in **/etc/passwd**, secondary: **/etc/group**. Our case- secondary members of the mail group. 
+
+- its common for a username to appear as a group name. so we can gent with grep and getent:
+```
+sysadmin@localhost:~$ grep mail /etc/group
+mail:x:12:mail,postfix
+sysadmin@localhost:~$ getent group mail
+mail:x:12:mail,postfix
+```
+---
+
+- **viewing User information**: command to pring user and group information is **id**. 
+```
+id [options] username
+```
+- breakdown of id return:
+```
+sysadmin@localhost:~$ id
+uid=1001(sysadmin) gid=1001(sysadmin) groups=1001(sysadmin),4(adm),27(sudo)
+```
+- **uid=1001(sysadmin)**: usrname of the primary group
+- **gid=1001(sysadmin)**:  group id and group name
+- **groups=1001(sysadmin),4(adm),27(sudo)**: other information, that is provided.
+
+- to print only primary group : **id -g** 
+- to print secondary group: **id -G**
+- or tiwht cat **cat /etc/group | grep sysadmin**
+
+---
+
+- **view of current users**: achieved with command **who**, will give list of users who are currently logged into the system, where from. and when. with options command can display information such as runlevel of the computer. 
+
+```
+#example of who and its output
+
+sysadmin@localhost:~$ who
+root     	tty2        2013-10-11 10:00
+sysadmin	tty1        2013-10-11 09:58 (:0)
+sysadmin 	pts/0       2013-10-11 09:59 (:0.0)
+sysadmin 	pts/1       2013-10-11 10:00 (example.com)
+
+```
+
+- **root**: usrname of the user who is logged in.
+- **tty2 pts/0**: terminal: which terminal window the user is working on. ttyy: local login, regular command line terminal. pts: pseudo terminal, running a process that acts as a terminal.
+- date, self explanatory
+- **(example.com),(:0)**: host: if location contains hostname/domain/IP address: user logged remotely. if there is colon or a number: local graphical login. if thre is no information shown: logged via local command line process(like root). 
+
+- **who** has options that help extract more info: -b: last time system booted (started), -r: the system reached the current runlevel. 
+
+- **w**, can be also used for more information. The first line of output from the w command is identical to that of the uptime command. It shows the current time, how long the system has been running, the total number of users currently logged on and the load on the system averaged over the last 1, 5 and 15 minute time periods. Load average is CPU utilization where, for a single-core system, a value of 1 would mean 100% CPU usage during that period of time. For a dual-core system, it would mean 50% CPU usage, and for a quad-core system, it would mean 25% CPU usage.
+
+![](images/Essentials/wcommand.png)
+
+----
+
+- **viewing login history**: by using **last** command, as it extracts information from /var/log/wtmp file and displays all logins and reboot records by default. who and w display date and time user logging into the system, last- does not- it shows terminal, username, login location, previous sessions. 
+
+- **who** reads from /var/log/utmp file- logs current users
+- **last** reads from /var/log/wtmp file - history of all user logins.
+
+---
