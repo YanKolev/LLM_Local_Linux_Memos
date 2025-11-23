@@ -2814,3 +2814,61 @@ last
 - **getent** command has the advantage over the grep command as it is also able to access user accounts that are not defined locally. In other words, the getent command is able to get user information for users who may be defined on network directory servers such as LDAP, NIS, Windows Domain, or Active Directory Domain servers.
 
 ---
+
+### Chapter 16 Creating User Groups
+
+---
+- **Creating User Groups**: 
+
+- During installation, most installers create user and give this user administrative commands with sudo or require root user be configured as part of installation process. 
+
+- if used by one person, one account might be sufficient. Multiple people > Multiple  accounts. As it can give segregation of the home directory. sudo can be configured to grant admin rights to selected groups. Each group can have memberships and rights associated with them. Other Distros can create User Private Group (**UPG**). Group and username will be the same, and only member of this group would be new user. 
+
+- Distros that do no create UPG, are give users group as primary. Admin can manually create groups. 
+
+---
+
+- **Groups**: reason to create group: way for users to share files. Admin will take these people memebers of common group, change the directory ownership and set permissions on the directory that allows members to finish their group tasks. 
+
+- after creating/modifying group, we can verify the group config information int the /etc/group file with **grep** command. if we are working with network-based authentication services: **getent** can show bnoth local and network-absed groups
+
+```
+grep pattern filename
+getent database record
+
+
+# in case we are looking for root
+
+grep root /etc/group
+getent group root
+```
+
+---
+
+- **Creating Groups**: command **groupadd** can be executed by the root user to create new group. -g option used to specifiy a group id for the new group
+```
+groupadd -g 1005 research
+grep researc /etc/group
+```
+
+- if the -g option is not provided, **groupadd** will automatically provide a GID for the new group. group add will look at the /etc/group file and uses a number that is one value higher than the current highest GID number. 
+
+```
+groupadd development
+
+grep development /etc/group
+```
+
+- **group id**: red hat based distros, when a user ID is created a user private group is also created with that user as its only member. In red hat distros: UID=ID of UPG.
+
+- **NB!** when using red-hat based distros, we should avoid creating GIDs in the same numeric ranges where you expect to create UIDs, to avoid conflict. 
+
+- **GID** under 500 (RED HAT) OR 1000 (DEBIAN) are reserved for system use. IF there is a case taht we need to lower the GID value: **-r** option which assigns the new group a GID less than the lowes standard GID. 
+
+- **group naming**: 
+- first character should be either an underscore or lower case alphabetic a-z character
+- up to 32 characters, but more than 16 can be problematic on some distros
+- after the first character, the remaining characters can be alphanumeric, a das - or undercore
+- last character should not be a hyphen. 
+
+---
