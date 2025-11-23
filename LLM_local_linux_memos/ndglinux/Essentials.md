@@ -2872,3 +2872,20 @@ grep development /etc/group
 - last character should not be a hyphen. 
 
 ---
+
+- **Modifying a group**: can be used with command: **groupmod**. Options are -n: change name, -g: change GID for the group. Changing group name will not cause any problems with accessing files, since they are owned by GIDs, not group names. 
+
+- if you change the GID for a group, all files that are associated with that group will no longer be associated with that group. all files associated with that group will no longer be associated with any group name, instead they will be owned by a GID only.
+
+- files with no group name are ophaned files, to seach for all files that are owned by just a GID (not associated with a group name) use **-nogroup** option of find command
+```
+find / -nogroup
+```
+
+- deleting a group **groupdel**: any files that are owned by that group will become orphaned. Primary group for any user, cant be deleted. Admin can change users's primary group to supplemental and then delete it if needed. 
+- **groupdel** can be deleted if is not user's primary group, we just need to add the name of the group
+```
+groupdel sales
+```
+---
+
