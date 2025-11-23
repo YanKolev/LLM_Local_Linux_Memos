@@ -2889,3 +2889,75 @@ groupdel sales
 ```
 ---
 
+- **Users**: user account information is stored in /etc/passwd file, password data is stored in /etc/shadow file.  New user can be added manually in the files, but is not advised. 
+
+- to add user **useradd**: there is -D option for useradd, allows to view/change default values. they can be also found in the /etc/default/useradd file.
+
+```
+root@localhost:~# useradd -D 
+GROUP=100
+HOME=/home
+INACTIVE=-1
+EXPIRE=
+SHELL=/bin/bash
+SKEL=/etc/skel
+CREATE_MAIL_SPOOL=yes
+```
+
+- **Group**: for distros not using UPG, this is the defaul primary group for new user. Usually the users group with GID of 100. 
+- option -g, **useradd -g**,  allows to use different primary group than the defaul when greating new account. 
+
+- **Home**:  /home: default base directory, where new users are created. 
+- option -b, **useradd -b**, allows to use different base directory group. 
+
+- **Inactive**: value represents the number of days after the password expires that the account is disabled. A value of -1 means this feature is not enabled by default and no "inactive" value is provided for new accounts by default.
+- option -f, **useradd -f**, to use different INACTIVE value than default.
+
+- **Expire**: by default there is no value, that value is se on individual account, not all acounts by default. 
+- option -e, **useradd -e**, allows to use different expire value than default. 
+
+- **Shell**: indicates the default shell for a user. 
+- option -s, **useradd -s**, allows to use different shell
+
+- **SKEL= /etc/skel**: skeleton directory. has its contents copied into the new user's home directory. contents are later copied into new user's home dir, new user is given ownership of new files. Easy way to populate new account with key, configuration files. 
+-option -k, **useradd -k**, allows to use different SKEL directory than default
+
+- **CREATE_MAIL_SPOOL=yes**, Create mail spool, spol file is where incoming email is placed. if value =yes > users by default have the ability to receive and store local mail. if not using local mail > value can be changed to NO. 
+
+- to modify **useradd** we can use text editor of the file /etc/default/useradd. or **useradd -D** command
+
+- if we can to allow usrs to have expired passwords that they could still log in with up to 30 days: 
+```
+useradd -D -f 30
+```
+
+---- 
+
+- **User Configuration files**: the files that store the information upon user creation or manipulation via **useradd** are stored in /etc/login.defs. it is usually only for admin users. it may look its empty but to get a reading we need the following command, especially for CENTOS 6 distsos: 
+```
+root@localhost:~#  grep -Ev '^#|^$' /etc/login.defs
+MAIL_DIR	/var/mail/spool
+PASS_MAX_DAYS	99999
+PASS_MIN_DAYS	0
+PASS_MIN_LEN	5
+PASS_WARN_AGE	7
+UID_MIN			  500
+UID_MAX			60000
+GID_MIN			  500
+GID_MAX			60000
+CREATE_HOME	yes
+UMASK           077
+USERGROUPS_ENAB yes
+ENCRYPT_METHOD SHA512
+MD5_CRYPT_ENAB no
+```
+
+- images with explanation: 
+
+![](images/Essentials/userchange1.png)
+
+![](images/Essentials/userchange2.png)
+
+![](images/Essentials/userchange3.png)
+
+----
