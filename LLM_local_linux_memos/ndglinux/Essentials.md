@@ -2961,3 +2961,98 @@ MD5_CRYPT_ENAB no
 ![](images/Essentials/userchange3.png)
 
 ----
+
+- **account considerations**: creating an acc, might require several pieces of information. (account name, UID,primary group, supplementary group, home directory, skeleton directory,shell).
+
+- **Username guidelines**: command **useradd** + name, you want the account to have. 
+- **User Identifier** (UID): once we create a suer with specific UID, system generally increments UID by one for the next user we create. If attached to a network or other systems, we have to have UID matching everywhere for consistent access.  to do so **useradd -u number name**, example: **useradd -u 1000 jane**. There are reserved ranges for the daemons. Best practice- **make UIDS no lower than 1000**, 
+- **Primary group**: group is created automatically with GID and a group name that matches UID and username of the newly created user account. **useradd -g users jane** is the example how to add GID. 
+- **Supplementary group**: supplemntary groups, one or more can be added with option -G and specified with comma-separated list. **useradd -G sales, research jane**. 
+- **home directory**: most distros create users home directory with the same name as the user account. the setting is specified in **/etc/default/useradd** file, in /home/directory.
+```
+useradd jane
+grep '/home/jane' /etc/passwd
+```
+- by using **useradd**, there are options that can affect creating of home directory:
+  1. If CREATE_HOME is set to no or this setting is not present, then the directory will not be created automatically. Otherwise, the -M option is used to specify to the useradd command that it should not create the home directory, even if CREATE_HOME is set to yes.
+  2. -m : for CREATE_HOME is set to yes => home directory is created automatically. with -m , we ''make home directory" **useradd -m jane**. 
+  3. -b, allows to specify different base directory under which the user's home directory is created. **useradd -mb /test jane**: creates user jane in the test base directory. 
+  4. -d, allows to specifiy either existing directory or a new home direcotry to create for the user. (should be full path). **useradd -md /test/jane jane**.
+  5. -k, specifies different skeleton directory, always use -mk.
+
+- **skeleton directory**: content of /etc/skel directory are copied into new user's home directory. the resulting files are owned by the new user. with -k option contents of a different dir can be user to populate a new user's home dir. 
+```
+useradd -mk /home/sysadmin jane
+```
+- **shell**: **useradd -s /bin/bash jane**. its ok sto specify /sbin/nologin shell for accounts to be used as system accounts. 
+- **comment**: -c, **useradd -c 'Jane Doe' jane
+
+---
+
+- **creating user**: example: **useradd -u 1009 -g users -G sales,research -m -c 'Jane Doe' jane**:
+- creates user UID of 1009, primary group users, supplementary memberships in the sales nad research groups, comment of Jane Doe and account name of jane. 
+- information about jane: will be added to /etc/passwd and /etc/shadwo files. infromation about supplemental group access is automatically added to the /ect/group and /etc/gshadow files. 
+- accounts does not have a valid password yet, also we need to look for the mail spool: 
+```
+# if CREATE_MAIL_SPOOL is set to yes, we can check it by: 
+ls /var/spool/mail
+```
+- since we have -m, /home/jane dir is craeted with permissions only permitting the jane user access.
+
+---
+
+- **Passwords**: several ways to set a password: admin can go via root and **passwd + user name as argument > passwd Jane**. Once successful, then /etc/shadow file will be update with the new usrs's password. Admin sets it for the user > User logs in, opens terminal and can execute **passwd** command with no arguments to change their own password. 
+
+- second way: user set themselves the password, but must follow rules set my admin. admin can view passwrd in the /etc/shadow file. 
+
+- **password** aging,  command **change** can provide many options for the password ageing info found in the /etc/shadow file.
+
+- info on options:
+![](images/Essentials/passwdage.png)
+
+---
+
+- example of change command:
+```
+#change the maximum number of days that an individual password is valid to 60 days
+change -M 60 jane
+grep jane /etc/shadow | cut -d: -f1,5 jane:60
+```
+
+----
+
+- **Modify a user**: some commands will not successfully modify a user account if the user is currently logged in. both **who** and **w** command display who is currently logged into the system. **w** is more verbose of the two, as it shows the system's update and load information as well as what process each user is running. 
+
+- **usermod** command offers many options for modifying an existing user account. many options are available with the **useradd** at the time of the account is created. 
+
+- **usermod** options: 
+![](images/Essentials/usermod.png)
+
+---
+
+- **NB** if we **usermod** -u option, can be problematic, as files owned by the user will be orphaned. to use new login: -l, does not cause the files to be orphaned. 
+
+- deleting user **userdel** can either orphan or remove the user's files on the system. another option is **-L** will lock the account. locking account prevents the account from being used, but ownership of the files remains. 
+
+- if we choose the -G option, without the -a option, we must list all the groups to which the user would belong. using -G option alone will lead to accidentally removing a user from all the former supplemental groups that the user belonges to. 
+
+- -a with -G option will ahave to list the new groups to which the user would belong. 
+```
+# if jane currently belong to the sale and research group, then to add her account to the development group
+usermod -aG development jane
+```
+---
+
+- **deleting a user**: with the command **userdel**, not only deletingbut decide if we want to delted the user's home directory(check if any legal remifications in case data needs to be stored).
+
+```
+#normal deletion
+userdel jane
+
+# deletion with deleting: user, home directory, mail spool
+userdal -r jane
+```
+
+- deleting a suers without deleting heir home directory means that the user's home directory files will be orphaned and these files will be owned solely by their former UID and GID.
+
+---
