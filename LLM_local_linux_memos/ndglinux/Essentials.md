@@ -3056,3 +3056,125 @@ userdal -r jane
 - deleting a suers without deleting heir home directory means that the user's home directory files will be orphaned and these files will be owned solely by their former UID and GID.
 
 ---
+
+### Chapter 16 Lab Notes
+
+---
+
+- Steps to administer groups: 
+```
+# gain root access
+su -
+
+groupadd -r reseach 
+groupadd -r sales
+
+# both groups are added in the **reserved range** 1-999, due to -r option. GIDs are automatically assigned with value less than the lowest normal UDR. (info located in /etc/group file)
+
+# to change the name of the groups: **groupmod -n**, first keyword is the re-name we want to make, second the original
+groupmod -n reasearch1 reasearch
+
+# to change GID , we need -g option
+groupmod -g 1500 research1
+
+# to delete
+groupdel research1
+
+# to search for the group, use getent, [getent group research]
+getent group research
+
+# alternative- grep 
+grep sales /etc/group
+
+```
+- Ex2: modification of sales groups, but the files that were in sales will not have no group name and will be orphaned files. groups deleted with **groupdel**, any files that are owned by a group deleted withthe command will also me orphaned.
+
+
+```
+groupmod -n clerks sales
+groupmod -g 10003 clerks
+
+grep clerks /etc/group 
+# alternative with getent
+getent group clerks
+
+# to delete 
+groupdel clerks
+
+grep clerks /etc/group
+```
+
+- Ex3: user config: 
+
+```
+# to view default value with useradd, we need -D option
+useradd -D
+
+# set the INACTIVE paramer to allow users with expired password to log in for up to 30 days before their accounts are disabled **-f 30**. 
+
+useradd -D -f 30
+
+useradd -D 
+
+# to modify the CREATE_MAIL_SPOOL, use the nano editor in the /etc/default/useradd file
+
+nano /etc/default/useradd
+
+#locate mail spool, change it to yes, > ctl+X > Y > Enter
+
+
+# create a new user named "student", secondary member of research group of research group and primary mmeberof their own private group. Use comment of Linux Student taht will appear as full name, when they login. Create a home directory with -m option. Use grep to verify 
+
+useradd -G research -c 'Linux Student' -m student
+grep student /etc/passwd
+grep student /etc/group
+
+
+# to add research htoup as secondary to sysadmin user
+
+usermod -aG research sysadmin
+
+# to check group members
+getent group research
+
+getent group student
+
+getent passwd student
+getent shadow student
+#root@localhost:~# getent shadow student                                   
+#student:!:16902:0:99999:7:30::                                              
+#root@localhost:~#
+
+# to set new password
+
+passwd student
+
+# to check 
+getent shadow student
+
+# to check if they have ever logged in to the system
+
+last 
+
+last student
+
+# to revoke access to the system > will lock the the account
+usermod -L student
+
+# to unlock the account
+usermod -U student
+
+# to delete all the information, home dir, mail and account > -r option on userdel
+userdel -r student
+```
+
+- SKEL, provides easy way to populate new user account with key configuration files. we can use **-k** option for useradd > it will allow different SKEL directory than the default to be used when creating a new user account. 
+
+- user's acc info is stored in /etc/passwd and /etc/shadow files
+
+- users who are actively logged into the system will not be ably to use any new group memberships until the next time they log into the system
+
+- the ! appearing in the second password field of the shadow file, shows that the password for the student has not been set.
+
+---
+
