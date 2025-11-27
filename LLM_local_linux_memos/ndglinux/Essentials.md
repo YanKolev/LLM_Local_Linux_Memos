@@ -3178,3 +3178,22 @@ userdel -r student
 
 ---
 
+### Chapter 17 Ownership and Permissions
+
+--- 
+
+- ownership is crucial for file security. every file has user owner and group owner. users own the files that they create. ownership can be changed, but requires admin privileges. system is associating the user ownership with the UID for that username. 
+
+- every file also has a group owner, the primary group of the user who creates the file is the group owner of any new files. users can change the group owner of files they own to any group they want. association is not done by name but by GID. 
+
+- ownership is determined by the UID and GID associated with a file, changing the UID of a user (deleting) > when there is no UID in /etc/passwd that matches the UID of the owner, the UID number is displayed as the user owner of the file. Same works for groups also. 
+
+- **id** command displays the UID and user name account of the current user followed by the GID and group name of the primary group and GIDs. 
+
+- if user account and primary group account have same numeric identifier and name > it means that this use is in User Private Group **UPG**. the additional groups are also displayed. 
+
+- when a file is created, it belongs to the current user and their current primary group. if user uses **touch**, the  user owner and the group owner will be the one showed from id command. 
+
+- Ownership can be be checked with **ls -la** (l - long listing + a - all).
+
+---
