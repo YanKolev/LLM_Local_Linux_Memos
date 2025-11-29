@@ -3197,3 +3197,10 @@ userdel -r student
 - Ownership can be be checked with **ls -la** (l - long listing + a - all).
 
 ---
+
+- **Changing Groups**
+
+- when creating files, and we need a different group from the current primary group we can use **newgrp**. 
+```
+newgrp grou_name
+```
