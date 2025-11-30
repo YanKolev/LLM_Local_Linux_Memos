@@ -3202,5 +3202,42 @@ userdel -r student
 
 - when creating files, and we need a different group from the current primary group we can use **newgrp**. 
 ```
-newgrp grou_name
+newgrp group_name
+```
+- with **id** will get a list of identity information, including group memberships. for group information command: **groups**, also useful for verification for the **newgrp** command. less info than id, but for verification purposes it works. 
+
+- **newgroup** > switches the primary group in order to create/own a file that is not user's primary group. 
+
+```
+sysadmin@localhost:~$ id
+uid=1001(sysadmin) gid=1001(sysadmin) groups=1001(sysadmin),4(adm),27(sudo),1005(research),1006(development)
+sysadmin@localhost:~$ newgrp research
+sysadmin@localhost:~$ id
+uid=1001(sysadmin) gid=1005(research) groups=1005(research),4(adm),27(sudo),1001(sysadmin),1006(development)
+
+```
+- gid is changed from 1001 > 1005, when file is created it will be under the research group.
+
+- **newgrp** command opens a new shell, as long as the user stays in that shell, primary group won't change. to switch back to the original > exit command. 
+- to change permanently a group: admin rights are required,syntax is as follows: 
+```
+usermod -g groupname username
+```
+
+---
+
+- **Change group ownership**:  to change a groupowner of an existing file the **chgrp** command can be used. Syntax is as follows: 
+```
+chrgp group_name file
+```
+
+- this commandrequired root user, **chrgrp** can be used to change the group of any file to any group. 
+- for user without admin rights, can only change the group owner of a file, to a group that the user is already a member of. if attempts to modify > error message. 
+- we can use -R (recursive), command will change group ownership of the test_dir directoryand all files and subdirectory:
+```
+chgrp -R development test_dir
+```
+- we can use **stat** command to check the fileownership
+```
+stat /tmp/filetest1
 ```
