@@ -3241,3 +3241,32 @@ chgrp -R development test_dir
 ```
 stat /tmp/filetest1
 ```
+---
+
+- **changing user owership**: with command **chown**, allows root user to change the user ownership of files and directories, admin rights are required to perform this. 
+```
+# basic syntax
+chown user /path/to/file
+
+# to change user ownership of the filetest1 file to user jane
+chown jane /tmp/filetest1
+ls -l /tmp/filetest1
+-rw-rw-r-- 1 jane sysadmin 0 Dec 19 18:44 /tmp/filetest1
+```
+- second method is to change both the user and the group, but all require root privileges. 
+
+```
+chown user:group /path/to/file
+chown user.group /path/to/file
+
+#example
+chown jane:users /tmp/filetest2
+
+# if user does not have root privileges:  they can use chown, colon or a period as a prefix tothe group name
+chown :group /path/to/file
+chown .group /path/to/file
+
+#example
+chown .users /tmp/filetest1
+```
+---
