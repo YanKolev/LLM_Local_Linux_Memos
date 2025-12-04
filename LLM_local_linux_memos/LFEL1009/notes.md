@@ -50,3 +50,44 @@ chmod +x install-opentofu.sh && less install-opentofu.sh
 
 3. Apply: Once you approve the execution plan, OpenTofu implements the proposed changes by performing the necessary operations in the correct sequence. It respects all resource dependencies to maintain the integrity of your infrastructure. This means that resources are created, updated, or destroyed in an order that ensures each resource is ready when another depends on it.
 
+
+---
+
+- **tofu CLI**: CLI for Opentofu, allows users to define, provision and manage cloud infrastructure resources in a consistent and automated manner. 
+
+- Sample tofu commands: 
+
+![](images/tofucli.png)
+
+- OpenTofu works on a specific language. used for configuration files taht tell opentofu what to do, install plugins create infra resources like servers or networks and collecting essential data. Language lets us define how reseoruces depend on each other, so Opentofu knows which tasks take priority. We can create multiple similar resourse from a single block of code. 
+
+```
+#basic  elements of the language
+
+<BLOCK TYPE> "<BLOCK LABEL>" "<BLOCK LABEL>" {
+  # Block body
+  <IDENTIFIER> = <EXPRESSION> # Argument
+}
+```
+- blocks are used to group settings and represent an object, like a resource. each block has a specific type, can include labels for identification, contains body with arguments and other nested blocks. key-features are controlled via top-level blocks. 
+
+- arguments are used inside blocks to assign specific values to names, defining settings for a resource or feature. 
+
+- expressions represent values, either directly or by referencing or combining other values. they are use as values for arguments or within other expressions. 
+
+- language is declarative > describe desired outcome. Order of blocks and how they're arranged in files doesn't matter much. Opentofu focuses on the relationships between resources (either defined directly or inferred).
+
+
+---
+
+- when using providers: check with the registy : https://github.com/opentofu
+
+- OpenTofu’s command-line tool automatically downloads and installs the required providers. If you’re working on an existing setup and make changes to the provider configuration, you’ll need to reinitialize the project to update the installed providers and ensure everything works correctly.
+
+Example: 
+```
+provider "aws" {
+    region = "us-east-1"
+}
+```
+
