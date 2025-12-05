@@ -142,3 +142,40 @@ resource "aws_instance" "web_server" {
 - tofu destroy removes every resource from your config file, then running tofu apply but with no need to edit the config. (used for provisioning similar resources in future)
 
 ---
+
+- **OPEN TOFU UNIQUE FEATURES** 
+
+- **State Encryption**: begins with version 1.7, we can protect state file at rest using built-in encryption. Client-side state encryption, all encryption /decryption occurs localy before the state file is transmitted or stored. 
+
+- there are different key-management options, depending on environment: 
+
+```
+    PBKDF2 – Password-based key derivation for simple local configurations
+    AWS KMS – Use managed encryption keys in Amazon Web Services for centralized security
+    GCP KMS – Leverage Google Cloud’s Key Management Service for enterprise-grade key handling
+    OpenBao – Integrate with OpenBao (Vault-compatible) to manage secrets securely across distributed environments
+```
+
+- encryption affects access to our infrastructure state:  we can test disaster recovery plan, create temporary backup, back up encryption keys securely. 
+
+- example: initialize OT config and encrypt state file with **AWS KMS**: 
+```
+tofu init
+tofu state encrypt --key-provider="aws-kms://alias/my-tofu-key"
+```
+
+- **Early Variable and Local Evaluation**: since OT 1.8 we can use variables and locals in module source and version fields, evaluated early in the configuration lifecycle. (no need for hardcoded module sources), single variable update automatically propagates the change wherever it is used.
+
+- **Provider Iteration with for_each**: since 1.9 we can use **for_each** to dynamically generate multiple provider configs. It improves maintainability and easy of use for multi-cloud/environment setups. 
+- example: instead of writing individual provider blocks for each AWS region, we can use a simple loop to generate configurations for all required regions automatically. 
+
+- **Selective resource exclusion with the exclude flag**: 1.9 version of OT,we can add the **-exclude** flag to selectively exclude specific resources from plan and apply operations. We can apply changes only where needed while leaving the rest of the infra untouched. minimizes risk and reduces blast radius during critical operations. 
+- example:
+```
+# applying changes to configuration but skips updates to both the network module and the logs S3 bucket:
+
+tofu apply -exclude="module.network" -exclude="aws_s3_bucket.logs"
+```
+
+---
+
