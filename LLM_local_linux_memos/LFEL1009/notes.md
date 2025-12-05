@@ -133,7 +133,7 @@ resource "aws_instance" "web_server" {
 
 - we run tofu plan to validate our configs and ensure that the actions in proporses are what we expect. we can save the plan and use tofu apply later to make those exact changes to the infra. 
 
-2. **tofu apply**: starts the same way as tofu plan. by figuring out what changes need to eb made to your resources. It takes it further: **makes those changes using provider's API**. before any changes, conformation is required (unless skipped before).
+2. **tofu apply**: starts the same way as tofu plan. by figuring out what changes need to be made to your resources. It takes it further: **makes those changes using provider's API**. before any changes, conformation is required (unless skipped before).
 
 - tofu apply creates a new plan before applying changes and shows it to you when asking for confirmation. OR we can give it a plan file what you previously created with tofu plan >> execute specific set of approved changes reliably. 
 
@@ -143,7 +143,7 @@ resource "aws_instance" "web_server" {
 
 ---
 
-- **OPEN TOFU UNIQUE FEATURES** 
+#### **OPEN TOFU UNIQUE FEATURES** 
 
 - **State Encryption**: begins with version 1.7, we can protect state file at rest using built-in encryption. Client-side state encryption, all encryption /decryption occurs localy before the state file is transmitted or stored. 
 
@@ -175,6 +175,74 @@ tofu state encrypt --key-provider="aws-kms://alias/my-tofu-key"
 # applying changes to configuration but skips updates to both the network module and the logs S3 bucket:
 
 tofu apply -exclude="module.network" -exclude="aws_s3_bucket.logs"
+```
+
+---
+
+- **Instalation**
+
+- Ubuntu host. before installation always update and install tools needed: 
+```
+# initial commands
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl gnupg
+curl -fsSL https://get.opentofu.org/install-opentofu.sh -o install-opentofu.sh
+chmod +x install-opentofu.sh && ls -l install-opentofu.sh
+less install-opentofu.sh
+sudo ./install-opentofu.sh --install-method snap
+tofu -h
+tofu -install-autocomplete
+```
+
+- To initialize and create a local Resource
+```
+# in main.tf 
+resource "local_file" "hello_world" {
+filename = "${path.module}/demo.txt"
+content = <<-EOF
+Hello World!!!
+Welcome to the fascinating world of OpenTofu!
+EOF
+}
+
+tofu fmt
+mkdir demo && mv main.tf demo/ && cd demo
+tofu init
+tofu validate
+tofu plan
+tofu apply
+ls demo.txt && cat demo.txt
+tofu destroy
+ls demo.txt
+
+```
+
+- How to deploy it on EC2 VM on AWS 
+```
+1. Create a separate directory for storing your OpenTofu code:
+mkdir newproject && cd newproject
+2. Using the editor of your choice, create the file main.tf with the content below:
+provider "aws" {
+region = "us-east-1"
+access_key = "xxxxxxxxxxxxxxxxxxxxxxx"
+secret_key = "xxxxxxxxxxxxxxxxxxxxxxxx"
+}
+resource "aws_instance" "firstvm" {
+ami = "ami-053b0d53c279acc90"
+instance_type = "t2.micro"
+subnet_id = "subnet-xxxxxxxxxx"
+}
+
+#define secret keys outside of codebase
+export AWS_ACCESS_KEY_ID="your-access-key"
+export AWS_SECRET_ACCESS_KEY="your-secret-key"
+
+
+tofu fmt
+tofu init
+tofu plan
+tofu apply
+tofy destroy
 ```
 
 ---
