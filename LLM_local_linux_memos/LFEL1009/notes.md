@@ -91,3 +91,54 @@ provider "aws" {
 }
 ```
 
+- **resources**: fundamental elemts of the infra. building blocks that you can define in your config files to manage and interact with various services and platforms. Each resources corresponds to a specific object or service provided by cloud providers, SaaS platforms or other APIs.
+
+- **resources**:  model real-world infrastructure objects such as vms, databases storage buckets, networking components and more. they are declared using simple and human-readable syndax in OpenTofu, typicall with a .tf extension. each resource block specifies the type of resource, its unique name within the configuration and its properties or settings. 
+
+- example syntax: 
+```
+resource "<PROVIDER>_<TYPE>" "<NAME>{
+  # Configuration arguments
+}
+```
+- example:
+
+```
+resource "aws_instance" "web_server" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+  tags = {
+    Name = "WebServer"
+  }
+}
+```
+
+---
+
+- **state**: system to keep track of your infra, how connects to real-world resources. it enables OpenTofu to determine what changes are needed when updating your configs. 
+
+- OpenTofu, saves the state in a local file called teraform.tfstate. but local storage can be challenging. It is recommended to use a remote state storage solution, such as **TACOS** (TF Automation and Collaboration Software). 
+
+- State is important, as OT creates a new resource because of changes in the config, it records which resource it is so it can update or delete later if needed. 
+
+- OT(OpenTofu) supports Amazon S3, Azure Blob, Google cloud storage, Consul, tacos, Alibaba cloud. 
+
+---
+
+- **Provisioninig Infrastructure with OpenTofu**: relies on 3 command, plan apply and destroy. all commands require initialized working directory and act only on the curently selected workspace. 
+
+1. **tofu plan**: looks at your config to determine what you want your resources to look like. it compares desired state to what's actually in your current infra. Uses state data to match real-world resources with the ones youve declared and checks the current status of each resource using the provider's API. 
+
+- After identification of differences, **tofu plan**: shows summary of the changes needed to reach your desired setup. it does not change your infrastructure, it provides a plan for what needs to be done. 
+
+- we run tofu plan to validate our configs and ensure that the actions in proporses are what we expect. we can save the plan and use tofu apply later to make those exact changes to the infra. 
+
+2. **tofu apply**: starts the same way as tofu plan. by figuring out what changes need to eb made to your resources. It takes it further: **makes those changes using provider's API**. before any changes, conformation is required (unless skipped before).
+
+- tofu apply creates a new plan before applying changes and shows it to you when asking for confirmation. OR we can give it a plan file what you previously created with tofu plan >> execute specific set of approved changes reliably. 
+
+3. **tofu destroy**: deletes all resources managed in your current working directory and workspace. Uses state data to identify real-world objects that correspond to your managed resources. (also asks for permission before executing).
+
+- tofu destroy removes every resource from your config file, then running tofu apply but with no need to edit the config. (used for provisioning similar resources in future)
+
+---
