@@ -3270,3 +3270,59 @@ chown .group /path/to/file
 chown .users /tmp/filetest1
 ```
 ---
+
+- **Permissions**
+
+- **ls -l** displayes ten characters at the beginning of each line. those characters indicate the type of file and the permissions of the file. 
+
+```
+#example: 
+
+root@localhost:~# ls -l /etc/passwd
+-rw-r--r--. 1 root root 4135 May 27 21:08 /etc/passwd
+```
+
+- First character of each line indicates the type of file.
+
+![](images/Essentials/filetype1.png)
+
+- Table breakdown of file type: 
+
+![](images/Essentials/filetype2.png)
+
+- **Permissions Groups**: next nine characters demonstrate the permissions of the file:
+
+![](images/Essentials/permissions1.png)
+
+- Persmissions set determine the level of access that a user has onthe file. When we run a program > then permissions are checked to determine whether the user hasthe correct access rights to the file. 
+
+- They are grouped into three different roles, representing the different users that may try to access the file. 
+
+- If you are not owner and you are not a member of the file/directory group > permissions will be others. 
+
+- Example of ownerhip: 
+
+![](images/Essentials/permissions2.png)
+
+
+- **Permissions Types**: fall in threee different basic types: read, write and execute. 
+
+![](images/Essentials/permissiontypes.png)
+
+- **Read**: first character of each group represents the read permissions. **r (group has read permission) - (group does not)**
+
+- read file: allows processes to read the contents of the file > contents can be viewed and copied. 
+- read directory: file names in the directory can be listed, but other details are not available.
+
+- **Wire**: second character > write permissions. **w (group has permissions) - (group does not)**.
+
+- write file: can be written to by the process, so changes to a file can be saved. **w permission require r permission of the file, to work correctly**. 
+
+- write directory: files can be added or removed from directory. **w permissions require x permissions on the directory to work correctly**.
+
+- **Execute**: third character. **x (character of the group has the execute permission) - (group does not)**. 
+
+- execute file: can be run as a process.
+- execute directory: user can use **cd** > get into the directory, use directory in a pathname to access files and potentially subdirectories under the directory. 
+
+---
