@@ -3326,3 +3326,13 @@ root@localhost:~# ls -l /etc/passwd
 - execute directory: user can use **cd** > get into the directory, use directory in a pathname to access files and potentially subdirectories under the directory. 
 
 ---
+
+- Deep dive into permissions: 
+```
+drwxr-xr-x. 17 root root 4096 23:38 /
+drwxr-xr-x. 10 root root 128  03:38 /data
+-rwxr-xr--.  1 bob  bob  100  21:08 /data/abc.txt
+
+```
+- /- root directory, group owner of root, and mermissions **rwxr-xr-x**. /data directory, under the root directory. third- abc.txt file, stored in /data directory
+
