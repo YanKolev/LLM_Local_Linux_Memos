@@ -23,3 +23,32 @@
 
 ---
 
+- **LOGS** what is a log? log is an append-only data structure that records events occuring in a system. Log entry consists of timestamp, message to describe details of the event. 
+
+- There are different types of logs in terms of formatting, logs from http web-server are bound to look different from kernel logs. log formats also vary with consumers. Most common logs are key/value pairs to make them machine readable: known as structured logging. 
+
+- **METRICS**: logs provide detailed information about indivicdual events. Metrics are high-level view of the current state of a system. 
+
+- Metrics are single numerical value derived by applyin a stattistical measure to a group of events. They represent aggregate. Four common types of metrics: 
+1. Counter
+2. Gauge
+3. Histogram
+4. Summary
+
+- **Traces**: In a distributed environment, we need to understand the chain of events in a system. in distributed setting we can not track back traces to a single line of code, Google developed Dapper, popularized concept of distributed tracing. Tracing is logging on steroieds. 
+
+- Example of a distributed system: 
+
+![](images/distributedsystem.png)
+
+---
+
+- Traces, logs and metrics are the three pillars of Observability. Observability- process of automatically collecting and transmitting data from remote or distributed systems to monitor, measure and track the performance or status of those systems. 
+
+-  logs, metrics, and traces share many similarities in their lifecycle and components. Everything starts with instrumentation that captures and emits data. The data has to have a specific structure defined by a format. Then, we need a mechanism to collect and forward a piece of telemetry. Often, there is some kind of agent to further enrich, process, and batch data before ingesting it in a backend. This process typically involves a database to efficiently store, index, and search large volumes of data. Finally, there is a frontend analysis to make the data accessible to the end-user. However, in practice, we develop dedicated systems for each type of telemetry, and for good reason: Each telemetry signal poses its own unique technical challenge. These challenges are mainly due to the different natures of the data. 
+
+- Breakdown of the pillars of observability:
+
+1. There are different categories of telemetry
+2. Each pillar has its own unique strengths and stands on its own
+3. Pillars are complementary and must be combined to form a stable foundation for achieving observability
