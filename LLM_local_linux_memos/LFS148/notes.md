@@ -52,3 +52,10 @@
 1. There are different categories of telemetry
 2. Each pillar has its own unique strengths and stands on its own
 3. Pillars are complementary and must be combined to form a stable foundation for achieving observability
+
+---
+
+- **Siloed Telemetry vs Non-Siloed Telemetry**
+
+![](images/coretelemetry.png)
+
