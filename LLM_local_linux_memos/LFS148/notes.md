@@ -59,3 +59,36 @@
 
 ![](images/coretelemetry.png)
 
+- traditional tracking systems, lack the mechanisms to reconstruct the chain of events. some also do not support standartized query language or interfaces to search and analyze logs effectively. 
+
+- Lack of instrumentation standard leads to low quality data.
+- Observability usually has high barrier for entry. 
+
+---
+
+- **OpenTelemetry TLDR**
+
+- OTel- FOSS designed to provide unified telemetry, vendor-neutrality and to be cross-platform. 
+- Otel is not all in one monitoring tool, not a data storage or dashboard solution. not a pre-configured monitoring tool, nor performance optimizer. 
+
+---
+
+**OTEL Signal Specification(language agnostic)**
+
+- Otel is organized into signals, which include tracing, metrics and logging. every signal is develped as standalone component. 
+
+![](images/signal%20specification.png)
+
+- There are 3 aspects of them: 
+
+1. Definiton of terms, to establish a common vocabulary and shared understanding. 
+2. API specification: 
+- defines (conceptual) interfaces that implementations must adhere to
+- ensures that implementations are compatible with each other
+- includes the methods that can be used to generate, process, and export telemetry data
+3. SDK specification: 
+- guide for developers
+- defines requirements that a langauge- specific implementation of the API must meet to be compliant.
+- concept of configuration processing and exporting telemetry data. 
+
+- Also Otel defines semantic conventions and OTel protocol.
