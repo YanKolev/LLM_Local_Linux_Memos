@@ -3336,3 +3336,4 @@ drwxr-xr-x. 10 root root 128  03:38 /data
 ```
 - /- root directory, group owner of root, and mermissions **rwxr-xr-x**. /data directory, under the root directory. third- abc.txt file, stored in /data directory
 
+- 17.7 on map, need to add scenarios and notes. 
