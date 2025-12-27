@@ -3336,4 +3336,46 @@ drwxr-xr-x. 10 root root 128  03:38 /data
 ```
 - /- root directory, group owner of root, and mermissions **rwxr-xr-x**. /data directory, under the root directory. third- abc.txt file, stored in /data directory
 
-- 17.7 on map, need to add scenarios and notes. 
+- Practice questions below:
+```
+# Q1 Based on the following information, what access would the user bob have on the file abc.txt?
+
+drwxr-xr-x. 17 root root 4096 23:38 /
+drwxr-xr--. 10 root root 128  03:38 /data
+-rwxr-xr--.  1 bob  bob  100  21:08 /data/abc.txt
+
+
+# Q2 Based on the following information, who can use the ls command to display the contents of the /data directory (ls /data)?
+
+drwxr-xr-x. 17 root root 4096 23:38 /
+drwxr-xr--. 10 root root 128  03:38 /data
+-rwxr-xr--.  1 bob  bob  100  21:08 /data/abc.txt
+
+# Q3 Based on the following information, who can delete the /data/abc.txt file?
+
+drwxr-xr-x. 17 root root 4096 23:38 /
+drwxrw-rw-. 10 root root 128  03:38 /data
+-rwxr-xr--.  1 bob  bob  100  21:08 /data/abc.txt
+
+# Q4 True or False: Based on the following information the user bob can successfully execute the following command: more /data/abc.txt?
+
+drwxr-xr-x. 17 root root 4096 23:38 /
+dr-xr-x--x. 10 root root 128  03:38 /data
+-rwxr-xr--.  1 bob  bob  100  21:08 /data/abc.txt
+
+# Q5  True or False: Based on the following information the user bob can successfully execute the following command: more /data/abc.txt?
+Note that the /data directory has different user and group owners than previous examples
+
+drwxr-xr-x. 17 root root    4096 23:38 /
+dr-xr-x---. 10 sue  payroll 128  03:38 /data
+-rwxr-xr--.  1 bob  bob     100  21:08 /data/abc.txt
+
+
+# Q6 True or False: Based on the following information the user bob can successfully execute the following command: more /data/abc.txt?
+Note that the /data directory has different user and group owners than the previous example
+
+drwxr-xr-x. 17 root root 4096 23:38 /
+dr-xr-x---. 10 bob  bob  128  03:38 /data
+----rw-rwx.  1 bob  bob  100  21:08 /data/abc.txt
+
+```
