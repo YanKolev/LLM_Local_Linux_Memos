@@ -92,3 +92,19 @@
 - concept of configuration processing and exporting telemetry data. 
 
 - Also Otel defines semantic conventions and OTel protocol.
+
+---
+
+- Vendor-Agnostic, Language-Specific instrumentation. To generate and emit telemetry from applications, we need language specific implementations, that adhere to Otel specificiation. Implementation consist of 2 parts: 
+
+1. API: used to define the interfaces and constants outlined in the specification, vendor-agnostic, instrumentation, no-op implementation by default.
+
+2. SDK: provider implements Otel API, contains actual logic to generate, proces and emit telemetry, Otel, sips with official providers that serve as the reference implementation, can write customown SDK. 
+
+- Use for Otel API to add instrumentation to source code. can be achieved: zero-code or automatic instumentation, instumentation libraries that provide simplied Otel integration (code changes), manual /code-based instumentation within the codebase. 
+
+- Startup: app registers a provider for every type of signal > calls API are forwaded to the respective provider > If no provider is registered Otel, provides fallback provider taht translates API calls into no-ops. 
+
+- Separating API and SDK makes easier to embed native instrumentation into open source library code. Otel API is designed to be lightweight and safe to depend on. 
+
+---
