@@ -107,4 +107,23 @@
 
 - Separating API and SDK makes easier to embed native instrumentation into open source library code. Otel API is designed to be lightweight and safe to depend on. 
 
+![](images/otelframework.png)
 ---
+
+- Telemetry Processor (Stanalone Component). 
+
+- After generating and emiting telemetry, operators are responsible for managing and ingesting it into the respective backends will need to: 
+1. Gather data from various sources, parsing and converting it for downstream processing. 
+2. Enrichment with additional metadata, filtering out irrelevant data to reduce nouse and storage requirements, normalization and applying transformations. 
+3. buffering for resilience and performance, routing to steer subsets of telemetry to different destinations, forwarding to backends. 
+
+![](images/telemetryprocessor.png).
+
+
+---
+
+- Wire Protocol: OTel Protocol (Open telemetry Protocol)- open source and vendor-neutral wire format that defines: data is encoded in memory, protocol to transport that data across the network. using the protocol: compatible with countless observability solutions/ Prometheus, Zipkin/. it has 3 transport mechanism for transmitting: HTTP/1.1, HTTP/2 and gRPC.  OTLP data is often encoded using the protocol buffers (Protobuf) binary format. Data can be also encoded in JSON file format. 
+
+
+---
+
