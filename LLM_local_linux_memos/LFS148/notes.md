@@ -127,3 +127,16 @@
 
 ---
 
+- Exercise repo link: https://github.com/lftraining/LFS148-code
+
+
+- Getting started. Sample Architecture.
+
+- Architecture of  the app: 
+
+![](images/app%20architecture.png)
+
+- Instrumented architecture: 
+
+![](images/instrumented%20architecture.png)
+
