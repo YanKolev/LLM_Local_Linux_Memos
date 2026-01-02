@@ -3379,3 +3379,120 @@ dr-xr-x---. 10 bob  bob  128  03:38 /data
 ----rw-rwx.  1 bob  bob  100  21:08 /data/abc.txt
 
 ```
+
+---
+
+- **Changing Permissions**: command to change permissionson files and directories is **chmod**. Two approaches can be used: symbolic and numeric. to use them we need the following syntax as well as root user privileges.
+```
+chmod new_permission file name
+```
+
+- Symbolic method. easier to use, to apply we need to specifywhich permissions we need to change and the others that remain as they are. 
+
+- chmod command will use three types of information in order to apply it to new_permission. basic table of permissions: 
+
+![](images/Essentials/chmod.png)
+
+- with the change, only yhe owners permission was changed, all other permissions remained as they were prior to the execution. 
+
+- We can also combine multiple changes to the file's permissions. or use **=** to add specified permissions and cuasees. 
+
+```
+# adds the execute permission to the user owner and group owner, removes the read permissions for others 
+
+cmod ug+x,o-r abc.txt
+
+#it will be from: 
+-rw-rw-r-- 1 root root 0 Dec 19 18:58 abc.txt
+#to 
+-rwxrwx--- 1 root root 0 Dec 19 18:58 abc.txt
+
+# add =, adds specific permissions, give the user owner, only read and execute permissions, removing the write
+
+chmod u=rx abc.txt
+
+-r-xrwx--- 1 root root 0 Dec 19 18:58 abc.txt
+```
+
+
+- Numeric Method (octal method), based on numerical systemin which each permission type is assigned a numeric value: 
+
+![](images/Essentials/chmodnumeric.png)
+
+- new_permission argument is specified as three numbers, one number for each permission group. when used, all nine permissions **must** be specified. Symbolic method is sued for chaning few permissions while numeric- drasnic changes.
+
+- while changing permissions, istead of **ls -l**, use **stat**: it will shows permissions using both symbolic nad numeric methods. 
+
+
+---
+
+- Default permissions: command to used to determine defualt permissions is called **umask**. Maximum default permisions are different for files and directories. 
+
+```
+file         rw-rw-rw-
+directories  rwxrwxrwx
+```
+
+- when a file is created the inial permissions can not exceed rw-rw-rw-. to have execute permission set on a file, we need to create the file then change the permissions. 
+
+- **umask** can be used to display current umask value **0002**
+```
+- The first 0 indicates that the umask is given as an octal number.
+- The second 0 indicates which permissions to subtract from the default user owner's permissions.
+- The third 0 indicates which permissions to subtract from the default group owner's permissions.
+- The last number 2 indicates which permissions to subtract from the default other's permissions.
+```
+
+- different users may have different umasks. oot user, has a more restrictive umask than normal users. root user will have something like **0022** while user will have **0002**. 
+
+- Umask working, if we have umask of a file 027: 
+```
+File default: 666
+Umask         -027
+Result        640
+
+# it is not a substraction, from first glance, its conversion: 
+File default permissions (files):
+666
+Convert to binary:
+6   6   6
+110 110 110
+Umask:
+027
+Convert to binary:
+0   2   7
+000 010 111
+Invert umask (~umask):
+111 101 000
+7   5   0
+Apply bitwise AND:
+110 110 110   (666 default)
+AND
+111 101 000   (~027)
+------------------
+110 100 000
+Convert result back to octal:
+
+110 = 6
+100 = 4
+000 = 0
+Final permissions:
+640
+
+640 or rw-r----- permissions by default
+---
+
+Directory Default 	777
+Umask 	-027
+Result 	750
+
+
+750 or rwxr-x--- permissions by default
+```
+
+- Umask manipulations is only applied to file and directories created during the session. when new shell is started- > default umask will be in effect. 
+
+- to have permanent umask modified > .bashrc file need to be modified and saved. 
+
+---
+
