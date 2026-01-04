@@ -3496,3 +3496,8 @@ Result 	750
 
 ---
 
+### Chapter 17 Lab notes
+
+---
+
+
