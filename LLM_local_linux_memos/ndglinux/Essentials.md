@@ -3500,4 +3500,36 @@ Result 	750
 
 ---
 
+```
+cd /tmp
 
+mkdir priv-dir pub-dir
+
+touch priv-dir/priv-file
+touch pub-dir/pub-file
+
+ls -l priv-dir
+ls -l pub-dir
+
+```
+- indications of file: 
+```
+d - indicates directory
+-  regular file
+l symbolic link
+b block device file
+c  is a character device file
+p is a pipe file
+s is a socket file
+```
+
+- the first 3 indicate user owner, group owner and others 
+
+```
+|uo| |go| |o
+rw-  rw-   r--
+
+r- read
+w- write
+x- execute
+```
