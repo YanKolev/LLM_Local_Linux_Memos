@@ -3534,4 +3534,49 @@ w- write
 x- execute
 ```
 
-17.2.2 Step 2
+- to read hidden files of the system (. dot characters) we can use **ls -la**. shows also current directory (.) and parent directory (..) . 
+
+- to make a direcotry more private, we can use **chmod** command to remove permissions that others have on the directory. **-d** opstion with ls will list direcotry entries instead of contents. 
+```
+ls -ld priv-dir/
+
+chmod o-rx priv-dir/
+
+# to vefiy change we need to again
+ls -ld priv-dir/
+
+#original
+drwxrwxr-x 2 sysadmin sysadmin 4096 Feb 24 18:20 priv-dir/    
+
+#modified
+drwxrwx--- 2 sysadmin sysadmin 23 Feb 24 18:20 priv-dir/
+
+```
+
+- **chmod** to modify permissions for others by using an o charater, followed by either a + character or a - character to add or substract permissions. = to set exact permisssions. 
+
+- u instead of o > modifies permissions of user owner. 
+- g instead of o > modifies permissions for group owner.
+- with this is symbolic change of permissions, since it uses groups. 
+```
+chmod a+x file > gives everyone execute permissions
+chmod g-w file > removes write permission for group owners
+chmod go+r file > adds read permissions for group owner and others
+chmod o=rwx > sets others permissions to read, weire and execute
+```
+
+- to make a directory more public, chmod and add write permissions: 
+```
+ls -ld pub-dir/
+chmod o+w pub-dir/
+ls -ld pub-dir/
+```
+
+- before and after the command: 
+```
+# before
+drwxrwxr-x 2 sysadmin sysadmin 22 Feb 24 18:20 pub-dir/ 
+
+# after
+drwxrwxrwx 2 sysadmin sysadmin 22 Feb 24 18:20 pub-dir/
+```
