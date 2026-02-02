@@ -3580,3 +3580,80 @@ drwxrwxr-x 2 sysadmin sysadmin 22 Feb 24 18:20 pub-dir/
 # after
 drwxrwxrwx 2 sysadmin sysadmin 22 Feb 24 18:20 pub-dir/
 ```
+- to make a directory public, we can use **chmod**, and add write permission for others
+```
+ls -ld pub-dir/
+chmod o+w pub-dir/
+ls -ld pub-dir
+
+# after the chmod command in the terminal pub-dir/ will be color coded green
+```
+
+- **chmod** can remove any permission from the group and others:
+```
+ls -l priv-dir/pri-file
+
+chmod g-rw,o-r priv-dir/priv-file
+
+```
+
+- To grant all users the same read and write permission for the pub-file
+```
+ls -l pub-dir/pub-file
+
+chmod a=rw pub-dir/pub-file
+
+ls -l pub-dir/pub-file
+```
+
+- execute permissions are used for users to run executable files. 
+```
+echo "date" > test.sh
+
+./test.sh
+# will give permissins denied
+
+# we can check permissions with 
+ls -l test.sh
+
+```
+
+- only the user owner of a file or the root user is allowrd to change permissions on a file. to do so we need to give ourselves, user ownr execute permissions and execute.
+
+```
+chmod u+x test.sh
+ls -l test.sh
+#after ls command test.sh will be color coded green > it is executable
+
+# in current directory run the script
+
+./test.sh
+
+```
+
+- octal notation will be as follows: 
+```
+To use the chmod command with octal notation, you must first understand the octal value of the permissions:
+Read (r) 	4
+Write (w) 	2
+Execute (x) 	1
+
+From the last listing of the test.sh file, the permissions were shown to be rwx for the user owner, rw for the group owner, and r for others. To express these permissions in octal notation, a total is calculated for each ownership.
+
+As a result, the user's permission total would be calculated as 4 + 2 + 1, or 7, where 4 is for the read, 2 is for the write, and 1 is for the execute permission.
+
+The group's permission total would be 4 + 2 or 6, where 4 is for the read permission, and 2 is for the write permission.
+
+The others' ownership permission would simply be 4 for the read permission that they have.
+
+Putting it all together, the octal value for the current permissions would be 764.
+```
+
+- for more detailed information about .sh files we can use **stat** command. 
+
+```
+stat test.sh
+```
+- for all users to have execute rights we can have **chmod 775**. 
+
+- 17.3
