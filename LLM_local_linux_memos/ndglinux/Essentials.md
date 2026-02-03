@@ -3656,4 +3656,5 @@ stat test.sh
 ```
 - for all users to have execute rights we can have **chmod 775**. 
 
-- 17.3
+- Commands that can affect the ownership of files: **chown** and **chgrp**. chown command can ONLY executed by the root user and it can change both the user and group that owns a file. 
+
