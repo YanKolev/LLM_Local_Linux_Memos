@@ -3658,3 +3658,4 @@ stat test.sh
 
 - Commands that can affect the ownership of files: **chown** and **chgrp**. chown command can ONLY executed by the root user and it can change both the user and group that owns a file. 
 
+- continue with labs
