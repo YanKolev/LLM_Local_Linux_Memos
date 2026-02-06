@@ -3658,4 +3658,15 @@ stat test.sh
 
 - Commands that can affect the ownership of files: **chown** and **chgrp**. chown command can ONLY executed by the root user and it can change both the user and group that owns a file. 
 
-- continue with labs
+---
+
+### Chapter 18 Special Directories and Files
+
+---
+
+- Linux provies read, write and execute permissions, enough to accomodate the security of individual users or organizations. 
+
+- When multiple users need to work routinely on the same directories and files, these permissions may not be enough. Special permissions like **setuid, setgid and sticky bit** are designed to address these concerns. 
+
+---
+
