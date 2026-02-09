@@ -3670,3 +3670,47 @@ stat test.sh
 
 ---
 
+- **Setuid**: requires an executable binary file(a program). Once its set the binary file is run as the owner of the file, not as the user whoe executed it. 
+
+- The **setuid** permisson is set on handful systems utilities so that they can be run by normal users, bt exectured with the permissions of root, giving access  to system files that normal users doesnt have acces to. 
+
+- shadow is a file which contains the password information, is not readable by regular users. contains 9 fields. File is owned by root, admin can temporarily modify the permissions to view or modify file. 
+
+- **passwd** command runs > modifies the /etc/shadow file. sysadmin can modify it, while regular users can't. All due to special **setuid**. When the **passwd** command run  and access the /etc/shadow file, the system acts like the user accessing the file is the owner of the **passwd** command(root user), and NT the user who is running the command. 
+
+```
+sysadmin@localhost:~$ ls -l /etc/shadow                                         
+-rw-r----- 1 root shadow 968 Feb  8  2021 /etc/shadow                           
+sysadmin@localhost:~$ ls -l /usr/bin/passwd                                     
+-rwsr-xr-x 1 root root 59640 Mar 22  2019 /usr/bin/passwd                       
+sysadmin@localhost
+
+
+# notice the s, in -rwsr- in the owner permissions, instead of execute permission would normally be represented. 
+```
+- if thre is s > instead of x = setuid is set. 
+- lowercase s > both setuid and execute permissions are set.
+- uppercase S > only setuid is set (execute permission is not set).
+
+- it can be changed with **chmod** both symbolic and octal methods:
+```
+chmod u+s file
+
+# for numeric: we need to add 4000 to the file's existing permissions. 
+# if they had originally had persmissions 775
+chmod 4775 file
+
+
+# to remove the setuid permission symbolically: 
+chmod u-s file
+
+# to remve the setuid permission numerically
+chmod 0775 file
+```
+
+- when using 3 digit code, chmod command assumes that the first digit before the 3 digit code is 0. Only when 4 digits are specifies > a special permission is set. 
+
+- if 3 digits are specied when changing the permision on a file that already has a special permison set, first one will be set to 0, and the special permision will be removed from the file. 
+
+---
+
