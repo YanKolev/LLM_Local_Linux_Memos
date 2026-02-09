@@ -3714,3 +3714,45 @@ chmod 0775 file
 
 ---
 
+- **Setgid**: permission similart to setuid, used of the group owner permissions. There are two forms of permissions: 
+1. **setgid** on a file 
+2. **setgid** on a directory
+- the behaviour of hte permission changes, depending on what is set. 
+
+---
+
+- **setgid** on files: very similar, allows user to run an executable binary file in a anner that provides them with additional temporary group access. 
+
+```
+sysadmin@localhost:~$ ls -l /usr/bin/wall
+-rwxr-sr-x 1 root tty 30800 May 16  2018 /usr/bin/wall
+```
+
+- in the group permissions there is **s**, on the execute position. This executable s being owned by the tty group a uer executes this command is able to acces files that are group owned by the tty. 
+
+- **files in /usr/bin/wall**: command sends messages to the terminal, and the tty group has write permissions on the files above the users who are not in the **tty** group (others). Without setgid permissions the /usr/bin/wall command would fail. 
+
+```
+sysadmin@localhost:~$ ls -l /dev/tty?
+crw--w----. 1 root tty  4, 0 Mar 29  2013 /dev/tty0
+crw--w----. 1 root tty  4, 1 Oct 21 19:57 /dev/tty1
+```
+
+---
+
+- **setgid on directories**: when set on a directory, the permission cuses files created in the directory to be owned by the group that owns the directory automatically. This is contradictory to how file group owership would normally funcion, as by default new files are group owned by the primary group of the user who created the file. 
+
+
+- directories created within the setgid permission set are not owned by the group that owns the setgid irectory, but the new directory is setgid, then any directories created within the directory inherint the setgid permission. 
+
+- **ls** command is executed on a directory, it outputs information on the files contained within the directory. To view information about the irectory itself we need **-d** option > **ls -ld** 
+
+```
+sysadmin@localhost:~$ ls -ld /tmp/data
+drwxrwsrwx. 2 root demo 4096 Oct 30 23:20 /tmp/data
+```
+
+- there is s (setgid permission) in the group execute permission. Lowercase **s** means that both setgid and group execute permissions are set. 
+
+- uppercase **S** means that only setgid and not group execute permission is set. if there is S > indicates setgit permission is set, but it is not really in effect because the group lacks the execute permissions to use it. 
+
