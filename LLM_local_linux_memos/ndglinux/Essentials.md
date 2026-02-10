@@ -3805,3 +3805,43 @@ chmod 0775 <file|directory>
 
 ---
 
+- **Sticky bit**: permission used to prevent other users from deleting files that they do now own in a shared directory. (if a user with write permission on a directory can create files in that dir, as well as delete any file in the dir, even if they do not own the file)
+
+- Sticky bit permission allows for files to be shared with other users, by changing the write permission on the directory so that the users can still add and delete files in the directory, but files can ONLY BE DELETED BY THE OWNER OF THE FILE OR ROOT USER
+
+- stiky bit is useed for the /tmp and /var/tmp directories. locations where any user can create a temporary file. 
+
+- both configured with sticky bit. without it > users will be able to delete  any files in the directroy, including files belonging to other users. 
+
+- sticky bit is displayed by t character once we check files with ls -l  command
+
+```
+sysadmin@localhost:~$ ls -ld /tmp                                               
+drwxrwxrwt 1 root root 4096 Mar 14  2016 /tmp  
+```
+
+- lowercase t means that both the sticky bit and execute permissions are set for others. uppercase T > only the sticky bit permission is set. 
+
+- while capital S > setuid or setgid permissions, capital T does not necessarily indicate a proble, as long as the group owner still has the execute permissions. 
+
+
+- how to set stickybit: 
+
+```
+# to set sticky bit symbolically
+chmod o+t <directory>
+
+# to set numerically > we need to add 1000 to existing permissions. example: existing permissions are 775
+
+chmod 1775 <file| directory>
+
+# to remove sticky bit permission symbolically
+
+chmod o-t <directory>
+
+# to remove sticky bit numerically
+
+chmod 0775 <directory>
+```
+
+---
