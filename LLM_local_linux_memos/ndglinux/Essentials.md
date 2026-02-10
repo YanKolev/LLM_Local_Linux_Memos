@@ -3756,3 +3756,52 @@ drwxrwsrwx. 2 root demo 4096 Oct 30 23:20 /tmp/data
 
 - uppercase **S** means that only setgid and not group execute permission is set. if there is S > indicates setgit permission is set, but it is not really in effect because the group lacks the execute permissions to use it. 
 
+- Why would admint want to setgid directory? following scenario: 
+
+```
+# user bob is a member of the payroll group
+# user sue is a member of the staff group
+# user tim is a member of the acct group
+
+# we need all of them to work on the follwing scenario: joint project. They are required a shared directory  in which they can work together, BUT no one else can access theif files.
+
+
+#Admin will have to: 
+1. greate a new group called team.
+2. add bob, sue and tim to the team group
+3. makes a new directory called /home/team
+4. makes the group owner of the /home/team directory be the team group
+5. gives the /home/team directory the folwing permissions: rwxrwx---
+
+#issues:
+# when bob creates file in the directory > the new file is owned by his primary group **payroll**
+# sue and tim can access the directory, but cant do anything with the file. the permissions for others are set to (---)
+# if the admin sets the setgid permission to the /home/team directory,
+
+-rw-r-----. 1 bob team 100 Oct 30 23:21 /home/team/file.txt
+
+ then when bob createsa file its owned by the team group **team** and sue and time would have access to the file through the group ownr perissions (r--)
+```
+
+- how to set **setgid**: 
+
+```
+# to add setgid symbolicaly:
+
+chmod g+s <file|directory>
+
+# to add setgid numerically, add 2000 to the file's existing permission. if file had originally 775
+
+chmod 2775 <file| directory>
+
+# to remove setgid permission symbolically:
+
+chmod g-s <file| directory>
+
+# to remove setgid permission numerically, substract 2000
+
+chmod 0775 <file|directory>
+```
+
+---
+
