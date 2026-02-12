@@ -3916,3 +3916,92 @@ sysadmin@localhost:~$ ls -li file.*
 ```
 ---
 
+- **symbolic links**: alsmo known as a soft link. is a file that points to another file. some of them can be found in the /etc directory. 
+
+```
+# if you want to view whats inside /etc/grub.conf  you will view what inside /boot/grub/grub.conf
+
+
+sysadmin@localhost:~$ ls -l /etc/grub.conf
+lrwxrwxrwx. 1 root root 22 Feb 15  2011 /etc/grub.conf -> ../boot/grub/grub.conf
+```
+
+- to create a symbolic link, we can use the **-s** option with the ln command. 
+
+```
+ln -s target link_name
+
+# example
+sysadmin@localhost:~$  ln -s /etc/passwd mypasswd
+sysadmin@localhost:~$  ls -l mypasswd
+lrwxrwxrwx. 1 sysadmin sysadmin 11 Oct 31 13:17 mypasswd -> /etc/passwd
+```
+- in the example the first bit after ls -l is l > the file type is a link.
+
+
+---
+
+
+- **hard links vs soft links**: both have same results, but different advantages and dissadvantages.
+
+- **Hard links dont have a single point of failure**: every filename used  for the file content is equivalent. (5 files linked togehter, deleting 4 will not result in deleting the atula file contents).
+
+- hard links are connecting on the inode number level, as long as 1 file remains, that inode number exits > data still exists. 
+
+- **symbolic links**: have a point of failure! **point of failure: original file**. If the original file is deleted the other file will fail. 
+
+- **soft links are easer to see**. In order to look for a hard link we wil need to used **find with -inum** for search to locate the other files that have the same inode number.  to find inode number > ls -i.
+
+```
+# example
+sysadmin@localhost:~$ ls -i file.original 
+278772 file.original
+sysadmin@localhost:~$ find / -inum 278772 2> /dev/null
+/home/sysadmin/file.hard.1
+/home/sysadmin/file.original
+```
+
+- soft links are much more visual, not requiring any extra command, just ls. 
+
+```
+sysadmin@localhost:~$ ls -l mypasswd
+lrwxrwxrwx. 1 sysadmin sysadmin 11 Oct 31 13:17 mypasswd -> /etc/passwd
+```
+
+- soft link  can be link to any file. each file system (parititon) > has separate sets of inodes, hard links cannont be created that attempt to cross file systems.
+
+```
+# example
+
+sysadmin@localhost:~$ ln /boot/vmlinuz-2.6.32-358.6.1.el6.i686 Linux.Kernel
+ln: creating hard link `Linux.Kernel' => `/boot/vmlinuz-2.6.32-358.6.1.el6.i686': Invalid cross-device link
+
+```
+- file in /boot file systems and the / file system. each of these file system has a set of unique inode numbers taht cant be used outside the file system.
+
+- with soft links the example will be as follows: symbolic link points to another file use a pathname, hence its possible: 
+
+```
+# example
+
+sysadmin@localhost:~$ ln -s /boot/vmlinuz-2.6.32-358.6.1.el6.i686 Linux.Kernel
+sysadmin@localhost:~$ ls -l Linux.Kernel
+lrwxrwxrwx. 1 sysadmin sysadmin 11 Oct 31 13:17 Linux.Kernel -> /boot/vmlinuz-2.6.32-358.6.1.el6.i686
+
+```
+
+- soft links can link to a directory. Hard links cannot be created on directories. System itself uses hard links to define hierarchy of the directory structure. 
+
+```
+# trying to create a hard link on a directory: 
+sysadmin@localhost:~$ ln /bin binary
+ln: `/bin': hard link not allowed for directory
+
+# allowed with symbolic link: 
+
+sysadmin@localhost:~$ ln -s /bin binary
+sysadmin@localhost:~$ ls -l binary
+lrwxrwxrwx. 1 sysadmin sysadmin 11 Oct 31 13:17 binary -> /bin
+
+```
+---
