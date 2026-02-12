@@ -3845,3 +3845,74 @@ chmod 0775 <directory>
 ```
 
 ---
+
+- **Links**: used to shorten the name of long named files. There are hard and symbolic linking methods. but they use different techniques for using them. 
+
+---
+
+- **Hard Links**: they are based on how file system keeps track of files. For every file is a block of data on the file system that stores the metadata of the file. **metadata inludes**: inforfmaition about the permissions, ownership and timestamps. **metadata does NOT include**: file name, contents of the file, but includes almost all other information about the file. 
+
+- metadata is called the file **inode table**. Inode table includes pointers to the ther blocks on the file system called **data blocks** where data is stored. every file on a partition has a unique identification number called **inode number**>  to extract it we can use **ls -i**. 
+
+- what defines file is not its name > the number it has been assigned. Inode table does not inlude the file name. Each file > entry stored in a directory's data area (data block), includes the association between an inode number and a file name. 
+
+- In data block of **/etc** directory, there would a list of all the files in this directory to their corresponding inode number. 
+
+```
+Example
+
+File name  | Inode Number
+
+passwd        123
+
+shadow        175
+
+group         144
+
+gshadow       897
+
+```
+
+- when trying to access /etc/passwd > sstem uses the table to translate the file name into an inode number. Then retrieves the file data by looking at the information in the Inode table for the file. 
+
+
+- **Hard links are two file names that point to the same inode**. 
+
+```
+File Name      | Inode Number
+
+passwd            123
+mypassd           123
+shadow            175
+group             144
+gshadow           897
+```
+
+- passwd and mypasswd have  same inode number > essetially the same file. 
+
+- command **ls -li**, will provide additional info. the number between permissions and user owner is the count number
+
+```
+sysadmin@localhost:~$ echo data > file.original 
+sysadmin@localhost:~$ ls -li file.* 
+278772 -rw-rw-r--. 1 sysadmin sysadmin 5 Oct 25 15:42 file.original
+
+# 1 is the number to look for.
+```
+- the number indiates how many hard links have been created. value = 1 > file has only one name linked to inode.
+
+
+- to create hard links **ln** is used with 2 arguments. 1st argument: existing file name to link it (target), 2nd argument: new file name to link to the target.
+
+```
+
+ ln target link_name
+ # when the command is used the number between the permisions and user owner will be increased. 
+
+ sysadmin@localhost:~$ ln file.original file.hard.1
+sysadmin@localhost:~$ ls -li file.*
+278772 -rw-rw-r--. 2 sysadmin sysadmin 5 Oct 25 15:53 file.hard.1
+278772 -rw-rw-r--. 2 sysadmin sysadmin 5 Oct 25 15:53 file.original
+```
+---
+
