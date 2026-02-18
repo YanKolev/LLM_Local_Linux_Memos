@@ -4005,3 +4005,16 @@ lrwxrwxrwx. 1 sysadmin sysadmin 11 Oct 31 13:17 binary -> /bin
 
 ```
 ---
+
+### Chapter 18 Lab Notes (Special directories and files)
+---
+
+- Point 1: Viewing Special Permissions: **-d** option is for **ls** command lits directory information + ownership and permissions for the directory files. 
+
+```
+# to list details of the /tmp
+
+ls -ld /tmp
+ls -ld /var/tmp
+
+```
