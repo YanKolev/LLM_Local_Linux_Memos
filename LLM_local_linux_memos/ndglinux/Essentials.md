@@ -4018,3 +4018,5 @@ ls -ld /tmp
 ls -ld /var/tmp
 
 ```
+
+// finish lab and work on challenges
