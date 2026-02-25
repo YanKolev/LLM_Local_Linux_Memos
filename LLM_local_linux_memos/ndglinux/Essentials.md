@@ -4019,4 +4019,30 @@ ls -ld /var/tmp
 
 ```
 
-// finish lab and work on challenges
+- how to check if the root user has permissions and what kind? > check shadow file (contains encrypted password of all locar user accounts nad info about password aging)
+
+```
+ls -l /etc/shadow
+```
+
+- when password is updated with passwd > passwd command executed siwht  **setuid**. It allows as the user owns the file, instead of hte user that is actually running the command. **setuid** is like Run as administrator.
+
+```
+ls -l /usr/bin/passwd
+
+-rwsr-xr-x 1 root root 59640 Mar 22  2019 /usr/bin/passwd  
+```
+
+- after the command there will be s in the user's execute permission column > indicates that file has setuid permission set, to it executes as the user who owns it (root), instead of the user running the commad. 
+
+```
+sysadmin@localhost:~$ ls -l /usr/bin/wall                                 
+-rwxr-sr-x 1 root tty 30800 Sep 16  2020 /usr/bin/wall  
+```
+
+- s in group execute > setgid > as the group owns it, instead  of the user running 
+
+---
+
+- **Hard and Soft Links**
+
