@@ -4046,3 +4046,21 @@ sysadmin@localhost:~$ ls -l /usr/bin/wall
 
 - **Hard and Soft Links**
 
+- i option to **ls** prints the indes number of a file. command goes like **ls -li source**
+
+```
+sysadmin@localhost:~$ ls -li source                                       
+6689431 -rw-rw-r-- 1 sysadmin sysadmin 5 Feb 24 20:32 source
+```
+
+- also shows link count of 1, 
+- linux uses inodes to keep track of information about a file. 
+- direcory entry associates an inode with a file name. 
+- creating a hard link, creates another directory entry associated with already existing inode, > increases count number. 
+- hard link-> allow usage of numtiple names to refer the same file. if ANY ONE of these names is removed then other names can still be used to refre to the file. 
+- the other names can be used to create addtional links. They are consiered equivalent as they all refer to existing inode. 
+
+```
+# we can not create hard links to directories
+# hard link to a file must exist within the same partition as the file it links to.
+```
