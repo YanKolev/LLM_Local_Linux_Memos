@@ -45,3 +45,9 @@ Deliverables
     Use the appropriate command to verify each user’s group assignment.
     Use the appropriate command to verify the directory creation and the permission settings.
     Use the appropriate command to verify the files are created in their respective directories.
+
+
+---
+
+- sudo mkdir 
+- group add (2 version either with automatic GID or with manually provided)
