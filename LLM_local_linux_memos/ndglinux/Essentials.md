@@ -4064,3 +4064,42 @@ sysadmin@localhost:~$ ls -li source
 # we can not create hard links to directories
 # hard link to a file must exist within the same partition as the file it links to.
 ```
+- to create hard links **ln** needs 2 arguments.
+  1st argument: existing file name to link to
+  2nd argument: new file name that will link to the target. 
+
+```
+ln source hardlink
+ls -li source hardlink
+```
+
+- hardlink and original source will share same inode, but it will be 2 in the link indicator
+
+```
+sysadmin@localhost:~$ ln source hardlink                                  
+sysadmin@localhost:~$ ls -li source hardlink                              
+6689431 -rw-rw-r-- 2 sysadmin sysadmin 5 Feb 24 20:32 hardlink                  
+6689431 -rw-rw-r-- 2 sysadmin sysadmin 5 Feb 24 20:32 source 
+```
+
+- to remove files, we can use **rm**, by doing so the counter for links will go down. 
+
+---
+
+- softlinks/ symbolic links, DO NOT increase the link count of files with which they are linked. 
+
+- softlinks have their own inode and type of file. instead of lining and sharing an inode, they link to the same file name. softlinks can be linked to directories and can cross devices and partitions to their targets. 
+
+- **-s** option on the command **ln** creates a symbolic link instead of hard link.
+
+- when creating soft link, couter link will increase (link file type). Permissions of hte link are irrlevant as its is the permissior of the target file that determine access:
+
+```
+sysadmin@localhost:~$ ln -s source softlink                               
+6685169 lrwxrwxrwx 1 sysadmin sysadmin 6 Feb 24 20:45 softlink -> source        
+6689431 -rw-rw-r-- 1 sysadmin sysadmin 5 Feb 24 20:32 source 
+
+```
+- softlinks can refer to directories, crossing from one filesystem to another, hardlinks cant do that. 
+
+---
