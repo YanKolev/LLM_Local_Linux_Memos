@@ -49,5 +49,8 @@ Deliverables
 
 ---
 
+// Reminder to map out steps for possible shell script
+look into if /esle blocks for check as well as chmod for execution of the script
+
 - sudo mkdir 
 - group add (2 version either with automatic GID or with manually provided)
