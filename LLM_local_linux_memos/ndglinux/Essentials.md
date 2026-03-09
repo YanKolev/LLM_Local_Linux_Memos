@@ -2984,14 +2984,14 @@ grep '/home/jane' /etc/passwd
 ```
 useradd -mk /home/sysadmin jane
 ```
-- **shell**: **useradd -s /bin/bash jane**. its ok sto specify /sbin/nologin shell for accounts to be used as system accounts. 
+- **shell**: **useradd -s /bin/bash jane**. its ok to specify /sbin/nologin shell for accounts to be used as system accounts. 
 - **comment**: -c, **useradd -c 'Jane Doe' jane
 
 ---
 
 - **creating user**: example: **useradd -u 1009 -g users -G sales,research -m -c 'Jane Doe' jane**:
 - creates user UID of 1009, primary group users, supplementary memberships in the sales nad research groups, comment of Jane Doe and account name of jane. 
-- information about jane: will be added to /etc/passwd and /etc/shadwo files. infromation about supplemental group access is automatically added to the /ect/group and /etc/gshadow files. 
+- information about jane: will be added to /etc/passwd and /etc/shadow files. infromation about supplemental group access is automatically added to the /ect/group and /etc/gshadow files. 
 - accounts does not have a valid password yet, also we need to look for the mail spool: 
 ```
 # if CREATE_MAIL_SPOOL is set to yes, we can check it by: 
@@ -3130,7 +3130,7 @@ grep student /etc/passwd
 grep student /etc/group
 
 
-# to add research htoup as secondary to sysadmin user
+# to add research group as secondary to sysadmin user
 
 usermod -aG research sysadmin
 

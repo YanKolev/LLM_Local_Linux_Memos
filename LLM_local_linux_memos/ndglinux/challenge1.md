@@ -52,5 +52,29 @@ Deliverables
 // Reminder to map out steps for possible shell script
 look into if /esle blocks for check as well as chmod for execution of the script
 
-- sudo mkdir 
-- group add (2 version either with automatic GID or with manually provided)
+```
+# command order Part 1
+
+1. sudo su 
+2. password
+3. mkdir (engineering, sales, is)
+4. check ls -l
+5. groupadd (engineering, sales, is)
+6. check grep <name> /etc/group
+7. In case of breaking naming conventions(must be lowercase, _ ), use groupmod -n new name old name. 
+    if deleted, it will create orphan files (if not removed first)
+
+8. Engineering: Admin-John, Members- Frank, Don
+    Sales: Admin- Adam, Members- Pam, Brock
+    IS: Admin- Ash, Members- Misty, Gary
+
+9. check: getent group <name> / grep sales /etc/group
+10. useradd -g engineering -mk /engineering -c "John" john
+11. check: grep 'home/john' /etc/passwd
+12. usermod -s /bin/bash john (all)
+13. check: grep 'home/john' /etc/passwd
+14. gpasswd --administrators john, engineering
+    NB, careful with comma delimeter, will break command
+15. gpaaswd --members frank, engineering
+
+```
