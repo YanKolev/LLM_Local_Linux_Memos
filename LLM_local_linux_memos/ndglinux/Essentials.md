@@ -2602,7 +2602,7 @@ netstat -tuln
 
 ---
 
-- **switching users**: **su* , allows to run a shell as a different user. 
+- **switching users**: **su** , allows to run a shell as a different user. 
 ```
 su [options] [username]
 ```
@@ -2868,7 +2868,7 @@ grep development /etc/group
 - **group naming**: 
 - first character should be either an underscore or lower case alphabetic a-z character
 - up to 32 characters, but more than 16 can be problematic on some distros
-- after the first character, the remaining characters can be alphanumeric, a das - or undercore
+- after the first character, the remaining characters can be alphanumeric, a dash - or undercore
 - last character should not be a hyphen. 
 
 ---
@@ -2904,7 +2904,7 @@ SKEL=/etc/skel
 CREATE_MAIL_SPOOL=yes
 ```
 
-- **Group**: for distros not using UPG, this is the defaul primary group for new user. Usually the users group with GID of 100. 
+- **Group**: for distros not using UPG, this is the default primary group for new user. Usually the users group with GID of 100. 
 - option -g, **useradd -g**,  allows to use different primary group than the defaul when greating new account. 
 
 - **Home**:  /home: default base directory, where new users are created. 
@@ -2926,7 +2926,7 @@ CREATE_MAIL_SPOOL=yes
 
 - to modify **useradd** we can use text editor of the file /etc/default/useradd. or **useradd -D** command
 
-- if we can to allow usrs to have expired passwords that they could still log in with up to 30 days: 
+- if we can to allow users to have expired passwords that they could still log in with up to 30 days: 
 ```
 useradd -D -f 30
 ```
@@ -3123,7 +3123,7 @@ nano /etc/default/useradd
 #locate mail spool, change it to yes, > ctl+X > Y > Enter
 
 
-# create a new user named "student", secondary member of research group of research group and primary mmeberof their own private group. Use comment of Linux Student taht will appear as full name, when they login. Create a home directory with -m option. Use grep to verify 
+# create a new user named "student", secondary member of research group of research group and primary member of their own private group. Use comment of Linux Student taht will appear as full name, when they login. Create a home directory with -m option. Use grep to verify 
 
 useradd -G research -c 'Linux Student' -m student
 grep student /etc/passwd
