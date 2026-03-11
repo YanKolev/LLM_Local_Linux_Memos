@@ -78,3 +78,33 @@ look into if /esle blocks for check as well as chmod for execution of the script
 15. gpaaswd --members frank, engineering
 
 ```
+
+---
+
+- Part 2: 
+
+    For security reasons, the following modifications will need to be made to each of the departments' respective directories:
+        Ensure that the owner of each of the directories is the department administrator and the group ownership is the group for each department.
+        The department administrator will have full access to their respective department directories.
+        Ensure that only the owner of a file in the department’s directory can delete the file. The user will also have ownership of their respective department folders.
+        Normal users in each department will have full access (Read, Write and Execute) to their respective department folders.
+
+        The department folders will ONLY be accessible by users/administrators in each of the respective departments. Ensure that no one else will have permissions to the folders.
+
+- Owner = department admin
+- Admin = full access, memebers = only department folder ( segmentation)
+- members- rwx permissions for folders,
+- folders accessible ONLY to user/admin in department. no one other. 
+
+-----
+
+- Part 3 Document creation: 
+
+    Create a document in each of the department directories.
+        The ownerships on this file will be the same as the directory it is located in.
+        The document should contain only one line of text that states, “This file contains confidential information for the department.”
+        This file can be read by any user in the department, but can only be modified by the department administrator. No one else has permissions to this file.
+
+- 1 txt file in each dir. 
+- text inside
+- file to be read by any user in dept / modified only by admin. no other permissions. 
