@@ -121,3 +121,69 @@ else:
 
 ---
 
+- To create a book of duck photographs with the pictures we need an application. App will use the model to get an is_duck or not_duck response like any other function call, but then use that value to do something with the duck image.
+
+```
+{
+    "prediction": "duck",
+    "confidence": 0.95, 
+    "message" : "This is a duck."
+}
+```
+
+- prediction is the model's classification result, indicating that iage has been identified as a duck. 
+- confidence: decimal value representing the model's confidence in its prediction ( on a scale from 0 to 1, where 1 is absolute certainty). 0.95 = 95%. 
+- message provides human readable interpretation of the prediction.
+
+---
+
+- Pseudocode for an app calling a duck identification model. have dictionary for simplicity's sake, app will have the sorted pictures and can then build a online book or other outpt with those images. 
+
+```
+#step 1: load pre-trained duck indentification model 
+
+model = loadmodel ("path to model")
+
+#step 2: Define the path for input images
+
+inputImagePath = "path to input images"
+
+// Step 3: Process and predict each image in the input path
+processImages(inputImagePath)
+
+// Function to load the pre-trained model
+function loadModel(modelPath):
+    // Load and return the model from the specified path
+    // This could involve deserializing the model file into a model object
+      return model
+
+// Function to process images in the specified path
+function processImages(imagePath):
+    // Retrieve a list of image files from the specified path
+    imageFiles = getImageFiles(imagePath)
+
+    // Loop through each image file
+    for imageFile in imageFiles:
+    // Load the image
+    image = loadImage(imageFile)
+
+    // Preprocess the image for the model
+    preprocessedImage = preprocessImageForModel(image)
+
+    // Predict if the image is a duck
+    isDuck = predictDuck(preprocessedImage, model)
+
+    // Initialize an empty dictionary to act as the fake "duck_book" object
+    duck_book = {"duck": [], "not_duck": []}
+
+    // Handle the prediction result
+    if isDuck:
+      print(imageFile + " is a duck.")
+      duck_book["duck"].append(imageFile)
+    else:
+      print(imageFile + " is not a duck.")
+      duck_book["not_duck"].append(imageFile)
+
+
+```
+
