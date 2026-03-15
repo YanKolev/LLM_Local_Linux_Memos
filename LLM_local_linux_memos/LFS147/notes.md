@@ -28,3 +28,96 @@
 
 ---
 
+- **Models acts as the brain for the application**. The application uses the model's response to determine logical flow. The application's logic is implemented based on the context of the model's outputs. Instead of a developer hardcoding the desired inputs and outputs, the model learns patterns based on the data. The model tests itself on how well it learned a concept and improved its known patterns during the training process. 
+
+---
+
+- **Practice application**: application whose job is to determined if a picture is or is not a duck and then sort the duck images into a "book f ducks". 
+
+- Without machine learning, sample code: 
+
+```
+// Pseudocode for Duck-or-not-duck image recognition
+
+// define the main function
+
+function isitADuck (image):
+    // step 1 check for correct format
+    if not isValidImageFormat(image):
+    return "Error: Invalid image format. Please upload JPG or PNG."
+
+    //step 2 analyze color spectrum of image
+    predominantColors = analyzePredominantColors(image)
+    if "yellow" not in predominantColors: 
+    return "Probably not a duck. Ducks are often yellow."
+
+    // step 3: look for shape of a beak
+    if not detectShape(image, "beak"): 
+    return "Probably not a duck. No beak detected"
+
+    //step 4: check for webbed feet
+    if not detectShape (image, "webbed feet"):
+    return "Might be a duck, but can't confirm without seeing webbed feet."
+
+    //step 5: analyze the image for a quacking sounds
+    if detectSound (image,"quack")
+    return "Definetely a duck. It quacks!"
+
+    //step 6: ued advanced duck detection logic (experimental)
+    if advandcedDuckDetectionAlgorithm(image): 
+    return "Based on analysis, this is indeed a duck"
+
+    //if all else fails
+    return "Uncertain if this is a duck, Please consult with expert."
+```
+
+- that looping over with so many possibilities might be too hard to implement.
+
+---
+
+- Alternative approach: train a model to be automated version of a duck expert. Application asks a model "is this a duck?"
+
+- In order to train a duck detection model: we need a dataset. ML experts spent time finding and curating data, to do so we need to manually label images of ducks as "duck" or "not_duck". Manual labeling is called human in the loop. 
+
+- The model is only good as the data and the human's ability to develop valuable labels. Adjusting data to improve the model is data-centric approach to AI. 
+
+
+- Approach of machine learning for Duck or not duck detection method in pseudocode. 
+
+```
+#step 1 prepare the labeled dataset
+
+labeledData = loadDataset ("duck_image_dataset.csv")
+
+# example dataset format: [image_path, label]
+#label is either a "duck" or "not_duck"
+
+#step 2 pre-process the data
+preprocessedData = preprocessData(labeledData)
+# preprocessing steps include resizing images, normalizing pixel values
+
+#step 3: spli In at the dataset into training and testing 
+set trainSet, testSet = splitDataset(preprocessedData, trainSize=0.8)
+
+#step 4: Iitialize the machine learning model
+# using convolutional neural network (CNN) suitable image classificaion.
+model = initializeCNNModel()
+
+#step 5: train model on the training set
+trainModel (model. trainSet)
+
+#step 6: Evaluate the model on the testing set to check its performance
+evaluationResults = evaluateModel(odel, testSet)
+print ("Model accuracy on test set: ", evaluationResults.accuracy)
+
+#step 7 use trained model to predict new images function predictDuck(image):
+preprocessedImage = preprocessedImage(image)
+prediction = model.predict(preprocessedImage)
+if prediction == "duck"
+    return "This is a duck."
+else: 
+    return "This is not a duck."
+```
+
+---
+
