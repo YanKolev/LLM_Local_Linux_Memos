@@ -205,3 +205,25 @@ function processImages(imagePath):
 ---
 
 - Features concept: (specific case features-color of feathers shape of beak, size of duck)
+
+---
+
+- **Developing and Deployng duck classifier**. 
+
+- Two main concepts stand out: reporoducibility and replicability. As well as how containerization can help support both. 
+
+- **reporoducibility**: means using the same datase of duck/ non-duck images along with the identical model arhcitecture and parameters to achieve the same accuracy and performance metrics. 
+
+- involves documention, training process and dataset used > so everyone can replicate our outcome. 
+
+- **replicability**: testing with new, unseed datasets of bird images while maintaining the same model systems adn expecting similar performance levels. 
+
+- challenges: sourcing relevant and varied data that accurately represent the broader applicatn context.
+
+- **determinism**: any process or algo operate predictably, producing the same amoun of input every time. Determinism is crucial in contexts where reproducibility and consistency of results are essential, such as in safety-critical applications or when diagnosing issues and improving models.
+
+- **conteinerizatin and reporoducibility**: our model needs to work all kinds of customer environments. Either by adopting a model registry like MLflow or utilizing object storage line MinIo. 
+
+- **hashing**: ensures the integliry of build systems and safeguards agains compromise. 
+
+---
