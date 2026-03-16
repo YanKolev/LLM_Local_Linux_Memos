@@ -187,3 +187,21 @@ function processImages(imagePath):
 
 ```
 
+- Unanswered questions: 
+1. how does a model detect ducks if we did not explain to it what a duck is? 
+2. does the model look for specific feather patterns, colors, beak size or plumage?
+3. do we teach models to detect a duck the same way we teach humans? 
+
+---
+
+- **Deep Learning** the model in sue analyzes more abstract patterns and characterist through its layers. Each layer activates specific nodes at a certain magnitures to pass information onto the next layer. 
+
+- The first layer is called input layer, and the final layer is the output layer. in Convolutional Neural Network (CNN), the initial layers may begn by detecting simple edges and textures. 
+
+- Deeper layers combine initial findings into complex patterns, not recognizable to humans. Model learsn these feature during training by adjusting its internal parameters to reduce prediction errors, identifying combination of abstract patterns map to a duck. 
+
+- Loss function is reduced through backpropagation and gradient descent to fnd a global minimum. network leverages te chain rule- > allows the model to generalize from the training data and accurately identify duck in new, unseen images, even if the specific appearance varies widely from the examples it was trained on. 
+
+---
+
+- Features concept: (specific case features-color of feathers shape of beak, size of duck)
