@@ -227,3 +227,48 @@ function processImages(imagePath):
 - **hashing**: ensures the integliry of build systems and safeguards agains compromise. 
 
 ---
+
+### Model Development Lifecycle
+
+---
+
+- model development lifecycle is the journey from concept to development to retiring  a model. 
+
+- first stage: problem defition and scoping stage. 
+
+- Duck app problem definition: " We require a system that enables users to classify ducks in images easily without needing Avian biology or machine learning expertise. Although we possess a comprehensive dataset of bird images, we aim to direct users efficiently to specific information about ducks, including visual characteristics and species details, based on their queries. Our application requires an intuitive interface that doesn't demand users to learn complex query languages or undergo extensive training to use the application." 
+
+- Data extraction Stage. Key factors: 
+
+1. Access to Data
+2. Data Gathering Methods
+3. Volume of data
+4. Data Freshness
+5. Data Format and accessibility
+
+- tools often use for ETL: Talend, Apache beam. 
+
+- Data Analysis Stage. Key factors: 
+
+1. Data Relevance
+2. Feature Importance
+3. Data Cleaning
+4. Feature Engineering
+
+- tools used: pandas, matplotlib, seaborn, notebooks
+
+- Data Preparation Stage.  Key factors: 
+
+1. Dataset Division 
+2. Feature Selection and Clearning
+3. Scaling and Encoding
+
+- tools used: scikit-learn (python), pandas, tensorflow
+
+- Model Training stage. Duck classifier: can be used with Pytorch. There are other supportted frameworks that are supported with Kubeflow. 
+
+- Model Serving. Tools: Nvidia Triton interface server, TensorFlow Serving, Seldon Core Serving, Kserve.
+
+- Model Monitoring: Prometheus.
+
+---
