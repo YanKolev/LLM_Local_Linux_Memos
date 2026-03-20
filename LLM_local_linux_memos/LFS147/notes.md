@@ -272,3 +272,71 @@ function processImages(imagePath):
 - Model Monitoring: Prometheus.
 
 ---
+### MLOPS AND Machine Learning Toolkits
+
+- MLOPS was inspired by DevOps philosophies. ML engineering to be familiar with the model lifecycle and the automation required for stable model deployment. Main goal: stabilit and reproducibility. 
+
+- CI/CD in MLOps: CI: generating and depoloying code efficiently by aboiding repetitive errors through rigorous testing. CD: adresses bug outages and enhances user satisfaction by deploying updates in manageable incremenetst to facilitate easy adjustments in case of production issues. 
+
+- MLT- Machine learning Toolkit: Kubeflow. Flyte. These capabilities allow users to define, schedule, and monitor complex data and machine learning pipelines, ensuring that various steps in the model lifecycle are controlled and reproducible.
+
+- MLOps Maturity levels: 
+0. Manual process
+1. Continuous Intergration
+2. Continuous Delivery
+3. Continuous Training
+4. Full MLOps
+
+---
+
+### Kubeflow Intro
+
+---
+
+- Machine learning toolkit that aims to deploy workflow on Kubernetes in simple portable and scalable ways.  
+
+- Kubeflow mission: composability, portability and scalability.
+
+- Composability: ability to assemble and disassemble various workflow components quickly. 
+
+- Portability: ml workflos are migratable and executable across and org's environments. 
+
+- Scalability: current work and allocate additional compute resources  to accomodate new tasks. (dynamic allocation of resources)
+
+- Technical advantage of Kubeflow: flexible and composable nature of kubeflow, allows it to remain neutral regarding tool choices.
+
+---
+
+- **Main components of Kubeflow**: Central Dashboard, Kubeflow Notebooks, Kubeflow Pipelines, Kaib and Training operator. 
+
+- Diagram shows overview of Kubeflow architecture. K8s abstracts away the public clouds. 
+
+![](images/kubeflowarchitecture.png)
+
+
+---
+
+
+- **K8s scaling kubeflow** :  Kubernetes provides a way to scale a cluster (the fleet of machines running your code) based on demand. If a node ( a single machine within your cluster) has no scheduled jobs, the autoscaler will remove the node from the cluster. A typical example is the need to provision GPU nodes for a particular machine-learning task. GPU nodes are expensive to run. A CPU node may cost $0.03398 / vCPU an hour, whereas adding GPU to that node could cost $0.35 per GPU per hour for a low-performance GPU. Teams want to ensure they don’t provide the cluster with expensive nodes only for them to remain idle. Kubernetes will schedule jobs to the node based on a resource request and remove the node from the cluster once the GPU-powered job is complete.
+
+
+---
+
+- **Kubeflow Cental Dashboard**: he Kubeflow Central Dashboard is a service that improves a team's capability to interface with the Kubeflow machine learning services. The dashboard enables teams to create notebooks, visualize experiments, see model endpoints, and more. The Kubeflow Central Dashboard can be exposed externally to the cluster so teams can access it via their browsers. Kubeflow has APIs for orchestration, yet many teams use the Kubeflow Central Dashboard as their initial user experience when interfacing with Kubeflow. The dashboard is very customizable should teams want to add additional application options for their end users. The Kubeflow Central Dashboard is namespaced, so end users only see what the platform team allows. The Kubernetes and Istio Role-Based Access Control functionality logically separate teams and controls service-to-service traffic via policies.
+
+
+- **Kubeflow Notebooks**: Kubeflow Notebooks provide integrated development environments (IDEs) for teams to leverage. The notebooks can be Jupyter, RStudio, or VisualStudio Code servers by default, but you can customize the server images to fit your organizational needs and non-negotiables. The notebook graphical user interface (GUI) allows data teams to request resources and specific images for their specialized ML/AI tasks. Kubeflow, with the help of Kubernetes, will schedule the notebook server and expose it so the end user can leverage the IDE. Notebook servers are namespaced, but multiple team members can be allocated to a single namespace and collaborate on the same notebook server. Often, individuals have their namespaces while teams have separate collaborative ones. Since namespaces are merely logical barriers, teams must provision a different cluster if they want physical separation. The notebook servers also provide namespaced terminal access to the underlying Kubernetes cluster. Below is a screenshot of the Kubeflow Notebooks UI within the Kubeflow Dashboard. The UI contains options for launching a notebook, including notebook type, CPU/RAM settings, GPU settings, and options for defining data volumes.
+
+
+- **Kubeflow Pipelines**: Kubeflow Pipelines (KFP) is the workflow orchestration tool for the Kubeflow project. Kubeflow pipelines are modular components connected to handle one or many machine-learning tasks. KFP enables teams to schedule jobs across their Kubeflow cluster. The pipelines are namespaced, and due to this feature, platform teams can use the Kubernetes resources quota functionality to restrict resource allocation across the cluster. Why are resource quotas essential to ML teams? Resource quotas help regulate the profitability of ML projects. Pipelines can scale very quickly and consume a lot of resources. This scaling often leads to teams facing an expensive cloud bill. The higher the cloud bill, the more valuable a model must be to ensure project profitability. Resource quotas create guardrails for model development teams, allowing teams to be more intentional when allocating resources to a specific project and improving the odds of project profitability.
+
+KFP also provides a directed acyclic graph (DAG) to help troubleshoot and visualize pipeline runs. Below is a picture of a pipeline DAG. The arrows represent the logical flow of the pipeline from input to output.
+
+
+- **Katib**: Katib is a Kubernetes-native project for automated machine learning or AutoML. AutoML is a field of artificial intelligence that focuses on automating the process of applying machine learning to real-world problems. Katib aims to make machine learning more accessible to non-experts and to improve efficiency for experienced practitioners. Katib is often considered a hyperparameter tuning solution but supports early stopping and neural architecture search (NAS). 
+
+
+- **Training Operator**: The Kubeflow Training Operator, formerly the unified training operator, is a framework-agnostic way to submit training jobs to Kubeflow. The training operator allows you to use Kubernetes manifests to simplify job submissions. For instance, IT departments are no longer required to configure a Spark cluster manually on an as-needed basis. A data professional can directly submit a Kubeflow manifest, which automatically provisions a Spark cluster and submits the specified Spark job to this newly established cluster. The allocated resources from the completed job are then released, and the cluster can be scaled down. In the case of a static on-prem environment, we can ensure our cluster has as many resources as possible for other tenants.
+
+
+--- 
