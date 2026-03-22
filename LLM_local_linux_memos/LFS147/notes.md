@@ -340,3 +340,18 @@ KFP also provides a directed acyclic graph (DAG) to help troubleshoot and visual
 
 
 --- 
+
+### Kubefolow Distributions: Community support / vendor support
+
+---
+
+- Kubeflow is a machine learning toolkit that runs on Kubernetes. Kubernetes runs on infrastructure that may or may not run on a cloud. That infrastructure can be orchestrated by APIs that are subject to the lifecycle of the underlying orchestration software. Making sure all these moving parts run smoothly requires cross-functional expertise and support that organizations are willing to pay either internal or external teams to provide.
+
+- The demand for support and expertise fuels vendors' efforts to offer resources to end users through paid contributors and build solutions that integrate other tools. Vendor support is ultimately good for the open source community. These vendors contribute on behalf of the organizations, paying them and pushing features based on customer business needs. Vendor contributors can support many customers simultaneously, especially when managing common vulnerabilities.
+
+- Vendor contributors also gain experience from various customer environments, providing insight to the community on what directions may help the project. Customers can tap into a vendor’s expertise and resources when paying them for support. These vendors support open source communities by allocating their resources, such as subject matter experts (SMEs), support teams, and infrastructure, to contribute to project development. In return, these vendors charge their customers a fee to ensure their business's sustainability. Still, vendor contributors are just one type of contributor.
+
+- Non-vendor organizations can decide whether to pay a vendor for support and contributions or hire an internal team to do so instead. Contributors not associated with a vendor contribute to a project in service to supporting their internal customers (in the case of Kubeflow, data scientists or MLEs) as part of an internally facing development team. This type of contributor may have other proprietary integrations or systems that require support; therefore, it's economically viable for their organization to pay a dedicated team to contribute to an open source project while supporting internal tooling. The tribal knowledge the team has of their open source solution’s integration with the organization's systems improves their ability to support internal teams and make specialized improvements to their tooling. Some of these improvements may make sense to push upstream, and others will remain internal to the organization. These contributors provide much-needed input to directly support an open source project and often push features based on their specific end-user needs. These features can then be leveraged across the community.
+
+---
+
