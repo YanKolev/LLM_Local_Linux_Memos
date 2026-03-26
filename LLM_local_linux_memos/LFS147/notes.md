@@ -355,3 +355,80 @@ KFP also provides a directed acyclic graph (DAG) to help troubleshoot and visual
 
 ---
 
+### Unified Training Operator and machine learning connection with k8s
+
+---
+
+- Before the introduction of Kubernetes, teams wishing to use TensorFlow would manually set it up on individual virtual machines (VMs) or physical servers. Configuring infrastructure involved manually configuring networking, installing dependencies, ensuring consistent environments across all nodes, and managing the starting and stopping of processes. Developers were responsible for ClusterSpecs for each TensorFlow deployment, consisting of a list of IP addresses and ports where different workers and parameter servers must be started. You can learn more about distributed TensorFlow before Kubernetes via this D2IQ blog post.
+
+- With the introduction of Kubernetes, teams could improve TensorFlow deployments by scheduling pod clusters and bootstrapping them together (i.e., configuring the ClusterSpec). Kubernetes alleviates the previous complexity hurdles by allowing teams to quickly iterate on TensorFlow deployments and configure them from a centralized location, dramatically improving ML workloads' operationalization, portability, and scalability. No more logging into various remote servers to install dependencies, configure traffic, add new workers, or fix other misconfigurations.
+
+- Kubernetes lets us do things like:
+
+    Quickly redeploy newer versions of TensorFlow
+    Upgrade previous TensorFlow runs
+    Scale TensorFlow deployments
+    Move TensorFlow deployments closer to data sources
+    Pin workload dependencies
+    Offload resource management from ML teams (i.e., volume provision, memory allocation, and GPU scheduling)
+
+- ML teams can focus on the essential complexity of data-driven business problems instead of managing framework lifecycle and deployment patterns. Let’s inspect a Kubernetes Tensorflow deployment to understand better how this all worked.
+
+- kubectly describe: 
+```
+ Controlled By: TFJob/dist-mnist-for-e2e-test
+Containers:
+  tensorflow:
+    Container ID:   containerd://e8770b758346542f7284c7fa8db2410b156aea75bab11726d9fe0435a5455d99
+    Image:      kubeflow/tf-dist-mnist-test:latest
+    Image ID:   docker.io/kubeflow/tf-dist-mnist-test@sha256:9178e8b522e3d54f98bc4b041608f772e545fe70edb1afb1f388a7ed9a62d410
+    Port:       2222/TCP
+    Host Port:  0/TCP
+    State:      Running
+    Started:    Wed, 28 Feb 2024 04:16:09 +0000
+    Ready:      True
+    Restart Count: 0
+    Environment:
+    TF_CONFIG: {"cluster":{"ps":["dist-mnist-for-e2e-test-ps-0.christensenc3526.svc:2222","dist-mnist-for-e2e-test-ps-1.christensenc3526.svc:2222"],"worker":["dist-mnist-for-e2e-test-worker-0.christensenc3526.svc:2222","dist-mnist-for-e2e-test-worker-1.christensenc3526.svc:2222","dist-mnist-for-e2e-test-worker-2.christensenc3526.svc:2222","dist-mnist-for-e2e-test-worker-3.christensenc3526.svc:2222"]},"task":{"type":"ps","index":0},"environment":"cloud"}
+    Mounts:
+
+From the output, notice the environment variable configuration:
+
+TF_CONFIG:
+{"cluster":{"ps":["dist-mnist-for-e2e-test-ps-0.christensenc3526.svc:2222","dist-mnist-for-e2e-test-ps-1.christensenc3526.svc:2222"],"worker":["dist-mnist-for-e2e-test-worker-0.christensenc3526.svc:2222","dist-mnist-for-e2e-test-worker-1.christensenc3526.svc:2222","dist-mnist-for-e2e-test-worker-2.christensenc3526.svc:2222","dist-mnist-for-e2e-test-worker-3.christensenc3526.svc:2222"]},"task":{"type":"ps","index":0},"environment":"cloud"}
+
+Specifically, the pod service details such as
+
+dist-mnist-for-e2e-test-ps-1.christensenc3526.svc:2222
+
+Continuing our story, let's look at the output from a kubectl get services | grep mnist command below:
+
+dist-mnist-for-e2e-test-ps-0                          ClusterIP      None           <none>                                              2222/TCP                                              26h
+dist-mnist-for-e2e-test-ps-1                          ClusterIP      None           <none>                                              2222/TCP                                              26h
+dist-mnist-for-e2e-test-worker-0                      ClusterIP      None           <none>                                              2222/TCP                                              26h
+dist-mnist-for-e2e-test-worker-1                      ClusterIP      None           <none>                                              2222/TCP                                              26h
+dist-mnist-for-e2e-test-worker-2                      ClusterIP      None           <none>                                              2222/TCP                                              26h
+dist-mnist-for-e2e-test-worker-3                      ClusterIP      None           <none>                                              2222/TCP                                              26h
+```
+
+- Using Kubernetes, we improved the orchestration of TensorFlow jobs by:
+
+    Centralizing the configuration and orchestration of the TensorFlow framework
+    Configuring pods that can be clustered and scheduled across any node
+    Used services to ensure ingress and egress traffic
+    Registered our services with KubeDNS
+    Launched a TensorFlow job on the cluster
+
+- These tasks may seem like quality-of-life changes, but Kubernetes is still a very involved solution. Working with Kubernetes means facing the inherent challenges of distributed systems, such as ensuring enough replicas, the pods are correctly configured, and the code is configured adequately within a pod’s containers.
+
+- Beyond the Kubernetes resource configuration:
+
+    Kubernetes requires specific node configurations for things like port availability
+    The Kubernetes nodes have operating systems that may need support
+    The Kubernetes nodes must be able to communicate with each other across the network
+    Load balancers must be configured to handle ingress traffic
+
+- Managing all this infrastructure involves understanding the nature of systems spread across multiple machines. Solutions such as Kubeadm, have abstracted away the deployment and management of core Kubernetes, but much of the complexity remains. 
+
+---
+
