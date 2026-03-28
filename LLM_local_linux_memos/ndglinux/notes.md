@@ -1030,3 +1030,6 @@ Which of the following ls commands, when executed, will only show information ab
       ls -ld
       ls -d
 ```
+
+// attempt to get 100%, expand on other tests and practical assignments.
+
