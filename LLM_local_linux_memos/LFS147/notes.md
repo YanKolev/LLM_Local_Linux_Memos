@@ -432,3 +432,4 @@ dist-mnist-for-e2e-test-worker-3                      ClusterIP      None       
 
 ---
 
+// redo- last notes, incoherent, from unified training operator, add diagrams for clarity
