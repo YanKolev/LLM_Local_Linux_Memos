@@ -4379,3 +4379,68 @@ Which of the following ls commands, when executed, will only show information ab
       ls -ld
       ls -d
 ```
+
+- test 2 : Score: 78% | 31 correct out of 40 
+
+```
+WRONG - See Section 10.7
+The grep command...
+
+      ...will display all the lines that begin with the specified Regular Expression. 
+
+WRONG - See Section 11.4.3
+Which of the following are correct about for and while loops?
+
+(choose two)
+
+      while loops have a test each cycle to determine if it should run again
+      for loops have a test each cycle to determine if it should run again 
+
+WRONG - See Section 12.3
+Which of the following commands will display CPU information?
+
+(choose two)
+
+      lspic
+      lscpu
+
+WRONG - See Section 13.2.1
+Which of the following commands will allow you to view all processes on the system?
+
+(choose two)
+
+      ps -eLf
+      ps -ef
+
+WRONG - See Section 14.2
+A service is...
+
+      ...a file that contains configuration information. 
+
+WRONG - See Section 14.4
+Which of the following are valid IPv4 addresses?
+
+(choose two)
+
+      192.301.25.25
+      192.105.10.10 
+
+WRONG - See Section 17.8
+Which of the following are methods for setting permissions using the chmod command?
+
+(choose two)
+
+      octal
+      letter
+
+WRONG - See Section 17.9
+The execute permission is never set on files by default.
+
+      False
+
+WRONG - See Section 18.2
+The setuid permission...
+
+      ...allows files in a directory to be manipulated as by the directory owner.
+
+```
