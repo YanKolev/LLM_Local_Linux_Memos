@@ -4444,3 +4444,64 @@ The setuid permission...
       ...allows files in a directory to be manipulated as by the directory owner.
 
 ```
+
+- 3rd test: 80% 	32 / 40
+
+```
+WRONG - See Section 13.2.1
+Which of the following commands will allow you to view all processes on the system?
+
+(choose two)
+
+      ps -eLf
+      ps
+
+
+
+
+
+WRONG - See Section 14.2
+A service is...
+
+      ...a file that contains configuration information. 
+
+
+      WRONG - See Section 14.4
+Which of the following are valid IPv4 addresses?
+
+(choose two)
+
+      192.105.10.10
+      192.105.10.10.2 
+
+
+      WRONG - See Section 17.8
+Which of the following are methods for setting permissions using the chmod command?
+
+(choose two)
+
+      octal
+      primary
+
+
+      WRONG - See Section 17.9
+The execute permission is never set on files by default.
+
+      False
+
+      WRONG - See Section 18.2
+The setuid permission...
+
+      ...allows files in a directory to be manipulated as by the directory owner. 
+
+
+WRONG - See Section 18.3.1
+The setgid permission...
+
+(choose two)
+
+      ...allows a command to be run as the group owner of the file.
+      ...can only be set on files. 
+
+      
+```
